@@ -1197,8 +1197,11 @@ static void ag71xx_oom_timer_handler(struct timer_list *t)
 
 	napi_schedule(&ag->napi);
 }
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
 static void ag71xx_tx_timeout(struct net_device *dev, unsigned int txqueue)
+#else
+static void ag71xx_tx_timeout(struct net_device *dev)
+#endif
 {
 	struct ag71xx *ag = netdev_priv(dev);
 
@@ -1674,9 +1677,13 @@ static int ag71xx_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "invalid MAC address, using random address\n");
 		eth_random_addr(dev->dev_addr);
 	}
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0)
 	err = of_get_phy_mode(np, &ag->phy_if_mode);
 	if (err < 0) {
+#else
+	ag->phy_if_mode = of_get_phy_mode(np);
+	if (ag->phy_if_mode < 0) {
+#endif
 		dev_err(&pdev->dev, "missing phy-mode property in DT\n");
 		return ag->phy_if_mode;
 	}
