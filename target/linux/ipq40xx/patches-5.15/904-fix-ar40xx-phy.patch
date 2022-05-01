@@ -1,0 +1,44 @@
+From 34ba536a2de0ced22691aac1662ace494bc7e272 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sun, 1 May 2022 19:59:40 +0900
+Subject: [PATCH] fix ar40xx-phy with kernel 5.15
+
+---
+ Kconfig  | 7 -------
+ Makefile | 2 --
+ 2 files changed, 9 deletions(-)
+
+diff --git a/Kconfig b/Kconfig
+index 5f8bff9..6da1fcb 100644
+--- a/drivers/net/mdio/Kconfig
++++ b/drivers/net/mdio/Kconfig
+@@ -41,13 +41,6 @@ config ACPI_MDIO
+ 	help
+ 	  ACPI MDIO bus (Ethernet PHY) accessors
+ 
+-config AR40XX_PHY
+-   tristate "Driver for Qualcomm Atheros IPQ40XX switches"
+-   depends on HAS_IOMEM && OF && OF_MDIO
+-   select SWCONFIG
+-   help
+-      This is the driver for Qualcomm Atheros IPQ40XX ESS switches.
+-
+ if MDIO_BUS
+ 
+ config MDIO_DEVRES
+diff --git a/Makefile b/Makefile
+index c49d158..15f8dc4 100644
+--- a/drivers/net/mdio/Makefile
++++ b/drivers/net/mdio/Makefile
+@@ -23,8 +23,6 @@ obj-$(CONFIG_MDIO_SUN4I)		+= mdio-sun4i.o
+ obj-$(CONFIG_MDIO_THUNDER)		+= mdio-thunder.o
+ obj-$(CONFIG_MDIO_XGENE)		+= mdio-xgene.o
+ 
+-obj-$(CONFIG_AR40XX_PHY)		+= ar40xx.o
+-
+ obj-$(CONFIG_MDIO_BUS_MUX)		+= mdio-mux.o
+ obj-$(CONFIG_MDIO_BUS_MUX_BCM6368)	+= mdio-mux-bcm6368.o
+ obj-$(CONFIG_MDIO_BUS_MUX_BCM_IPROC)	+= mdio-mux-bcm-iproc.o
+-- 
+2.17.1
+
