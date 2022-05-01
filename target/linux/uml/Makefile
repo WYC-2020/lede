@@ -11,7 +11,7 @@ FEATURES:=squashfs ext4 audio source-only
 SUBTARGETS:=generic 64
 
 KERNEL_PATCHVER:=5.4
-KERNEL_BATE_PATCHVER:=5.10
+KERNEL_TESTING_PATCHVER:=5.10
 
 include $(INCLUDE_DIR)/target.mk
 
