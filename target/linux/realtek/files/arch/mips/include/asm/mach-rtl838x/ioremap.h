@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 #ifndef RTL838X_IOREMAP_H_
 #define RTL838X_IOREMAP_H_
-
+#include<linux/version.h>
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0) 
 static inline phys_addr_t fixup_bigphys_addr(phys_addr_t phys_addr, phys_addr_t size)
 {
 	return phys_addr;
 }
-
+#endif
 static inline int is_rtl838x_internal_registers(phys_addr_t offset)
 {
 	/* IO-Block */
