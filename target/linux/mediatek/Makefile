@@ -8,7 +8,7 @@ BOARDNAME:=MediaTek Ralink ARM
 SUBTARGETS:=mt7622 mt7623 mt7629
 FEATURES:=dt-overlay emmc fpu gpio nand pci pcie rootfs-part separate_ramdisk squashfs usb
 
-KERNEL_PATCHVER:=5.10
+KERNEL_PATCHVER:=5.4
 KERNEL_TESTING_PATCHVER:=5.15
 KERNEL_BATE_PATCHVER:=5.10
 
