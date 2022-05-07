@@ -26,7 +26,7 @@ sudo apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git
 
 3. Pull the source code
 ```bash
-git clone https://github.com/coolsnowwolf/lede
+git clone https://github.com/WYC-2020/lede
 
 cd lede
 ```
