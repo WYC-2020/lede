@@ -84,44 +84,6 @@ This reverts commit cf9441adb1a35506d7606866c382b9d8614169b5.
  
  	err = audio_clk_init(pdev, cygaud);
  	if (err) {
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -1195,8 +1195,10 @@ static int pm8916_wcd_analog_spmi_probe(
- 	}
- 
- 	irq = platform_get_irq_byname(pdev, "mbhc_switch_int");
--	if (irq < 0)
-+	if (irq < 0) {
-+		dev_err(dev, "failed to get mbhc switch irq\n");
- 		return irq;
-+	}
- 
- 	ret = devm_request_threaded_irq(dev, irq, NULL,
- 			       pm8916_mbhc_switch_irq_handler,
-@@ -1208,8 +1210,10 @@ static int pm8916_wcd_analog_spmi_probe(
- 
- 	if (priv->mbhc_btn_enabled) {
- 		irq = platform_get_irq_byname(pdev, "mbhc_but_press_det");
--		if (irq < 0)
-+		if (irq < 0) {
-+			dev_err(dev, "failed to get button press irq\n");
- 			return irq;
-+		}
- 
- 		ret = devm_request_threaded_irq(dev, irq, NULL,
- 				       mbhc_btn_press_irq_handler,
-@@ -1220,8 +1224,10 @@ static int pm8916_wcd_analog_spmi_probe(
- 			dev_err(dev, "cannot request mbhc button press irq\n");
- 
- 		irq = platform_get_irq_byname(pdev, "mbhc_but_rel_det");
--		if (irq < 0)
-+		if (irq < 0) {
-+			dev_err(dev, "failed to get button release irq\n");
- 			return irq;
-+		}
- 
- 		ret = devm_request_threaded_irq(dev, irq, NULL,
- 				       mbhc_btn_release_irq_handler,
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
 @@ -1108,8 +1108,10 @@ static int twl6040_probe(struct snd_soc_
@@ -439,7 +401,7 @@ This reverts commit cf9441adb1a35506d7606866c382b9d8614169b5.
  			       IRQF_SHARED, dev_name(dev), pdev);
 --- a/sound/soc/xilinx/xlnx_formatter_pcm.c
 +++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -634,6 +634,7 @@ static int xlnx_formatter_pcm_probe(stru
+@@ -613,6 +613,7 @@ static int xlnx_formatter_pcm_probe(stru
  		aud_drv_data->mm2s_irq = platform_get_irq_byname(pdev,
  								 "irq_mm2s");
  		if (aud_drv_data->mm2s_irq < 0) {
@@ -447,7 +409,7 @@ This reverts commit cf9441adb1a35506d7606866c382b9d8614169b5.
  			ret = aud_drv_data->mm2s_irq;
  			goto clk_err;
  		}
-@@ -660,6 +661,7 @@ static int xlnx_formatter_pcm_probe(stru
+@@ -639,6 +640,7 @@ static int xlnx_formatter_pcm_probe(stru
  		aud_drv_data->s2mm_irq = platform_get_irq_byname(pdev,
  								 "irq_s2mm");
  		if (aud_drv_data->s2mm_irq < 0) {

@@ -123,7 +123,7 @@ index 000000000..f0eacf819
 +#include "mtk_wed_regs.h"
 +#include "mtk_wed.h"
 +#include "mtk_ppe.h"
-+
++#include <linux/iopoll.h>
 +#define MTK_PCIE_BASE(n)		(0x1a143000 + (n) * 0x2000)
 +
 +#define MTK_WED_PKT_SIZE		1900

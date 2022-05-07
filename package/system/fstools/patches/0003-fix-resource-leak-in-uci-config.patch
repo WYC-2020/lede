@@ -1,0 +1,45 @@
+From f701db6f2ce88d1a8db4e0ff7e263cc54ca9359f Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Fri, 6 May 2022 04:33:54 -0400
+Subject: [PATCH] fix resource leak in uci config
+
+---
+ block.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/block.c b/block.c
+index dec8795a8..f5ec5cfb6 100644
+--- a/block.c
++++ b/block.c
+@@ -464,7 +464,7 @@ static int config_load(char *cfg)
+ 
+ 	if (!pkg) {
+ 		ULOG_ERR("no usable configuration\n");
+-		return -1;
++		goto cleanup;
+ 	}
+ 
+ 	vlist_update(&mounts);
+@@ -480,7 +480,19 @@ static int config_load(char *cfg)
+ 	}
+ 	vlist_flush(&mounts);
+ 
++	if(pkg&&ctx)
++		uci_unload(ctx, pkg);  
++	if(ctx)
++    		uci_free_context(ctx);  
+ 	return 0;
++cleanup:  
++	
++	if(pkg&&ctx)
++		uci_unload(ctx, pkg);  
++
++	if(ctx)
++    		uci_free_context(ctx);  
++        return -1;
+ }
+ 
+ static struct probe_info* _probe_path(char *path)
+-- 
+2.17.1
+

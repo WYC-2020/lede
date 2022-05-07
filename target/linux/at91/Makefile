@@ -11,6 +11,7 @@ FEATURES:=ext4 squashfs targz usb usbgadget ubifs
 SUBTARGETS:=sama5 sam9x
 
 KERNEL_PATCHVER:=5.4
+KERNEL_TESTING_PATCHVER:=5.10
 
 include $(INCLUDE_DIR)/target.mk
 

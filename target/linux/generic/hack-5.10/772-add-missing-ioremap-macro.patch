@@ -1,0 +1,36 @@
+From 1c2c011d141140cb9d45aa9db4dcc1ea4e84eb69 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sat, 30 Apr 2022 11:23:07 +0900
+Subject: [PATCH] add missing ioremap macro
+
+---
+ io.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/arch/arc/include/asm/io.h
++++ b/arch/arc/include/asm/io.h
+@@ -34,6 +34,10 @@ static inline void ioport_unmap(void __iomem *addr)
+ 
+ extern void iounmap(const void __iomem *addr);
+ 
++#define ioremap_nocache(phy, sz)	ioremap(phy, sz)
++#define ioremap_wc(phy, sz)		ioremap(phy, sz)
++#define ioremap_wt(phy, sz)		ioremap(phy, sz)
++
+ /*
+  * io{read,write}{16,32}be() macros
+  */
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -384,7 +384,7 @@ static inline void memcpy_toio(volatile void __iomem *to, const void *from,
+  */
+ void __iomem *ioremap(resource_size_t res_cookie, size_t size);
+ #define ioremap ioremap
+-
++#define ioremap_nocache ioremap
+ /*
+  * Do not use ioremap_cache for mapping memory. Use memremap instead.
+  */
+-- 
+2.17.1
+
