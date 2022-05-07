@@ -161,7 +161,7 @@ make package/network/services/hello/download V=s
 2、
 After the first step is completed, a compressed package related to a new module will be found in the dl directory, and the following command will be used directly to generate the hash value, such as:
 ```bash 
-sha256sum 包名.tar.xz
+sha256sum name.tar.xz
 ```
   
 3、
