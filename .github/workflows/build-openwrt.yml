@@ -27,7 +27,7 @@ env:
   REPO_URL: https://github.com/WYC-2020/lede
   REPO_BRANCH: master
   CONFIG_FILE: .config_bak
-  UPLOAD_BIN_DIR: true
+  UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
@@ -114,7 +114,7 @@ jobs:
         
     - name: Get environment path
       id: environment
-      if: env.UPLOAD_BIN_DIR == 'true' && !cancelled()
+      if: (!cancelled())
       run: |
         cd bin/
         echo "WORKSPACE_DIR=$PWD" >> $GITHUB_ENV
