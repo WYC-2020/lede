@@ -25,7 +25,7 @@ define Device/qnap_301w
 	KERNEL_SIZE := 16384k
 	BLOCKSIZE := 512k
 	SOC := ipq8072
-	IMAGES += factory.bin sysupgrade.bin
+	IMAGES += factory.bin
 	IMAGE/factory.bin := append-rootfs | pad-rootfs | pad-to 64k
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-to 64k | sysupgrade-tar rootfs=$$$$@ | append-metadata
 	DEVICE_PACKAGES := ipq-wifi-qnap_301w e2fsprogs kmod-fs-ext4 losetup
