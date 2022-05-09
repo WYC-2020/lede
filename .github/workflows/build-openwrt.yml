@@ -188,10 +188,11 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
+        repository: ${{ secrets.UPLOAD_REPO_GITHUB }}
         files: ${{ env.FIRMWARE }}/*
           
     - name: Delete workflow runs
@@ -206,5 +207,6 @@ jobs:
       with:
         keep_latest: 3
         delete_tags: true
+        repo: ${{ secrets.UPLOAD_REPO_GITHUB }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
