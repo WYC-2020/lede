@@ -133,6 +133,17 @@
  static inline const struct rt6_info *skb_rt6_info(const struct sk_buff *skb)
  {
  	const struct dst_entry *dst = skb_dst(skb);
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -1802,7 +1802,7 @@ const char *netdev_cmd_to_name(enum netdev_cmd cmd)
+ 	N(UDP_TUNNEL_DROP_INFO) N(CHANGE_TX_QUEUE_LEN)
+ 	N(CVLAN_FILTER_PUSH_INFO) N(CVLAN_FILTER_DROP_INFO)
+ 	N(SVLAN_FILTER_PUSH_INFO) N(SVLAN_FILTER_DROP_INFO)
+-	N(PRE_CHANGEADDR)
++	N(PRE_CHANGEADDR) N(BR_JOIN) N(BR_LEAVE)
+ 	}
+ #undef N
+ 	return "UNKNOWN_NETDEV_EVENT";
 --- a/include/net/neighbour.h
 +++ b/include/net/neighbour.h
 @@ -574,4 +574,15 @@ static inline void neigh_update_is_route
