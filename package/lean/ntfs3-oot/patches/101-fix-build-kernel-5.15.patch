@@ -1,0 +1,94 @@
+From 2908eab8a6cedd0f00a6a93f77a8fe85e8add1c5 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sun, 15 May 2022 23:25:39 -0400
+Subject: [PATCH] fix build kernel 5.15
+
+---
+ file.c    | 14 ++++++++++++--
+ ntfs_fs.h |  4 ++++
+ xattr.c   | 11 +++++++++--
+ 3 files changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/file.c b/file.c
+index f839afa..8eacd66 100644
+--- a/file.c
++++ b/file.c
+@@ -907,8 +907,11 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
+ 		frame = pos >> frame_bits;
+ 		frame_vbo = pos & ~(frame_size - 1);
+ 		index = frame_vbo >> PAGE_SHIFT;
+-
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
++		if (unlikely(fault_in_iov_iter_readable(from, bytes))) {
++#else
+ 		if (unlikely(iov_iter_fault_in_readable(from, bytes))) {
++#endif
+ 			err = -EFAULT;
+ 			goto out;
+ 		}
+@@ -947,8 +950,15 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
+ 			size_t cp, tail = PAGE_SIZE - off;
+ 
+ 			page = pages[ip];
+-			cp = iov_iter_copy_from_user_atomic(page, from, off,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
++
++				cp = copy_page_from_iter_atomic(page, off,
++							    min(tail, bytes),from);
++#else
++				cp = iov_iter_copy_from_user_atomic(page, from, off,
+ 							    min(tail, bytes));
++#endif
++
+ 			flush_dcache_page(page);
+ 			iov_iter_advance(from, cp);
+ 			copied += cp;
+diff --git a/ntfs_fs.h b/ntfs_fs.h
+index 90913cd..3abbe9e 100644
+--- a/ntfs_fs.h
++++ b/ntfs_fs.h
+@@ -799,7 +799,11 @@ int ntfs_cmp_names_cpu(const struct cpu_str *uni1, const struct le_str *uni2,
+ 
+ /* globals from xattr.c */
+ #ifdef CONFIG_NTFS3_FS_POSIX_ACL
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
++struct posix_acl *ntfs_get_acl(struct inode *inode, int type,bool);
++#else
+ struct posix_acl *ntfs_get_acl(struct inode *inode, int type);
++#endif
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+ int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ #else
+diff --git a/xattr.c b/xattr.c
+index 6762116..6647789 100644
+--- a/xattr.c
++++ b/xattr.c
+@@ -534,7 +534,11 @@ static struct posix_acl *ntfs_get_acl_ex(
+  *
+  * inode_operations::get_acl
+  */
+-struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
++	struct posix_acl *ntfs_get_acl(struct inode *inode, int type,bool)
++#else
++	struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
++#endif
+ {
+ 	/* TODO: init_user_ns? */
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+@@ -665,8 +669,11 @@ static int ntfs_xattr_get_acl(
+ 	if (!(inode->i_sb->s_flags & MS_POSIXACL))
+ #endif
+ 		return -EOPNOTSUPP;
+-
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
++	acl = ntfs_get_acl(inode, type,true);
++#else
+ 	acl = ntfs_get_acl(inode, type);
++#endif
+ 	if (IS_ERR(acl))
+ 		return PTR_ERR(acl);
+ 
+-- 
+2.17.1
+
