@@ -41,17 +41,10 @@ DEFAULT_PACKAGES.nas:=\
 	mdadm
 # For router targets
 DEFAULT_PACKAGES.router:=\
-	dnsmasq-full \
-	firewall \
-	iptables \
-	ppp \
-	ppp-mod-pppoe \
+	dnsmasq-full firewall iptables ppp ppp-mod-pppoe \
 	luci-newapi block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw \
-	kmod-tun kmod-inet-diag iptables-mod-tproxy iptables-mod-extra \
-	default-settings luci luci-app-ddns luci-app-upnp luci-app-autoreboot \
-	luci-app-filetransfer luci-app-vsftpd \
-	luci-app-vlmcsd luci-app-wol luci-app-ramfree \
-	luci-app-turboacc luci-app-accesscontrol ddns-scripts_aliyun ddns-scripts_dnspod
+	kmod-tun iptables-mod-tproxy iptables-mod-extra default-settings luci \
+	luci-app-filetransfer luci-app-vsftpd luci-app-ramfree 
 
 ifneq ($(DUMP),)
   all: dumpinfo
