@@ -54,15 +54,15 @@ diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/
 index a50a257d0..4c091dbed 100644
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -22,6 +22,7 @@
- #include <linux/phylink.h>
+@@ -26,6 +26,7 @@
+ #include <net/dsa.h>
  
  #include "mtk_eth_soc.h"
 +#include "mtk_wed.h"
  
  static int mtk_msg_level = -1;
  module_param_named(msg_level, mtk_msg_level, int, 0);
-@@ -3043,6 +3044,22 @@ static int mtk_probe(struct platform_device *pdev)
+@@ -3170,6 +3171,22 @@ static int mtk_probe(struct platform_device *pdev)
  		}
  	}
  
@@ -89,7 +89,7 @@ diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/
 index cdd4195d5..ec0bc254e 100644
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -283,6 +283,9 @@
+@@ -292,6 +292,9 @@
  #define MTK_GDM1_TX_GPCNT	0x2438
  #define MTK_STAT_OFFSET		0x40
  
