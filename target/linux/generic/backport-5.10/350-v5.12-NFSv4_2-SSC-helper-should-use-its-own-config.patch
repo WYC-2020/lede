@@ -38,7 +38,7 @@ diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
 index 57b3821d975a35..441a2fa073c8f2 100644
 --- a/fs/nfs/nfs4file.c
 +++ b/fs/nfs/nfs4file.c
-@@ -420,7 +420,9 @@ static const struct nfs4_ssc_client_ops nfs4_ssc_clnt_ops_tbl = {
+@@ -422,7 +422,9 @@ static const struct nfs4_ssc_client_ops nfs4_ssc_clnt_ops_tbl = {
   */
  void nfs42_ssc_register_ops(void)
  {
@@ -48,7 +48,7 @@ index 57b3821d975a35..441a2fa073c8f2 100644
  }
  
  /**
-@@ -431,7 +433,9 @@ void nfs42_ssc_register_ops(void)
+@@ -433,7 +435,9 @@ void nfs42_ssc_register_ops(void)
   */
  void nfs42_ssc_unregister_ops(void)
  {

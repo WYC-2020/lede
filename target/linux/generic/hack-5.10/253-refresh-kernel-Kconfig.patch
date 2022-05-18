@@ -43,7 +43,7 @@ diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
 index 79b2e79dd..ac3840aab 100644
 --- a/drivers/usb/host/Kconfig
 +++ b/drivers/usb/host/Kconfig
-@@ -154,7 +154,7 @@ config USB_EHCI_TT_NEWSCHED
+@@ -183,7 +183,7 @@ config USB_EHCI_TT_NEWSCHED
  if USB_EHCI_HCD
  
  config USB_EHCI_PCI
@@ -56,7 +56,7 @@ diff --git a/drivers/usb/serial/Kconfig b/drivers/usb/serial/Kconfig
 index 67279c6bc..2e68ab037 100644
 --- a/drivers/usb/serial/Kconfig
 +++ b/drivers/usb/serial/Kconfig
-@@ -553,7 +553,7 @@ config USB_SERIAL_XIRCOM
+@@ -551,7 +551,7 @@ config USB_SERIAL_XIRCOM
  	  module will be called keyspan_pda.
  
  config USB_SERIAL_WWAN
@@ -69,7 +69,7 @@ diff --git a/init/Kconfig b/init/Kconfig
 index f23e90d99..68cb96820 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -2203,7 +2203,7 @@ config PADATA
+@@ -2379,7 +2379,7 @@ config PADATA
  	bool
  
  config ASN1
@@ -91,7 +91,7 @@ index 3321d04df..e437796e7 100644
  
  config RAID6_PQ_BENCHMARK
  	bool "Automatically choose fastest RAID6 PQ functions"
-@@ -272,10 +272,10 @@ config 842_DECOMPRESS
+@@ -277,10 +277,10 @@ config 842_DECOMPRESS
  	tristate
  
  config ZLIB_INFLATE
@@ -103,8 +103,8 @@ index 3321d04df..e437796e7 100644
 +	tristate "Zlib deflate"
  	select BITREVERSE
  
- config LZO_COMPRESS
-@@ -567,7 +567,7 @@ config LIBFDT
+ config ZLIB_DFLTCC
+@@ -589,7 +589,7 @@ config LIBFDT
  	bool
  
  config OID_REGISTRY
