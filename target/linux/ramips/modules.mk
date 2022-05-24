@@ -133,26 +133,3 @@ define KernelPackage/sound-mt7620/description
 endef
 
 $(eval $(call KernelPackage,sound-mt7620))
-
-define KernelPackage/eip93-hw
-  SUBMENU:=Other modules
-  TITLE:=Support for EIP93 crypto HW accelerators
-  DEPENDS:=@TARGET_ramips @TARGET_ramips_mt7621 +kmod-crypto-authenc +kmod-crypto-des
-  KCONFIG:= \
-	CONFIG_CRYPTO_DEV_EIP93 \
-	CONFIG_CRYPTO_DEV_EIP93_SKCIPHER \
-	CONFIG_CRYPTO_DEV_EIP93_AES=y \
-	CONFIG_CRYPTO_DEV_EIP93_DES=y \
-	CONFIG_CRYPTO_DEV_EIP93_AEAD=y
-  FILES:= \
-	$(LINUX_DIR)/drivers/crypto/mtk-eip93/crypto-hw-eip93.ko
-endef
-
-define KernelPackage/eip93-hw/description
- EIP93 have various crypto HW accelerators.
-endef
-
-$(eval $(call KernelPackage,eip93-hw))
-
-
-
