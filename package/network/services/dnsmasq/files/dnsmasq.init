@@ -1154,6 +1154,16 @@ dnsmasq_start()
 		done
 	}
 
+	config_get_bool dns_redirect "$cfg" dns_redirect 0
+	config_get dns_port "$cfg" port 53
+	sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user 2>/dev/null
+	[ $dns_redirect = 1 ] && {
+		iptables -t nat -w -A PREROUTING -m comment --comment "Dnsmasq" -p udp --dport 53 -j REDIRECT --to-ports $dns_port
+		iptables -t nat -w -A PREROUTING -m comment --comment "Dnsmasq" -p tcp --dport 53 -j REDIRECT --to-ports $dns_port
+		echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -w -A PREROUTING -m comment --comment "Dnsmasq" -p udp --dport 53 -j REDIRECT --to-ports $dns_port 2>/dev/null
+		echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -w -A PREROUTING -m comment --comment "Dnsmasq" -p tcp --dport 53 -j REDIRECT --to-ports $dns_port 2>/dev/null	
+	}
+
 	procd_open_instance $cfg
 	procd_set_param command $PROG -C $CONFIGFILE -k -x /var/run/dnsmasq/dnsmasq."${cfg}".pid
 	procd_set_param file $CONFIGFILE
@@ -1168,17 +1178,6 @@ dnsmasq_start()
 	procd_add_jail_mount_rw /var/run/dnsmasq/ $leasefile
 
 	procd_close_instance
-
-	config_get_bool dns_redirect "$cfg" dns_redirect 0
-	config_get dns_port "$cfg" port 53
-	sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user 2>/dev/null
-	[ $dns_redirect = 1 ] && {
-		echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user 2>/dev/null
-		echo 'iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user 2>/dev/null
-		echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user 2>/dev/null
-		echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user 2>/dev/null
-	}
-	/etc/init.d/firewall restart
 }
 
 dnsmasq_stop()
