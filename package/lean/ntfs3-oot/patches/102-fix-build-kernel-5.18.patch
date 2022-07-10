@@ -1,0 +1,49 @@
+From c4459bdc2bd29e40200965503f0f78a328b5f194 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sun, 10 Jul 2022 17:48:36 +0900
+Subject: [PATCH] fix build kernel 5.18
+
+---
+ file.c   | 1 +
+ fsntfs.c | 8 ++++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/file.c b/file.c
+index 8eacd66..43743cd 100644
+--- a/file.c
++++ b/file.c
+@@ -13,6 +13,7 @@
+ #include <linux/msdos_fs.h> /* FAT_IOCTL_XXX */
+ #include <linux/nls.h>
+ #include <linux/uio.h>
++#include <linux/blkdev.h>
+ 
+ #include "debug.h"
+ #include "ntfs.h"
+diff --git a/fsntfs.c b/fsntfs.c
+index 890cd84..791499c 100644
+--- a/fsntfs.c
++++ b/fsntfs.c
+@@ -1482,11 +1482,19 @@ int ntfs_write_bh(struct ntfs_sb_info *sbi, struct NTFS_RECORD_HEADER *rhdr,
+ 
+ static inline struct bio *ntfs_alloc_bio(u32 nr_vecs)
+ {
++#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0) 
++	struct bio *bio = bio_alloc(NULL, nr_vecs,0,GFP_NOFS | __GFP_HIGH);
++#else
+ 	struct bio *bio = bio_alloc(GFP_NOFS | __GFP_HIGH, nr_vecs);
++#endif
+ 
+ 	if (!bio && (current->flags & PF_MEMALLOC)) {
+ 		while (!bio && (nr_vecs /= 2))
++#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0) 
++			bio = bio_alloc(NULL, nr_vecs,0,GFP_NOFS | __GFP_HIGH);
++#else
+ 			bio = bio_alloc(GFP_NOFS | __GFP_HIGH, nr_vecs);
++#endif
+ 	}
+ 	return bio;
+ }
+-- 
+2.17.1
+
