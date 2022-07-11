@@ -5,7 +5,13 @@ source "tmp/.config-target.in"
 config HAS_TESTING_KERNEL
 	bool
 
-config HAS_BATE_KERNEL
+config HAS_BETA_KERNEL
+	bool
+
+config HAS_RC_KERNEL
+	bool
+
+config HAS_ALPHA_KERNEL
 	bool
 
 config HAS_SPE_FPU

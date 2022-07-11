@@ -132,7 +132,9 @@ sub parse_target_metadata($) {
 		/^CPU-Type:\s*(.+)\s*$/ and $target->{cputype} = $1;
 		/^Linux-Version:\s*(.+)\s*$/ and $target->{version} = $1;
 		/^Linux-Testing-Version:\s*(.+)\s*$/ and $target->{testing_version} = $1;
-		/^Linux-Bate-Version:\s*(.+)\s*$/ and $target->{bate_version} = $1;
+		/^Linux-Beta-Version:\s*(.+)\s*$/ and $target->{beta_version} = $1;
+		/^Linux-RC-Version:\s*(.+)\s*$/ and $target->{rc_version} = $1;
+		/^Linux-Alpha-Version:\s*(.+)\s*$/ and $target->{alpha_version} = $1;
 		/^Linux-Release:\s*(.+)\s*$/ and $target->{release} = $1;
 		/^Linux-Kernel-Arch:\s*(.+)\s*$/ and $target->{karch} = $1;
 		/^Default-Subtarget:\s*(.+)\s*$/ and $target->{def_subtarget} = $1;

@@ -68,9 +68,25 @@ menu "Global build settings"
 		  If the target supports a newer kernel version than the default,
 		  you can use this config option to enable it
 
-	config BATE_KERNEL
-		bool "Use the bate kernel version"
-		depends on HAS_BATE_KERNEL
+	config ALPHA_KERNEL
+		bool "Use the alpha kernel version"
+		depends on HAS_ALPHA_KERNEL
+		default EXPERIMENTAL
+		help
+		  If the target supports a newer kernel version than the default,
+		  you can use this config option to enable it
+
+	config BETA_KERNEL
+		bool "Use the beta kernel version"
+		depends on HAS_BETA_KERNEL
+		default EXPERIMENTAL
+		help
+		  If the target supports a newer kernel version than the default,
+		  you can use this config option to enable it
+
+	config RC_KERNEL
+		bool "Use the rc kernel version"
+		depends on HAS_RC_KERNEL
 		default EXPERIMENTAL
 		help
 		  If the target supports a newer kernel version than the default,

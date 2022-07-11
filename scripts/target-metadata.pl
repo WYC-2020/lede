@@ -46,7 +46,9 @@ sub target_config_features(@) {
 		/^rootfs-part$/ and $ret .= "\tselect USES_ROOTFS_PART\n";
 		/^boot-part$/ and $ret .= "\tselect USES_BOOT_PART\n";
 		/^testing-kernel$/ and $ret .= "\tselect HAS_TESTING_KERNEL\n";
-		/^bate-kernel$/ and $ret .= "\tselect HAS_BATE_KERNEL\n";
+		/^beta-kernel$/ and $ret .= "\tselect HAS_BETA_KERNEL\n";
+		/^rc-kernel$/ and $ret .= "\tselect HAS_RC_KERNEL\n";
+		/^alpha-kernel$/ and $ret .= "\tselect HAS_ALPHA_KERNEL\n";
 		/^dt-overlay$/ and $ret .= "\tselect HAS_DT_OVERLAY_SUPPORT\n";
 	}
 	return $ret;
@@ -90,15 +92,19 @@ sub print_target($) {
 
 	my $v = kver($target->{version});
 	my $tv = kver($target->{testing_version});
-	my $tb = kver($target->{bate_version});
+	my $tb = kver($target->{beta_version});
+	my $tc = kver($target->{rc_version});
+	my $ta = kver($target->{alpha_version});
 	$tv or $tv = $v;
 	if (@{$target->{subtargets}} == 0) {
 	$confstr = <<EOF;
 config TARGET_$target->{conf}
 	bool "$target->{name}"
-	select LINUX_$v if (!TESTING_KERNEL&&!BATE_KERNEL)
+	select LINUX_$v if (!TESTING_KERNEL&&!BETA_KERNEL&&!RC_KERNEL&&!ALPHA_KERNEL)
 	select LINUX_$tv if TESTING_KERNEL
-	select LINUX_$tb if BATE_KERNEL
+	select LINUX_$tb if BETA_KERNEL
+	select LINUX_$tc if RC_KERNEL
+	select LINUX_$ta if ALPHA_KERNEL
 EOF
 	}
 	else {
@@ -400,7 +406,7 @@ EOF
 
 	my %kver;
 	foreach my $target (@target) {
-		foreach my $tv ($target->{version}, $target->{testing_version},$target->{bate_version}) {
+		foreach my $tv ($target->{version}, $target->{testing_version},$target->{beta_version},$target->{rc_version},$target->{alpha_version}) {
 			next unless $tv;
 			my $v = kver($tv);
 			next if $kver{$v};

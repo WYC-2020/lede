@@ -254,9 +254,19 @@ ifeq ($(DUMP),1)
         FEATURES += testing-kernel
       endif
     endif
-    ifdef KERNEL_BATE_PATCHVER
-      ifneq ($(KERNEL_BATE_PATCHVER),$(KERNEL_PATCHVER))
-        FEATURES += bate-kernel
+    ifdef KERNEL_BETA_PATCHVER
+      ifneq ($(KERNEL_BETA_PATCHVER),$(KERNEL_PATCHVER))
+        FEATURES += beta-kernel
+      endif
+    endif
+    ifdef KERNEL_RC_PATCHVER
+      ifneq ($(KERNEL_RC_PATCHVER),$(KERNEL_PATCHVER))
+        FEATURES += rc-kernel
+      endif
+    endif
+    ifdef KERNEL_ALPHA_PATCHVER
+      ifneq ($(KERNEL_ALPHA_PATCHVER),$(KERNEL_PATCHVER))
+        FEATURES += alpha-kernel
       endif
     endif
     ifneq ($(CONFIG_OF),)
@@ -318,7 +328,9 @@ define BuildTargets/DumpCurrent
 	 echo 'CPU-Type: $(CPU_TYPE)$(if $(CPU_SUBTYPE),+$(CPU_SUBTYPE))'; \
 	 echo 'Linux-Version: $(LINUX_VERSION)'; \
 	$(if $(LINUX_TESTING_VERSION),echo 'Linux-Testing-Version: $(LINUX_TESTING_VERSION)';) \
-	$(if $(LINUX_BATE_VERSION),echo 'Linux-Bate-Version: $(LINUX_BATE_VERSION)';) \
+	$(if $(LINUX_BETA_VERSION),echo 'Linux-Beta-Version: $(LINUX_BETA_VERSION)';) \
+	$(if $(LINUX_RC_VERSION),echo 'Linux-RC-Version: $(LINUX_RC_VERSION)';) \
+	$(if $(LINUX_ALPHA_VERSION),echo 'Linux-Alpha-Version: $(LINUX_ALPHA_VERSION)';) \
 	 echo 'Linux-Release: $(LINUX_RELEASE)'; \
 	 echo 'Linux-Kernel-Arch: $(LINUX_KARCH)'; \
 	$(if $(SUBTARGET),,$(if $(DEFAULT_SUBTARGET), echo 'Default-Subtarget: $(DEFAULT_SUBTARGET)'; )) \

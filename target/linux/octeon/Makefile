@@ -11,7 +11,7 @@ FEATURES:=squashfs ramdisk pci usb
 CPU_TYPE:=octeonplus
 
 KERNEL_PATCHVER:=5.4
-KERNEL_BATE_PATCHVER:=5.10
+KERNEL_BETA_PATCHVER:=5.10
 KERNEL_TESTING_PATCHVER:=5.15
 
 define Target/Description
