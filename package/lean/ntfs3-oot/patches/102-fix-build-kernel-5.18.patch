@@ -28,7 +28,7 @@ index 890cd84..791499c 100644
  
  static inline struct bio *ntfs_alloc_bio(u32 nr_vecs)
  {
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0) 
++#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 18, 0) 
 +	struct bio *bio = bio_alloc(NULL, nr_vecs,0,GFP_NOFS | __GFP_HIGH);
 +#else
  	struct bio *bio = bio_alloc(GFP_NOFS | __GFP_HIGH, nr_vecs);
@@ -36,7 +36,7 @@ index 890cd84..791499c 100644
  
  	if (!bio && (current->flags & PF_MEMALLOC)) {
  		while (!bio && (nr_vecs /= 2))
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0) 
++#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 18, 0) 
 +			bio = bio_alloc(NULL, nr_vecs,0,GFP_NOFS | __GFP_HIGH);
 +#else
  			bio = bio_alloc(GFP_NOFS | __GFP_HIGH, nr_vecs);
