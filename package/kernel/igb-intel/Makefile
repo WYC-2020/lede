@@ -1,5 +1,5 @@
 #
-# Drivers Copyright (C) 2019 Intel Corporation
+# Drivers Copyright (C) 2022 Intel Corporation
 #
 # This is free software, licensed under the GNU General Public License v2.
 #
@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=kmod-igb-intel
-PKG_VERSION:=5.8.5
+PKG_VERSION:=5.10.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=igb-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://downloads.sourceforge.net/project/e1000/igb%20stable/$(PKG_VERSION)/
-PKG_MD5SUM:=0294d18daadea29bb67b8441037e947c
+PKG_MD5SUM:=6ef2c26c18acb898d693040b56b27316
 
 include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
@@ -30,7 +30,7 @@ MAKE_OPTS:= \
 
 define KernelPackage/igb-intel
   SUBMENU:=Network Devices
-  TITLE:=Intel igb drivers - out of tree version
+  TITLE:=Intel igb drivers - oot version from Intel
   DEPENDS:=+kmod-ptp @PCI_SUPPORT 
   KCONFIG:=CONFIG_IGB \
     CONFIG_IGB_HWMON=n \
@@ -41,9 +41,6 @@ endef
 
 define KernelPackage/igb-intel/description
  Kernel modules for Intel igb out of tree drivers
- Warning: do not select the core package kmod-igb as this is an
- updated version of the igb driver that shares the same module name
 endef
 
 $(eval $(call KernelPackage,igb-intel))
-
