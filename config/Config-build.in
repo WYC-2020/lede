@@ -59,7 +59,7 @@ menu "Global build settings"
 		default SIGNED_PACKAGES
 
 	comment "General build options"
-
+	menu "Select kernel version"
 	config TESTING_KERNEL
 		bool "Use the testing kernel version"
 		depends on HAS_TESTING_KERNEL
@@ -91,7 +91,7 @@ menu "Global build settings"
 		help
 		  If the target supports a newer kernel version than the default,
 		  you can use this config option to enable it
-
+	endmenu
 	config DISPLAY_SUPPORT
 		bool "Show packages that require graphics support (local or remote)"
 		default n
