@@ -102,6 +102,7 @@ ifneq ($(CONFIG_USE_GLIBC),)
 endif
 
 TARGET_LDFLAGS += -lcrypt
+TARGET_CFLAGS += -Wno-maybe-uninitialized
 
 CMAKE_OPTIONS += -DTLS_SUPPORT=on
 
