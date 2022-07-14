@@ -51,6 +51,7 @@ define Package/rpcd/conffiles
 /etc/config/rpcd
 endef
 
+TARGET_CFLAGS += -Wno-error=maybe-uninitialized
 TARGET_LDFLAGS += -lcrypt
 
 define Package/rpcd/install
