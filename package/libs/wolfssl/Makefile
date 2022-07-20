@@ -104,6 +104,7 @@ CONFIGURE_ARGS += \
 	--enable-opensslextra \
 	--enable-sni \
 	--enable-stunnel \
+	--enable-fastmath \
 	--enable-altcertchains \
 	--$(if $(CONFIG_PACKAGE_libwolfssl-benchmark),enable,disable)-crypttests \
 	--disable-examples \
