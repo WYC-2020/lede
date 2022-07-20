@@ -1,0 +1,33 @@
+From bd416f7d4216dc177712772f94eb18b67d05208f Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Wed, 20 Jul 2022 13:42:35 +0800
+Subject: [PATCH] fix Remove netif_rx_any_context and netif_rx_ni
+
+---
+ include/linux/netdevice.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index bfa27972f..a59dd2d5c 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3722,6 +3722,16 @@ int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb);
+ int netif_rx(struct sk_buff *skb);
+ int __netif_rx(struct sk_buff *skb);
+ 
++static inline int netif_rx_ni(struct sk_buff *skb)
++{
++	return netif_rx(skb);
++}
++
++static inline int netif_rx_any_context(struct sk_buff *skb)
++{
++	return netif_rx(skb);
++}
++
+ int netif_receive_skb(struct sk_buff *skb);
+ int netif_receive_skb_core(struct sk_buff *skb);
+ void netif_receive_skb_list_internal(struct list_head *head);
+-- 
+2.17.1
+
