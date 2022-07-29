@@ -1,0 +1,25 @@
+From f4ca0cb615d79d575ef741e1295592292f54f845 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Fri, 29 Jul 2022 15:56:12 +0800
+Subject: [PATCH] iptables multipor extended to 100
+
+---
+ include/linux/netfilter/xt_multiport.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/netfilter/xt_multiport.h b/include/linux/netfilter/xt_multiport.h
+index 5b7e72d..555de3e 100644
+--- a/include/linux/netfilter/xt_multiport.h
++++ b/include/linux/netfilter/xt_multiport.h
+@@ -9,7 +9,7 @@ enum xt_multiport_flags {
+ 	XT_MULTIPORT_EITHER
+ };
+ 
+-#define XT_MULTI_PORTS	15
++#define XT_MULTI_PORTS	100
+ 
+ /* Must fit inside union xt_matchinfo: 16 bytes */
+ struct xt_multiport {
+-- 
+2.17.1
+
