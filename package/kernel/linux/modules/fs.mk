@@ -109,9 +109,9 @@ define KernelPackage/fs-cifs
     +kmod-crypto-ccm \
     +kmod-crypto-ecb \
     +kmod-crypto-des \
-    +(LINUX_5_15||LINUX_5_18):kmod-asn1-decoder \
-    +(LINUX_5_15||LINUX_5_18):kmod-oid-registry \
-    +(LINUX_5_15||LINUX_5_18):kmod-dnsresolver
+    +(LINUX_5_15||LINUX_5_18||LINUX_5_19):kmod-asn1-decoder \
+    +(LINUX_5_15||LINUX_5_18||LINUX_5_19):kmod-oid-registry \
+    +(LINUX_5_15||LINUX_5_18||LINUX_5_19):kmod-dnsresolver
 endef
 
 define KernelPackage/fs-cifs/description
