@@ -19,7 +19,7 @@ define Package/libcryptopp
   CATEGORY:=Libraries
   TITLE:=Free C++ class library of cryptographic schemes
   URL:=https://packages.debian.org/sid/libcrypto++-dev
-  DEPENDS:=+libpthread 
+  DEPENDS:=+libpthread +libstdcpp
 endef
 
 define Package/libcryptopp/description
@@ -29,6 +29,7 @@ define Package/libcryptopp/description
 endef
 
 TARGET_CFLAGS += $(FPIC)
+MAKE_FLAGS +=dynamic
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -36,13 +37,15 @@ define Build/Prepare
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr
-	$(CP) $(PKG_INSTALL_DIR)/usr/local/* $(1)/usr/
+	$(INSTALL_DIR) $(1)/usr/include/cryptopp
+	$(CP) $(PKG_INSTALL_DIR)/usr/local/include/cryptopp/* $(1)/usr/include/cryptopp/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/local/lib/libcryptopp.so* $(1)/usr/lib/
 endef
 
 define Package/libcryptopp/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/local/lib/*.a $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/local/lib/libcryptopp.so* $(1)/usr/lib/
 endef
 
 $(eval $(call BuildPackage,libcryptopp))
