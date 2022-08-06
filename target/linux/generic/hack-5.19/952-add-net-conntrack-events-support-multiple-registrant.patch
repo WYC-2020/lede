@@ -80,7 +80,7 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
 --- a/include/net/netns/conntrack.h
 +++ b/include/net/netns/conntrack.h
-@@ -112,6 +112,9 @@ struct netns_ct {
+@@ -107,6 +107,9 @@ struct netns_ct {
  	u8			sysctl_checksum;
 
  	struct ip_conntrack_stat __percpu *stat;
@@ -132,6 +132,24 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  #include <linux/netdevice.h>
  #include <linux/slab.h>
  #include <linux/export.h>
+@@ -123,7 +123,7 @@ static void ecache_work(struct work_struct *work) 
+ 	if (delay >= 0)
+ 		schedule_delayed_work(&cnet->ecache.dwork, delay);
+ }
+-
++#ifndef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
+ static int __nf_conntrack_eventmask_report(struct nf_conntrack_ecache *e,
+ 					   const u32 events,
+ 					   const u32 missed,
+@@ -161,7 +161,7 @@ static int __nf_conntrack_eventmask_report(struct nf_conntrack_ecache *e,
+ 
+ 	return ret;
+ }
+-
++#endif
+ int nf_conntrack_eventmask_report(unsigned int events, struct nf_conn *ct,
+ 				  u32 portid, int report)
+ {
 @@ -162,6 +165,35 @@ static int __nf_conntrack_eventmask_repo
  	return ret;
  }
@@ -305,6 +323,22 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  	struct nf_conn *ct = item->ct;
  	struct sk_buff *skb;
  	unsigned int type;
+@@ -3140,6 +3140,7 @@ ctnetlink_exp_fill_info(struct sk_buff *skb, u32 portid, u32 seq,
+ }
+ 
+ #ifdef CONFIG_NF_CONNTRACK_EVENTS
++#ifndef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
+ static int
+ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
+ {
+@@ -3189,6 +3189,7 @@ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
+ 	return 0;
+ }
+ #endif
++#endif
+ static int ctnetlink_exp_done(struct netlink_callback *cb)
+ {
+ 	if (cb->args[1])
 @@ -3791,11 +3798,17 @@ static int ctnetlink_stat_exp_cpu(struct
  }
  

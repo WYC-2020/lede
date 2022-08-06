@@ -10,7 +10,7 @@ Subject: [PATCH] fix missing netif_set_gso_max_size function
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
-@@ -4915,6 +4915,12 @@ static inline bool netif_needs_gso(struct sk_buff *skb,
+@@ -4913,6 +4913,12 @@ static inline bool netif_needs_gso(struct sk_buff *skb,
  			 (skb->ip_summed != CHECKSUM_UNNECESSARY)));
  }
  
