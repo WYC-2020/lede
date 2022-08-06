@@ -27,7 +27,7 @@ static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
 	if (!bdev_max_discard_sectors(sbi->sb->s_bdev))
 #else
 	if (!blk_queue_discard(q))
@@ -37,7 +37,7 @@ static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
 	user_range = (struct fstrim_range __user *)arg;
 	if (copy_from_user(&range, user_range, sizeof(range)))
 		return -EFAULT;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
 	range.minlen = max_t(u32, range.minlen,
 			     bdev_discard_granularity(sbi->sb->s_bdev));
 #else
@@ -178,7 +178,7 @@ static int ntfs_extend_initialized_size(struct file *file,
 
 		if (pos + len > new_valid)
 			len = new_valid - pos;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 19, 0)
 		err = ntfs_write_begin(file, mapping, pos, len, &page, NULL);
 #else
 		err = pagecache_write_begin(file, mapping, pos, len, 0, &page,  &fsdata);

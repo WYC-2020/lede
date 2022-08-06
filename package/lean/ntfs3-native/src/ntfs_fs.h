@@ -703,7 +703,7 @@ int reset_log_file(struct inode *inode);
 int ntfs_get_block(struct inode *inode, sector_t vbn,
 		   struct buffer_head *bh_result, int create);
 int ntfs_write_begin(struct file *file, struct address_space *mapping,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
 		loff_t pos, u32 len, struct page **pagep, void **fsdata);
 #else
 		loff_t pos, u32 len, u32 flags, struct page **pagep,  void **fsdata);

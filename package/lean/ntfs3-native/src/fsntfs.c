@@ -1442,7 +1442,7 @@ int ntfs_write_bh(struct ntfs_sb_info *sbi, struct NTFS_RECORD_HEADER *rhdr,
 
 	return err;
 }
-
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(5, 18, 0)
 static inline struct bio *ntfs_alloc_bio(u32 nr_vecs)
 {
 	struct bio *bio = bio_alloc(GFP_NOFS | __GFP_HIGH, nr_vecs);
@@ -1453,7 +1453,7 @@ static inline struct bio *ntfs_alloc_bio(u32 nr_vecs)
 	}
 	return bio;
 }
-
+#endif
 /*
  * ntfs_bio_pages - Read/write pages from/to disk.
  */
@@ -1496,7 +1496,7 @@ int ntfs_bio_pages(struct ntfs_sb_info *sbi, const struct runs_tree *run,
 		lbo = ((u64)lcn << cluster_bits) + off;
 		len = ((u64)clen << cluster_bits) - off;
 new_bio:
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 18, 0)
 		new = bio_alloc(bdev, nr_pages - page_idx, op, GFP_NOFS);
 #else
 		new = ntfs_alloc_bio(nr_pages - page_idx);
@@ -1606,7 +1606,7 @@ int ntfs_bio_fill_1(struct ntfs_sb_info *sbi, const struct runs_tree *run)
 		lbo = (u64)lcn << cluster_bits;
 		len = (u64)clen << cluster_bits;
 new_bio:
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 18, 0)
 		new = bio_alloc(bdev, BIO_MAX_VECS, REQ_OP_WRITE, GFP_NOFS);
 #else
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)

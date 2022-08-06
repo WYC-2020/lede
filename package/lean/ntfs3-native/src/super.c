@@ -248,12 +248,12 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
 	fsparam_string("iocharset",		Opt_iocharset),
 	{}
 };
-
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0) 
 static const struct fs_parameter_description ntfs3_fs_parameters = {
 	.name		= "ntfs3",
 	.specs		= ntfs_fs_parameters,
 };
-
+#endif
 /*
  * Load nls table or if @nls is utf8 then return NULL.
  */
@@ -283,7 +283,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
 	struct ntfs_mount_options *opts = fc->fs_private;
 	struct fs_parse_result result;
 	int opt;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 0) 
 	opt = fs_parse(fc, ntfs_fs_parameters, param, &result);
 #else
 	opt = fs_parse(fc, &ntfs3_fs_parameters, param, &result);
@@ -408,7 +408,7 @@ static struct kmem_cache *ntfs_inode_cachep;
 
 static struct inode *ntfs_alloc_inode(struct super_block *sb)
 {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0) 
 	struct ntfs_inode *ni = alloc_inode_sb(sb, ntfs_inode_cachep, GFP_NOFS);
 #else
 	struct ntfs_inode *ni = kmem_cache_alloc(ntfs_inode_cachep, GFP_NOFS);
@@ -927,7 +927,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
 		err = -EINVAL;
 		goto out;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
 	if (bdev_max_discard_sectors(bdev) && bdev_discard_granularity(bdev)) {
 		sbi->discard_granularity = bdev_discard_granularity(bdev);
 #else
@@ -940,7 +940,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
 	}
 
 	/* Parse boot. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0) 
 	err = ntfs_init_from_boot(sb, bdev_logical_block_size(bdev),
 				bdev_nr_bytes(bdev));
 #else
@@ -1360,7 +1360,7 @@ int ntfs_discard(struct ntfs_sb_info *sbi, CLST lcn, CLST len)
 		return 0;
 
 	err = blkdev_issue_discard(sb->s_bdev, start >> 9, (end - start) >> 9,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
 				GFP_NOFS);
 #else
  				GFP_NOFS, 0);
@@ -1462,7 +1462,7 @@ static struct file_system_type ntfs_fs_type = {
 	.owner			= THIS_MODULE,
 	.name			= "ntfs3",
 	.init_fs_context	= ntfs_init_fs_context,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 0) 
 	.parameters		= ntfs_fs_parameters,
 #else
 	.parameters		= &ntfs3_fs_parameters,
