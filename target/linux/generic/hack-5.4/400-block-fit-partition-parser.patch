@@ -56,7 +56,7 @@
  
  #include "partitions/check.h"
  
-@@ -180,6 +184,18 @@ ssize_t part_fail_store(struct device *d
+@@ -180,6 +184,13 @@ ssize_t part_fail_store(struct device *d
  }
  #endif
  
@@ -64,12 +64,7 @@
 +			      struct device_attribute *attr, char *buf)
 +{
 +	struct hd_struct *p = dev_to_part(dev);
-+
-+	if (p->info && p->info->volname)
-+		return sprintf(buf, "%s\n", p->info->volname);
-+
-+	buf[0] = '\0';
-+	return 0;
++	return sprintf(buf, "%s\n", p->info->volname);
 +}
 +
  static DEVICE_ATTR(partition, 0444, part_partition_show, NULL);
