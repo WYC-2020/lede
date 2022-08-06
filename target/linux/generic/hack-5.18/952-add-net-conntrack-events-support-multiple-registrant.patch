@@ -1,16 +1,8 @@
-From 42824d4b753f84ccf885eca602c5037338b546c8 Mon Sep 17 00:00:00 2001
-From: Zhi Chen <zhichen@codeaurora.org>
-Date: Tue, 13 Jan 2015 14:28:18 -0800
-Subject: [PATCH 3/3] net: conntrack events, support multiple registrant
+From 3ee3529e5a31e6183f3ea7f7624533bd582432fc Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Tue, 18 Jan 2022 21:45:34 -0500
+Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
 
-Merging this patch from kernel 3.4:
-This was supported by old (.28) kernel versions but removed
-because of it's overhead.
-But we need this feature for NA connection manager. Both ipv4
-and ipv6 modules needs to register themselves to ct events.
-
-Change-Id: Iebfb254590fb594f5baf232f849d1b7ae45ef757
-Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
 ---
  include/net/netfilter/nf_conntrack_ecache.h |  15 ++-
  include/net/netns/conntrack.h               |   3 +
@@ -133,7 +125,27 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  #include <linux/netdevice.h>
  #include <linux/slab.h>
  #include <linux/export.h>
-@@ -162,6 +165,35 @@ static int __nf_conntrack_eventmask_repo
+--- a/net/netfilter/nf_conntrack_ecache.c
++++ b/net/netfilter/nf_conntrack_ecache.c
+@@ -126,7 +126,7 @@ static void ecache_work(struct work_struct *work) 
+ 	if (delay >= 0)
+ 		schedule_delayed_work(&cnet->ecache.dwork, delay);
+ }
+-
++#ifndef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
+ static int __nf_conntrack_eventmask_report(struct nf_conntrack_ecache *e,
+ 					   const u32 events,
+ 					   const u32 missed,
+@@ -164,7 +164,7 @@ static int __nf_conntrack_eventmask_report(struct nf_conntrack_ecache *e,
+ 
+ 	return ret;
+ }
+-
++#endif
+ int nf_conntrack_eventmask_report(unsigned int events, struct nf_conn *ct,
+ 				  u32 portid, int report)
+ {
+@@ -165,6 +168,35 @@ static int __nf_conntrack_eventmask_repo
  	return ret;
  }
  
@@ -169,7 +181,7 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  int nf_conntrack_eventmask_report(unsigned int events, struct nf_conn *ct,
  				  u32 portid, int report)
  {
-@@ -197,10 +229,52 @@ int nf_conntrack_eventmask_report(unsign
+@@ -200,10 +232,52 @@ int nf_conntrack_eventmask_report(unsign
  
  	return ret;
  }
@@ -222,7 +234,7 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  void nf_ct_deliver_cached_events(struct nf_conn *ct)
  {
  	struct nf_conntrack_ecache *e;
-@@ -226,6 +300,7 @@ void nf_ct_deliver_cached_events(struct
+@@ -229,6 +302,7 @@ void nf_ct_deliver_cached_events(struct
  	 */
  	__nf_conntrack_eventmask_report(e, events, e->missed, &item);
  }
@@ -230,7 +242,7 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  EXPORT_SYMBOL_GPL(nf_ct_deliver_cached_events);
  
  void nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
-@@ -258,20 +333,43 @@ out_unlock:
+@@ -261,20 +336,43 @@ out_unlock:
  	rcu_read_unlock();
  }
  
@@ -276,7 +288,7 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  void nf_conntrack_unregister_notifier(struct net *net)
  {
  	mutex_lock(&nf_ct_ecache_mutex);
-@@ -279,6 +377,7 @@ void nf_conntrack_unregister_notifier(st
+@@ -282,6 +380,7 @@ void nf_conntrack_unregister_notifier(st
  	mutex_unlock(&nf_ct_ecache_mutex);
  	/* synchronize_rcu() is called after netns pre_exit */
  }
@@ -306,6 +318,22 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  	struct nf_conn *ct = item->ct;
  	struct sk_buff *skb;
  	unsigned int type;
+@@ -3174,6 +3174,7 @@ ctnetlink_exp_fill_info(struct sk_buff *skb, u32 portid, u32 seq,
+ }
+ 
+ #ifdef CONFIG_NF_CONNTRACK_EVENTS
++#ifndef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
+ static int
+ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
+ {
+@@ -3223,6 +3228,7 @@ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
+ 	return 0;
+ }
+ #endif
++#endif
+ static int ctnetlink_exp_done(struct netlink_callback *cb)
+ {
+ 	if (cb->args[1])
 @@ -3825,11 +3832,17 @@ static int ctnetlink_stat_exp_cpu(struct
  }
  

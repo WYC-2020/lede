@@ -125,7 +125,27 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  #include <linux/netdevice.h>
  #include <linux/slab.h>
  #include <linux/export.h>
-@@ -167,6 +170,35 @@ static int __nf_conntrack_eventmask_repo
+--- a/net/netfilter/nf_conntrack_ecache.c
++++ b/net/netfilter/nf_conntrack_ecache.c
+@@ -132,7 +132,7 @@ static void ecache_work(struct work_struct *work)
+ 	if (delay >= 0)
+ 		schedule_delayed_work(&cnet->ecache_dwork, delay);
+ }
+-
++#ifndef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
+ static int __nf_conntrack_eventmask_report(struct nf_conntrack_ecache *e,
+ 					   const unsigned int events,
+ 					   const unsigned long missed,
+@@ -169,7 +169,7 @@ static int __nf_conntrack_eventmask_report(struct nf_conntrack_ecache *e,
+ 
+ 	return ret;
+ }
+-
++#endif
+ int nf_conntrack_eventmask_report(unsigned int events, struct nf_conn *ct,
+ 				  u32 portid, int report)
+ {
+@@ -170,6 +173,35 @@ static int __nf_conntrack_eventmask_repo
  	return ret;
  }
  
@@ -161,7 +181,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  int nf_conntrack_eventmask_report(unsigned int events, struct nf_conn *ct,
  				  u32 portid, int report)
  {
-@@ -203,10 +235,52 @@ int nf_conntrack_eventmask_report(unsign
+@@ -206,10 +238,52 @@ int nf_conntrack_eventmask_report(unsign
  
  	return ret;
  }
@@ -214,7 +234,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  void nf_ct_deliver_cached_events(struct nf_conn *ct)
  {
  	struct nf_conntrack_ecache *e;
-@@ -232,6 +306,7 @@ void nf_ct_deliver_cached_events(struct
+@@ -235,6 +309,7 @@ void nf_ct_deliver_cached_events(struct
  	 */
  	__nf_conntrack_eventmask_report(e, events, e->missed, &item);
  }
@@ -222,7 +242,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  EXPORT_SYMBOL_GPL(nf_ct_deliver_cached_events);
  
  void nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
-@@ -264,20 +339,43 @@ out_unlock:
+@@ -267,20 +342,43 @@ out_unlock:
  	rcu_read_unlock();
  }
  
@@ -268,7 +288,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  void nf_conntrack_unregister_notifier(struct net *net)
  {
  	mutex_lock(&nf_ct_ecache_mutex);
-@@ -285,6 +383,7 @@ void nf_conntrack_unregister_notifier(st
+@@ -288,6 +386,7 @@ void nf_conntrack_unregister_notifier(st
  	mutex_unlock(&nf_ct_ecache_mutex);
  	/* synchronize_rcu() is called after netns pre_exit */
  }
@@ -298,6 +318,22 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  	struct nf_conn *ct = item->ct;
  	struct sk_buff *skb;
  	unsigned int type;
+@@ -3110,6 +3110,7 @@ ctnetlink_exp_fill_info(struct sk_buff *skb, u32 portid, u32 seq,
+ }
+ 
+ #ifdef CONFIG_NF_CONNTRACK_EVENTS
++#ifndef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
+ static int
+ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
+ {
+@@ -3159,6 +3160,7 @@ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
+ 	return 0;
+ }
+ #endif
++#endif
+ static int ctnetlink_exp_done(struct netlink_callback *cb)
+ {
+ 	if (cb->args[1])
 @@ -3761,11 +3768,17 @@ static int ctnetlink_stat_exp_cpu(struct
  }
  

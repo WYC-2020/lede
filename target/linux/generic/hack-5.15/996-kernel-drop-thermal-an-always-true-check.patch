@@ -1,0 +1,25 @@
+From 3f6fe72092a5d825f00fcdf77e2ff1e7dd257514 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sat, 6 Aug 2022 16:51:32 +0900
+Subject: [PATCH] kernel:drop thermal an always true check
+
+---
+ drivers/acpi/thermal.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+index 859b1de3..d62bf6df 100644
+--- a/drivers/acpi/thermal.c
++++ b/drivers/acpi/thermal.c
+@@ -1098,8 +1098,6 @@ static int acpi_thermal_resume(struct device *dev)
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
+-		if (!(&tz->trips.active[i]))
+-			break;
+ 		if (!tz->trips.active[i].flags.valid)
+ 			break;
+ 		tz->trips.active[i].flags.enabled = 1;
+-- 
+2.17.1
+
