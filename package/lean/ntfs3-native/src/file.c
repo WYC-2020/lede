@@ -178,7 +178,7 @@ static int ntfs_extend_initialized_size(struct file *file,
 
 		if (pos + len > new_valid)
 			len = new_valid - pos;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 19, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
 		err = ntfs_write_begin(file, mapping, pos, len, &page, NULL);
 #else
 		err = pagecache_write_begin(file, mapping, pos, len, 0, &page,  &fsdata);
