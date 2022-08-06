@@ -17,7 +17,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #include <net/net_namespace.h>
  #ifdef CONFIG_SYSCTL
  #include <linux/sysctl.h>
-@@ -465,6 +466,56 @@ static int ct_cpu_seq_show(struct seq_fi
+@@ -465,6 +466,60 @@ static int ct_cpu_seq_show(struct seq_fi
  	return 0;
  }
  
@@ -49,7 +49,11 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +	struct seq_file *seq = file->private_data;
 +	struct net *net = seq_file_net(seq);
 +	struct kill_request kr = { };
-+
++	struct nf_ct_iter_data iter = {
++		.net		= net,
++		.portid		= 0,
++		.report		= 0,
++	};
 +	if (count == 0)
 +		return 0;
 +
@@ -65,8 +69,8 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +		if (!in4_pton(buf, count, (void *)&kr.addr, '\n', NULL))
 +			return -EINVAL;
 +	}
-+
-+
++	iter.data = &kr;
++	nf_ct_iterate_cleanup_net(kill_matching, &iter);
 +
 +	return 0;
 +}
