@@ -924,10 +924,6 @@ static inline struct page *ntfs_map_page(struct address_space *mapping,
 
 	if (!IS_ERR(page)) {
 		kmap(page);
-		if (!PageError(page))
-			return page;
-		ntfs_unmap_page(page);
-		return ERR_PTR(-EIO);
 	}
 	return page;
 }
