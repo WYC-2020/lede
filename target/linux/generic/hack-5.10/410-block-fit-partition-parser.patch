@@ -73,7 +73,7 @@
  #ifdef CONFIG_SGI_PARTITION
  	sgi_partition,
  #endif
-@@ -215,6 +222,18 @@ static ssize_t part_discard_alignment_sh
+@@ -215,6 +222,14 @@ static ssize_t part_discard_alignment_sh
  				p->start_sect));
  }
  
@@ -81,12 +81,8 @@
 +			      struct device_attribute *attr, char *buf)
 +{
 +	struct hd_struct *p = dev_to_part(dev);
++	return sprintf(buf, "%s\n", p->info->volname);
 +
-+	if (p->info && p->info->volname)
-+		return sprintf(buf, "%s\n", p->info->volname);
-+
-+	buf[0] = '\0';
-+	return 0;
 +}
 +
  static DEVICE_ATTR(partition, 0444, part_partition_show, NULL);
