@@ -20,3 +20,14 @@
  	help
  	  Enable fast lookup object identifier registry.
  
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -745,7 +745,7 @@ config PLDMFW
+ 	default n
+ 
+ config ASN1_ENCODER
+-       tristate
++       tristate "asn1 encoder"
+ 
+ config POLYNOMIAL
+        tristate
