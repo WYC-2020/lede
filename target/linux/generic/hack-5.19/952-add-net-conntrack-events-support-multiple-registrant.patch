@@ -53,7 +53,7 @@ Signed-off-by: Zhi Chen <zhichen@codeaurora.org>
  
  	e = nf_ct_ecache_find(ct);
  	if (e == NULL)
-@@ -117,20 +124,24 @@
+@@ -117,20 +124,24 @@ nf_conntrack_event_report(enum ip_conntr
  			  u32 portid, int report)
  {
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
