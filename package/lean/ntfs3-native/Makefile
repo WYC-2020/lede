@@ -16,6 +16,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=ntfs3-native
+PKG_VERSION:=2022-08-03
 PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/package.mk
