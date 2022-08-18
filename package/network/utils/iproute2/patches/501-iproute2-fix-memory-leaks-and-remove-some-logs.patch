@@ -61,7 +61,7 @@ diff --git a/bridge/link.c b/bridge/link.c
 index 205a2fe..0793fa0 100644
 --- a/bridge/link.c
 +++ b/bridge/link.c
-@@ -555,7 +555,9 @@ static int brlink_show(int argc, char **argv)
+@@ -576,7 +576,9 @@ static int brlink_show(int argc, char **argv)
  
  	new_json_obj(json);
  	if (rtnl_dump_filter(&rth, print_linkinfo, stdout) < 0) {
@@ -104,7 +104,7 @@ diff --git a/bridge/vlan.c b/bridge/vlan.c
 index 9b6511f..2c6bfb9 100644
 --- a/bridge/vlan.c
 +++ b/bridge/vlan.c
-@@ -776,7 +776,8 @@ static int vlan_show(int argc, char **argv, int subject)
+@@ -1142,7 +1142,8 @@ static int vlan_show(int argc, char **argv, int subject)
  
  		ret = rtnl_dump_filter(&rth, print_vlan_rtm_filter, &subject);
  		if (ret < 0) {
@@ -114,7 +114,7 @@ index 9b6511f..2c6bfb9 100644
  			exit(1);
  		}
  
-@@ -806,7 +807,8 @@ static int vlan_show(int argc, char **argv, int subject)
+@@ -1172,7 +1173,8 @@ static int vlan_show(int argc, char **argv, int subject)
  
  		ret = rtnl_dump_filter(&rth, print_vlan, &subject);
  		if (ret < 0) {
@@ -124,7 +124,7 @@ index 9b6511f..2c6bfb9 100644
  			exit(1);
  		}
  	} else {
-@@ -823,7 +825,8 @@ static int vlan_show(int argc, char **argv, int subject)
+@@ -1190,7 +1192,8 @@ static int vlan_show(int argc, char **argv, int subject)
  			       "port");
  
  		if (rtnl_dump_filter(&rth, print_vlan_stats, stdout) < 0) {
@@ -134,7 +134,7 @@ index 9b6511f..2c6bfb9 100644
  			exit(1);
  		}
  
-@@ -834,7 +837,8 @@ static int vlan_show(int argc, char **argv, int subject)
+@@ -1203,7 +1205,8 @@ static int vlan_show(int argc, char **argv, int subject)
  		}
  
  		if (rtnl_dump_filter(&rth, print_vlan_stats, stdout) < 0) {
@@ -161,7 +161,7 @@ diff --git a/ip/ipaddress.c b/ip/ipaddress.c
 index 85534aa..24f0995 100644
 --- a/ip/ipaddress.c
 +++ b/ip/ipaddress.c
-@@ -2029,7 +2029,7 @@ int ip_link_list(req_filter_fn_t filter_fn, struct nlmsg_chain *linfo)
+@@ -2051,7 +2051,7 @@ int ip_link_list(req_filter_fn_t filter_fn, struct nlmsg_chain *linfo)
  	}
  
  	if (rtnl_dump_filter(&rth, store_nlmsg, linfo) < 0) {
@@ -170,7 +170,7 @@ index 85534aa..24f0995 100644
  		return 1;
  	}
  
-@@ -2044,7 +2044,7 @@ static int ip_addr_list(struct nlmsg_chain *ainfo)
+@@ -2066,7 +2066,7 @@ static int ip_addr_list(struct nlmsg_chain *ainfo)
  	}
  
  	if (rtnl_dump_filter(&rth, store_nlmsg, ainfo) < 0) {
@@ -179,7 +179,7 @@ index 85534aa..24f0995 100644
  		return 1;
  	}
  
-@@ -2286,7 +2286,7 @@ void ipaddr_get_vf_rate(int vfnum, int *min, int *max, const char *dev)
+@@ -2310,7 +2310,7 @@ void ipaddr_get_vf_rate(int vfnum, int *min, int *max, const char *dev)
  		exit(1);
  	}
  	if (rtnl_dump_filter(&rth, store_nlmsg, &linfo) < 0) {
@@ -249,7 +249,7 @@ diff --git a/ip/ipl2tp.c b/ip/ipl2tp.c
 index 77bc324..1c3c2fb 100644
 --- a/ip/ipl2tp.c
 +++ b/ip/ipl2tp.c
-@@ -467,7 +467,8 @@ static int get_session(struct l2tp_data *p)
+@@ -468,7 +468,8 @@ static int get_session(struct l2tp_data *p)
  
  	new_json_obj(json);
  	if (rtnl_dump_filter(&genl_rth, session_nlmsg, p) < 0) {
@@ -259,7 +259,7 @@ index 77bc324..1c3c2fb 100644
  		exit(1);
  	}
  	delete_json_obj();
-@@ -502,7 +503,8 @@ static int get_tunnel(struct l2tp_data *p)
+@@ -503,7 +504,8 @@ static int get_tunnel(struct l2tp_data *p)
  
  	new_json_obj(json);
  	if (rtnl_dump_filter(&genl_rth, tunnel_nlmsg, p) < 0) {
@@ -273,7 +273,7 @@ diff --git a/ip/iplink.c b/ip/iplink.c
 index 18b2ea2..d4711d4 100644
 --- a/ip/iplink.c
 +++ b/ip/iplink.c
-@@ -1633,7 +1633,7 @@ static int iplink_afstats(int argc, char **argv)
+@@ -1693,7 +1693,7 @@ static int iplink_afstats(int argc, char **argv)
  	}
  
  	if (rtnl_dump_filter(&rth, print_af_stats, &ctx) < 0) {
@@ -286,7 +286,7 @@ diff --git a/ip/iplink_xstats.c b/ip/iplink_xstats.c
 index c64e688..fd153ac 100644
 --- a/ip/iplink_xstats.c
 +++ b/ip/iplink_xstats.c
-@@ -73,7 +73,7 @@ int iplink_ifla_xstats(int argc, char **argv)
+@@ -74,7 +74,7 @@ int iplink_ifla_xstats(int argc, char **argv)
  	new_json_obj(json);
  	if (rtnl_dump_filter(&rth, lu->print_ifla_xstats, stdout) < 0) {
  		delete_json_obj();
@@ -312,7 +312,7 @@ diff --git a/ip/ipmptcp.c b/ip/ipmptcp.c
 index fd042da..88974b4 100644
 --- a/ip/ipmptcp.c
 +++ b/ip/ipmptcp.c
-@@ -272,7 +272,7 @@ static int mptcp_addr_dump(void)
+@@ -307,7 +307,7 @@ static int mptcp_addr_dump(void)
  	new_json_obj(json);
  
  	if (rtnl_dump_filter(&genl_rth, print_mptcp_addr, stdout) < 0) {
@@ -338,7 +338,7 @@ diff --git a/ip/ipneigh.c b/ip/ipneigh.c
 index 4db776d..6ee8e56 100644
 --- a/ip/ipneigh.c
 +++ b/ip/ipneigh.c
-@@ -640,7 +640,8 @@ static int do_show_or_flush(int argc, char **argv, int flush)
+@@ -653,7 +653,8 @@ static int do_show_or_flush(int argc, char **argv, int flush)
  
  	new_json_obj(json);
  	if (rtnl_dump_filter(&rth, print_neigh, stdout) < 0) {
@@ -379,17 +379,17 @@ diff --git a/ip/ipnexthop.c b/ip/ipnexthop.c
 index 9478aa5..11250af 100644
 --- a/ip/ipnexthop.c
 +++ b/ip/ipnexthop.c
-@@ -817,7 +817,8 @@ static int ipnh_list_flush(int argc, char **argv, int action)
+@@ -1100,7 +1100,8 @@ static int ipnh_list_flush(int argc, char **argv, int action)
  	new_json_obj(json);
  
- 	if (rtnl_dump_filter(&rth, print_nexthop, stdout) < 0) {
+ 	if (rtnl_dump_filter(&rth, print_nexthop_nocache, stdout) < 0) {
 -		fprintf(stderr, "Dump terminated\n");
 +		//fprintf(stderr, "Dump terminated\n");
 +		delete_json_obj();
  		return -2;
  	}
  
-@@ -892,7 +893,8 @@ static int ipnh_bucket_list(int argc, char **argv)
+@@ -1175,7 +1176,8 @@ static int ipnh_bucket_list(int argc, char **argv)
  	new_json_obj(json);
  
  	if (rtnl_dump_filter(&rth, print_nexthop_bucket, stdout) < 0) {
@@ -417,7 +417,7 @@ diff --git a/ip/iproute.c b/ip/iproute.c
 index 9922cb0..5f0823c 100644
 --- a/ip/iproute.c
 +++ b/ip/iproute.c
-@@ -1961,7 +1961,8 @@ static int iproute_list_flush_or_save(int argc, char **argv, int action)
+@@ -1971,7 +1971,8 @@ static int iproute_list_flush_or_save(int argc, char **argv, int action)
  
  	if (rtnl_dump_filter_errhndlr(&rth, filter_fn, stdout,
  				      save_route_errhndlr, NULL) < 0) {
@@ -431,7 +431,7 @@ diff --git a/ip/iprule.c b/ip/iprule.c
 index 4166073..8383643 100644
 --- a/ip/iprule.c
 +++ b/ip/iprule.c
-@@ -717,7 +717,8 @@ static int iprule_list_flush_or_save(int argc, char **argv, int action)
+@@ -718,7 +718,8 @@ static int iprule_list_flush_or_save(int argc, char **argv, int action)
  
  	new_json_obj(json);
  	if (rtnl_dump_filter(&rth, filter_fn, stdout) < 0) {
@@ -472,7 +472,7 @@ diff --git a/ip/iptuntap.c b/ip/iptuntap.c
 index 385d2bd..1f47b4c 100644
 --- a/ip/iptuntap.c
 +++ b/ip/iptuntap.c
-@@ -443,7 +443,8 @@ static int do_show(int argc, char **argv)
+@@ -445,7 +445,8 @@ static int do_show(int argc, char **argv)
  	new_json_obj(json);
  
  	if (rtnl_dump_filter(&rth, print_tuntap, NULL) < 0) {
@@ -523,7 +523,7 @@ diff --git a/ip/tunnel.c b/ip/tunnel.c
 index 88585cf..ba5f15c 100644
 --- a/ip/tunnel.c
 +++ b/ip/tunnel.c
-@@ -443,7 +443,8 @@ int do_tunnels_list(struct tnl_print_nlmsg_info *info)
+@@ -437,7 +437,8 @@ int do_tunnels_list(struct tnl_print_nlmsg_info *info)
  	}
  
  	if (rtnl_dump_filter(&rth, print_nlmsg_tunnel, info) < 0) {
@@ -537,7 +537,7 @@ diff --git a/ip/xfrm_policy.c b/ip/xfrm_policy.c
 index 7cc00e7..f9e308e 100644
 --- a/ip/xfrm_policy.c
 +++ b/ip/xfrm_policy.c
-@@ -890,11 +890,13 @@ static int xfrm_policy_list_or_deleteall(int argc, char **argv, int deleteall)
+@@ -892,11 +892,13 @@ static int xfrm_policy_list_or_deleteall(int argc, char **argv, int deleteall)
  
  			if (rtnl_send(&rth, (void *)&req, req.n.nlmsg_len) < 0) {
  				perror("Cannot send dump request");
@@ -551,7 +551,7 @@ index 7cc00e7..f9e308e 100644
  				exit(1);
  			}
  			if (xb.nlmsg_count == 0) {
-@@ -905,6 +907,7 @@ static int xfrm_policy_list_or_deleteall(int argc, char **argv, int deleteall)
+@@ -907,6 +909,7 @@ static int xfrm_policy_list_or_deleteall(int argc, char **argv, int deleteall)
  
  			if (rtnl_send_check(&rth, xb.buf, xb.offset) < 0) {
  				perror("Failed to send delete-all request");
@@ -559,7 +559,7 @@ index 7cc00e7..f9e308e 100644
  				exit(1);
  			}
  			if (show_stats > 1)
-@@ -926,11 +929,13 @@ static int xfrm_policy_list_or_deleteall(int argc, char **argv, int deleteall)
+@@ -928,11 +931,13 @@ static int xfrm_policy_list_or_deleteall(int argc, char **argv, int deleteall)
  
  		if (rtnl_send(&rth, (void *)&req, req.n.nlmsg_len) < 0) {
  			perror("Cannot send dump request");
