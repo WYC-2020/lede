@@ -2789,7 +2789,6 @@ CONFIG_PACKAGE_kmod-usb-storage-uas=y
 # CONFIG_PACKAGE_kmod-backlight-pwm is not set
 CONFIG_PACKAGE_kmod-drm=y
 # CONFIG_PACKAGE_kmod-drm-amdgpu is not set
-CONFIG_PACKAGE_kmod-drm-i915=y
 CONFIG_PACKAGE_kmod-drm-kms-helper=y
 # CONFIG_PACKAGE_kmod-drm-nouveau is not set
 # CONFIG_PACKAGE_kmod-drm-radeon is not set
@@ -2804,6 +2803,7 @@ CONFIG_PACKAGE_kmod-fb-sys-ram=y
 # CONFIG_PACKAGE_kmod-fb-tft-ili9486 is not set
 # CONFIG_PACKAGE_kmod-multimedia-input is not set
 # CONFIG_PACKAGE_kmod-video-core is not set
+CONFIG_PACKAGE_kmod-drm-i915=y
 # end of Video Support
 
 #
@@ -4760,28 +4760,28 @@ CONFIG_PACKAGE_luci-base=y
 #
 # Translations
 #
+# CONFIG_LUCI_LANG_uk is not set
 # CONFIG_LUCI_LANG_hu is not set
 # CONFIG_LUCI_LANG_pt is not set
-# CONFIG_LUCI_LANG_ro is not set
+# CONFIG_LUCI_LANG_ko is not set
+# CONFIG_LUCI_LANG_en is not set
+# CONFIG_LUCI_LANG_el is not set
 # CONFIG_LUCI_LANG_sk is not set
-# CONFIG_LUCI_LANG_pl is not set
-# CONFIG_LUCI_LANG_uk is not set
 # CONFIG_LUCI_LANG_ja is not set
 # CONFIG_LUCI_LANG_vi is not set
-# CONFIG_LUCI_LANG_he is not set
-# CONFIG_LUCI_LANG_ko is not set
-# CONFIG_LUCI_LANG_pt-br is not set
+# CONFIG_LUCI_LANG_de is not set
+# CONFIG_LUCI_LANG_ro is not set
 # CONFIG_LUCI_LANG_ms is not set
+# CONFIG_LUCI_LANG_pl is not set
 CONFIG_LUCI_LANG_zh-cn=y
 # CONFIG_LUCI_LANG_no is not set
-# CONFIG_LUCI_LANG_de is not set
+# CONFIG_LUCI_LANG_he is not set
 # CONFIG_LUCI_LANG_zh-tw is not set
 # CONFIG_LUCI_LANG_tr is not set
 # CONFIG_LUCI_LANG_sv is not set
 # CONFIG_LUCI_LANG_ru is not set
-# CONFIG_LUCI_LANG_el is not set
+# CONFIG_LUCI_LANG_pt-br is not set
 # CONFIG_LUCI_LANG_ca is not set
-# CONFIG_LUCI_LANG_en is not set
 # CONFIG_LUCI_LANG_es is not set
 # CONFIG_LUCI_LANG_cs is not set
 # CONFIG_LUCI_LANG_fr is not set
@@ -4903,6 +4903,8 @@ CONFIG_PACKAGE_luci-app-nlbwmon=y
 # CONFIG_PACKAGE_luci-app-olsr-services is not set
 # CONFIG_PACKAGE_luci-app-olsr-viz is not set
 CONFIG_PACKAGE_luci-app-openclash=y
+CONFIG_PACKAGE_iptables-mod-tproxy=y
+CONFIG_PACKAGE_iptables-mod-extra=y
 # CONFIG_PACKAGE_luci-app-openvpn is not set
 # CONFIG_PACKAGE_luci-app-openvpn-server is not set
 # CONFIG_PACKAGE_luci-app-p910nd is not set
@@ -5000,6 +5002,12 @@ CONFIG_PACKAGE_luci-app-ssr-plus=y
 #
 # Configuration
 #
+# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_NONE_Client is not set
+CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client=y
+# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client is not set
+# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_NONE_Server is not set
+CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server=y
+# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server is not set
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_NONE_V2RAY is not set
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray is not set
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray is not set
@@ -5011,15 +5019,11 @@ CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_SagerNet_Core=y
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_PDNSD is not set
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_DNS2TCP=y
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Redsocks2 is not set
-CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client=y
-CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server=y
-# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client is not set
-# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server is not set
+CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Simple_Obfs=y
+# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_V2ray_Plugin is not set
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Libev_Client=y
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Libev_Server=y
-CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Simple_Obfs=y
 # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan is not set
-# CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray_Plugin is not set
 # end of Configuration
 
 # CONFIG_PACKAGE_luci-app-ssrserver-python is not set
@@ -5601,7 +5605,6 @@ CONFIG_PACKAGE_iptables-mod-conntrack-extra=y
 # CONFIG_PACKAGE_iptables-mod-delude is not set
 # CONFIG_PACKAGE_iptables-mod-dhcpmac is not set
 # CONFIG_PACKAGE_iptables-mod-dnetmap is not set
-CONFIG_PACKAGE_iptables-mod-extra=y
 # CONFIG_PACKAGE_iptables-mod-filter is not set
 CONFIG_PACKAGE_iptables-mod-fullconenat=y
 # CONFIG_PACKAGE_iptables-mod-fuzzy is not set
@@ -5631,7 +5634,6 @@ CONFIG_PACKAGE_iptables-mod-iprange=y
 # CONFIG_PACKAGE_iptables-mod-sysrq is not set
 # CONFIG_PACKAGE_iptables-mod-tarpit is not set
 # CONFIG_PACKAGE_iptables-mod-tee is not set
-CONFIG_PACKAGE_iptables-mod-tproxy=y
 # CONFIG_PACKAGE_iptables-mod-trace is not set
 # CONFIG_PACKAGE_iptables-mod-u32 is not set
 # CONFIG_PACKAGE_iptables-mod-ulog is not set
