@@ -161,7 +161,7 @@ index e0878a500..4a9846b64 100644
 +	int (*fast_recv)(struct sk_buff *skb);
 +#endif
 +
- 	net_timestamp_check(!netdev_tstamp_prequeue, skb);
+ 	net_timestamp_check(!READ_ONCE(netdev_tstamp_prequeue), skb);
  
  	trace_netif_receive_skb(skb);
 @@ -5299,6 +5316,15 @@ another_round:
