@@ -191,7 +191,7 @@ define Host/SetToolchainInfo
 	$(SED) 's,GCC_VERSION=.*,GCC_VERSION=$(GCC_VERSION),' $(TOOLCHAIN_DIR)/info.mk
 endef
 
-ifeq ($(PKG_VERSION),12.2.0)
+ifdef CONFIG_GCC_USE_VERSION_12
 	GCC_VERSION_FILE:=gcc/genversion.cc
 else
 	GCC_VERSION_FILE:=gcc/version.c
