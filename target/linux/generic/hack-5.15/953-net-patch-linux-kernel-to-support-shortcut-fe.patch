@@ -32,7 +32,7 @@ diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
 index b8c273af2..2e238037c 100644
 --- a/include/linux/skbuff.h
 +++ b/include/linux/skbuff.h
-@@ -912,6 +912,10 @@ struct sk_buff {
+@@ -913,6 +913,10 @@ struct sk_buff {
  #endif
  	__u8			slow_gro:1;
  
@@ -75,7 +75,7 @@ diff --git a/net/Kconfig b/net/Kconfig
 index fb13460c6..2e926a2ed 100644
 --- a/net/Kconfig
 +++ b/net/Kconfig
-@@ -456,6 +456,9 @@ config FAILOVER
+@@ -469,6 +469,9 @@ config FAILOVER
  	  migration of VMs with direct attached VFs by failing over to the
  	  paravirtual datapath when the VF is unplugged.
  
