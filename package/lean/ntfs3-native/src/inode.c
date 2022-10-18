@@ -629,7 +629,12 @@ static noinline int ntfs_get_block_vbo(struct inode *inode, u64 vbo,
 			bh->b_size = block_size;
 			off = vbo & (PAGE_SIZE - 1);
 			set_bh_page(bh, page, off);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+			ll_rw_block(REQ_OP_READ, 1, &bh);
+#else
 			ll_rw_block(REQ_OP_READ, 0, 1, &bh);
+#endif
+
 			wait_on_buffer(bh);
 			if (!buffer_uptodate(bh)) {
 				err = -EIO;
