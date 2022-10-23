@@ -133,7 +133,7 @@ if [ ! -r "$rootfs" -a ! -r "$kernel" -a ! "$outfile" ]; then
 	exit 1
 fi
 
-ubinize="$( which ubinize )"
+ubinize="$( command -v ubinize )"
 if [ ! -x "$ubinize" ]; then
 	echo "ubinize tool not found or not usable"
 	exit 1
