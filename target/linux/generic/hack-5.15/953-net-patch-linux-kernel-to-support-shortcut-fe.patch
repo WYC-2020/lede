@@ -32,9 +32,9 @@ diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
 index b8c273af2..2e238037c 100644
 --- a/include/linux/skbuff.h
 +++ b/include/linux/skbuff.h
-@@ -913,6 +913,10 @@ struct sk_buff {
- #endif
+@@ -915,6 +915,10 @@ struct sk_buff {
  	__u8			slow_gro:1;
+ 	__u8			scm_io_uring:1;
  
 +#ifdef CONFIG_SHORTCUT_FE
 +	__u8			fast_forwarded:1;

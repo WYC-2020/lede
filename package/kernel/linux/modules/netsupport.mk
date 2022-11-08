@@ -1335,26 +1335,47 @@ endef
 
 $(eval $(call KernelPackage,qrtr-mhi))
 
-define KernelPackage/inet-diag
+define KernelPackage/mptcp
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
-  TITLE:=INET diag support for ss utility
-  KCONFIG:= \
-	CONFIG_INET_DIAG \
-	CONFIG_INET_TCP_DIAG \
-	CONFIG_INET_UDP_DIAG \
-	CONFIG_INET_RAW_DIAG \
-	CONFIG_INET_DIAG_DESTROY=n
-  FILES:= \
-	$(LINUX_DIR)/net/ipv4/inet_diag.ko \
-	$(LINUX_DIR)/net/ipv4/tcp_diag.ko \
-	$(LINUX_DIR)/net/ipv4/udp_diag.ko \
-	$(LINUX_DIR)/net/ipv4/raw_diag.ko
-  AUTOLOAD:=$(call AutoLoad,31,inet_diag tcp_diag udp_diag raw_diag)
+  TITLE:=MultiPath TCP support
+  KCONFIG:=CONFIG_MPTCP@ge5.6=y
+  AUTOLOAD:=$(call AutoProbe,mptcp)
 endef
 
-define KernelPackage/inet-diag/description
-Support for INET (TCP, DCCP, etc) socket monitoring interface used by
+define KernelPackage/mptcp/description
+ MPTCP is a module made for MultiPath TCP support
+endef
+
+$(eval $(call KernelPackage,mptcp))
+
+
+define KernelPackage/mptcp_ipv6
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=MultiPath TCP IPv6 support
+  DEPENDS:=@IPV6 +kmod-mptcp
+  KCONFIG:=CONFIG_MPTCP_IPV6@ge5.6=y
+  AUTOLOAD:=$(call AutoProbe,mptcp_ipv6)
+endef
+
+define KernelPackage/mptcp_ipv6/description
+ MPTCP_IPV6 is a module made for MultiPath TCP IPv6 support
+endef
+
+$(eval $(call KernelPackage,mptcp_ipv6))
+
+
+define KernelPackage/inet-mptcp-diag
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=INET diag support for MultiPath TCP
+  DEPENDS:=kmod-mptcp +kmod-inet-diag
+  KCONFIG:= CONFIG_INET_MPTCP_DIAG@ge5.6
+  FILES:= $(LINUX_DIR)/net/mptcp/mptcp_diag.ko@ge5.6
+  AUTOLOAD:=$(call AutoProbe,mptcp_diag)
+endef
+
+define KernelPackage/inet-mptcp-diag/description
+Support for INET (MultiPath TCP) socket monitoring interface used by
 native Linux tools such as ss.
 endef
 
-$(eval $(call KernelPackage,inet-diag))
+$(eval $(call KernelPackage,inet-mptcp-diag))
