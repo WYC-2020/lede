@@ -1019,6 +1019,33 @@ endef
 
 $(eval $(call KernelPackage,random-core))
 
+define KernelPackage/thermal
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Thermal driver
+  DEPENDS:=+kmod-hwmon-core
+  HIDDEN:=1
+  KCONFIG:= \
+	CONFIG_THERMAL=y \
+	CONFIG_THERMAL_OF=y \
+	CONFIG_CPU_THERMAL=y \
+	CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE=y \
+	CONFIG_THERMAL_DEFAULT_GOV_FAIR_SHARE=n \
+	CONFIG_THERMAL_DEFAULT_GOV_USER_SPACE=n \
+	CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS=0 \
+	CONFIG_THERMAL_GOV_FAIR_SHARE=n \
+	CONFIG_THERMAL_GOV_STEP_WISE=y \
+	CONFIG_THERMAL_GOV_USER_SPACE=n \
+	CONFIG_THERMAL_HWMON=y \
+	CONFIG_THERMAL_EMULATION=n
+endef
+
+define KernelPackage/thermal/description
+ Thermal driver offers a generic mechanism for thermal management.
+ Usually it's made up of one or more thermal zone and cooling device.
+endef
+
+$(eval $(call KernelPackage,thermal))
+
 define KernelPackage/gpio-beeper
   SUBMENU:=$(OTHER_MENU)
   TITLE:=GPIO beeper support
