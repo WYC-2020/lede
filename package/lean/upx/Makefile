@@ -7,18 +7,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=upx
-PKG_RELEASE:=1
+PKG_VERSION:=4.0.1
 
-PKG_MAINTAINER:=Xingwang Liao <kuoruan@gmail.com>
-PKG_LICENSE:=GPL-2.0-only
-PKG_LICENSE_FILES:=COPYING LICENSE
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-src.tar.xz
+PKG_SOURCE_URL:=https://github.com/upx/upx/releases/download/v$(PKG_VERSION)
+PKG_HASH:=77003c8e2e29aa9804e2fbaeb30f055903420b3e01d95eafe01aed957fb7e190
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2022-03-26
-PKG_SOURCE_VERSION:=a54bef20057d72ab020df3812e90542bdcf56e1f
-PKG_SOURCE_URL:=https://github.com/upx/upx.git
-PKG_MIRROR_HASH:=d6d529791ab737f9c1cbc696073213a9690832967c28bf3092a6ef41a75c4460
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_DATE).tar.gz
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-src
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -38,11 +33,9 @@ or other drawbacks for most of the formats supported, because of in-place
 decompression.
 endef
 
-MAKE_PATH := src
-
 define Package/upx/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/upx.out $(1)/usr/bin/upx
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/release/upx $(1)/usr/bin/upx
 endef
 
 $(eval $(call BuildPackage,upx))
