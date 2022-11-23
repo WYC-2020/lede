@@ -1104,6 +1104,12 @@ $(eval $(call KernelPackage,dnsresolver))
 define KernelPackage/rxrpc
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=AF_RXRPC support
+  DEPENDS:= \
+    +kmod-crypto-manager \
+    +kmod-crypto-pcbc \
+    +kmod-crypto-fcrypt \
+    +kmod-udptunnel4 \
+    +IPV6:kmod-udptunnel6
   HIDDEN:=1
   KCONFIG:= \
 	CONFIG_AF_RXRPC \
@@ -1111,8 +1117,7 @@ define KernelPackage/rxrpc
 	CONFIG_AF_RXRPC_DEBUG=n
   FILES:= \
 	$(LINUX_DIR)/net/rxrpc/rxrpc.ko
-  AUTOLOAD:=$(call AutoLoad,30,rxrpc)
-  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt +kmod-udptunnel6 +kmod-udptunnel4
+  	AUTOLOAD:=$(call AutoLoad,30,rxrpc)
 endef
 
 define KernelPackage/rxrpc/description
