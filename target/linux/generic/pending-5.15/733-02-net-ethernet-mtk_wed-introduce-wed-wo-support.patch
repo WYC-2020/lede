@@ -27,14 +27,15 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  endif
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -16,6 +16,7 @@
- #include "mtk_wed_regs.h"
+@@ -17,6 +17,8 @@
  #include "mtk_wed.h"
  #include "mtk_ppe.h"
+ #include <linux/iopoll.h>
 +#include "mtk_wed_wo.h"
- 
++
  #define MTK_PCIE_BASE(n)		(0x1a143000 + (n) * 0x2000)
  
+ #define MTK_WED_PKT_SIZE		1900
 @@ -355,6 +356,8 @@ mtk_wed_detach(struct mtk_wed_device *de
  
  	mtk_wed_free_buffer(dev);
