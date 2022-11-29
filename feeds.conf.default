@@ -9,4 +9,3 @@ src-git passwall git@github.com:WYC-2020/openwrt-passwall.git
 src-git helloworld git@github.com:WYC-2020/helloworld.git
 src-git kenzok8 https://github.com/WYC-2020/openwrt-packages
 src-git openwrt_subconverter https://github.com/WYC-2020/openwrt-subconverter
-src-git oui https://github.com/zhaojh329/oui.git
