@@ -17,7 +17,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #include <net/net_namespace.h>
  #ifdef CONFIG_SYSCTL
  #include <linux/sysctl.h>
-@@ -465,6 +466,56 @@ static int ct_cpu_seq_show(struct seq_fi
+@@ -465,6 +466,58 @@ static int ct_cpu_seq_show(struct seq_fi
  	return 0;
  }
  
@@ -28,7 +28,8 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +
 +static int kill_matching(struct nf_conn *i, void *data)
 +{
-+	struct kill_request *kr = data;
++	struct nf_ct_iter_data * iter_data= data;
++	struct kill_request * kr=iter_data->data;
 +	struct nf_conntrack_tuple *t1 = &i->tuplehash[IP_CT_DIR_ORIGINAL].tuple;
 +	struct nf_conntrack_tuple *t2 = &i->tuplehash[IP_CT_DIR_REPLY].tuple;
 +
@@ -65,9 +66,10 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +		if (!in4_pton(buf, count, (void *)&kr.addr, '\n', NULL))
 +			return -EINVAL;
 +	}
-+
-+
-+
++	struct nf_ct_iter_data iter_data = {};
++	iter_data.net= net;
++	iter_data.data= &kr;
++	nf_ct_iterate_cleanup_net(kill_matching, &iter_data);
 +	return 0;
 +}
 +
