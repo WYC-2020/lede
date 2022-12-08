@@ -177,12 +177,17 @@ menu "Global build settings"
 		  Adds -g3 to the CFLAGS.
 
 	config IPV6
-		def_bool y
+		bool
+		prompt "Enable IPv6 support in packages"
+		default y
+		help
+		  Enables IPv6 support in kernel (builtin) and packages.
 
 	comment "Stripping options"
 
 	choice
 		prompt "Binary stripping method"
+		default USE_STRIP   if EXTERNAL_TOOLCHAIN
 		default USE_STRIP   if USE_GLIBC
 		default USE_SSTRIP
 		help
@@ -238,6 +243,20 @@ menu "Global build settings"
 		  selected packages (including those selected as <M>).  Note that this will
 		  make the system libraries incompatible with most of the packages that are
 		  not selected during the build process.
+
+	choice
+		prompt "Preferred standard C++ library"
+		default USE_LIBSTDCXX if USE_GLIBC
+		default USE_UCLIBCXX
+		help
+		  Select the preferred standard C++ library for all packages that support this.
+
+		config USE_UCLIBCXX
+			bool "uClibc++"
+
+		config USE_LIBSTDCXX
+			bool "libstdc++"
+	endchoice
 
 	comment "Hardening build options"
 
