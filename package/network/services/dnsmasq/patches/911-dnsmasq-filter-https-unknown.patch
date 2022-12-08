@@ -1,0 +1,153 @@
+From 1a8cc64602b124cf2840715d143843320c7a2bbb Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Thu, 8 Dec 2022 21:19:30 +0800
+Subject: [PATCH] dnsmasq filter https unknown
+
+---
+ src/cache.c        | 17 +++++++++++++++++
+ src/dns-protocol.h |  1 +
+ src/dnsmasq.h      |  7 ++++++-
+ src/forward.c      |  7 +++++++
+ src/option.c       |  6 ++++++
+ src/rrfilter.c     |  7 +++++++
+ 6 files changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/src/cache.c b/src/cache.c
+index 8f73233..45ab681 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -2159,3 +2159,20 @@ void log_query(unsigned int flags, char *name, union all_addr *addr, char *arg,
+   else
+     my_syslog(LOG_INFO, "%s %s %s %s%s", source, name, verb, dest, extra);
+ }
++
++// patch: function returns integer 1 if query type is unknown.
++// known types are defined in cache.c:typestr:36.
++int is_query_type_unknown(unsigned short type)
++{
++  unsigned int i;
++  for (i = 0; i < (sizeof(typestr)/sizeof(typestr[0])); i++)
++   {
++	if (typestr[i].type == type) 
++      	{
++		return 0;
++      	}
++      }
++  return 1;
++}
++// end of patch 
++
+diff --git a/src/dns-protocol.h b/src/dns-protocol.h
+index 8558c33..82e947c 100644
+--- a/src/dns-protocol.h
++++ b/src/dns-protocol.h
+@@ -71,6 +71,7 @@
+ #define T_NSEC          47
+ #define T_DNSKEY        48
+ #define T_NSEC3         50
++#define T_HTTPS         65
+ #define	T_TKEY		249		
+ #define	T_TSIG		250
+ #define T_AXFR          252
+diff --git a/src/dnsmasq.h b/src/dnsmasq.h
+index 3b50442..c718bab 100644
+--- a/src/dnsmasq.h
++++ b/src/dnsmasq.h
+@@ -281,7 +281,9 @@ struct event_desc {
+ #define OPT_STRIP_ECS      69
+ #define OPT_STRIP_MAC      70
+ #define OPT_NORR           71
+-#define OPT_LAST           72
++#define OPT_FILTER_HTTPS   72
++#define OPT_FILTER_UNKNOWN 73
++#define OPT_LAST           74
+ 
+ #define OPTION_BITS (sizeof(unsigned int)*8)
+ #define OPTION_SIZE ( (OPT_LAST/OPTION_BITS)+((OPT_LAST%OPTION_BITS)!=0) )
+@@ -1314,6 +1316,7 @@ struct crec *cache_find_by_name(struct crec *crecp,
+ 				char *name, time_t now, unsigned int prot);
+ void cache_end_insert(void);
+ void cache_start_insert(void);
++int is_query_type_unknown(unsigned short type);
+ unsigned int cache_remove_uid(const unsigned int uid);
+ int cache_recv_insert(time_t now, int fd);
+ struct crec *cache_insert(char *name, union all_addr *addr, unsigned short class, 
+@@ -1827,6 +1830,8 @@ int expand_workspace(unsigned char ***wkspc, int *szp, int new);
+ #define RRFILTER_DNSSEC  1
+ #define RRFILTER_A       2
+ #define RRFILTER_AAAA    3
++#define RRFILTER_HTTPS	  4
++#define RRFILTER_UNKNOWN  5
+ /* edns0.c */
+ unsigned char *find_pseudoheader(struct dns_header *header, size_t plen,
+ 				   size_t *len, unsigned char **p, int *is_sign, int *is_last);
+diff --git a/src/forward.c b/src/forward.c
+index 0f03818..d26e0bf 100644
+--- a/src/forward.c
++++ b/src/forward.c
+@@ -819,6 +819,13 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+ 
+ 	  if (option_bool(OPT_FILTER_AAAA))
+ 	    n = rrfilter(header, n, RRFILTER_AAAA);
++
++	  if (option_bool(OPT_FILTER_HTTPS))
++	    n = rrfilter(header, n, RRFILTER_HTTPS);
++
++	  if (option_bool(OPT_FILTER_UNKNOWN))
++	    n = rrfilter(header, n, RRFILTER_UNKNOWN);
++
+ 	}
+ 
+       switch (extract_addresses(header, n, daemon->namebuff, now, ipsets, nftsets, is_sign, check_rebind, no_cache, cache_secure, &doctored))
+diff --git a/src/option.c b/src/option.c
+index e70000b..32df0d0 100644
+--- a/src/option.c
++++ b/src/option.c
+@@ -186,6 +186,8 @@ struct myoption {
+ #define LOPT_STALE_CACHE   377
+ #define LOPT_NORR          378
+ #define LOPT_MINTTL        379
++#define LOPT_FILTER_HTTPS  380
++#define LOPT_FILTER_UNKNOWN 381
+ 
+ #ifdef HAVE_GETOPT_LONG
+ static const struct option opts[] =  
+@@ -225,6 +227,8 @@ static const struct myoption opts[] =
+     { "filterwin2k", 0, 0, 'f' },
+     { "filter-A", 0, 0, LOPT_FILTER_A },
+     { "filter-AAAA", 0, 0, LOPT_FILTER_AAAA },
++    { "filter-HTTPS", 0, 0, LOPT_FILTER_HTTPS },
++    { "filter-UNKNOWN", 0, 0, LOPT_FILTER_UNKNOWN },
+     { "pid-file", 2, 0, 'x' },
+     { "strict-order", 0, 0, 'o' },
+     { "server", 1, 0, 'S' },
+@@ -405,6 +409,8 @@ static struct {
+   { 'f', OPT_FILTER, NULL, gettext_noop("Don't forward spurious DNS requests from Windows hosts."), NULL },
+   { LOPT_FILTER_A, OPT_FILTER_A, NULL, gettext_noop("Don't include IPv4 addresses in DNS answers."), NULL },
+   { LOPT_FILTER_AAAA, OPT_FILTER_AAAA, NULL, gettext_noop("Don't include IPv6 addresses in DNS answers."), NULL },
++  { LOPT_FILTER_HTTPS, OPT_FILTER_HTTPS, NULL, gettext_noop("Filter all HTTPS/query type 65 requests."), NULL },
++  { LOPT_FILTER_UNKNOWN, OPT_FILTER_UNKNOWN, NULL, gettext_noop("Filter all unknown query types (known are defined in cache.c)."), NULL },
+   { 'F', ARG_DUP, "<ipaddr>,...", gettext_noop("Enable DHCP in the range given with lease duration."), NULL },
+   { 'g', ARG_ONE, "<groupname>", gettext_noop("Change to this group after startup (defaults to %s)."), CHGRP },
+   { 'G', ARG_DUP, "<hostspec>", gettext_noop("Set address or hostname for a specified machine."), NULL },
+diff --git a/src/rrfilter.c b/src/rrfilter.c
+index 42d9c21..1489856 100644
+--- a/src/rrfilter.c
++++ b/src/rrfilter.c
+@@ -222,6 +222,13 @@ size_t rrfilter(struct dns_header *header, size_t plen, int mode)
+ 
+ 	  if (mode == RRFILTER_AAAA && type != T_AAAA)
+ 	    continue;
++
++	  if (mode == RRFILTER_HTTPS && type != T_HTTPS)
++	    continue;
++
++	  if (mode == RRFILTER_UNKNOWN && is_query_type_unknown(qtype))
++	    continue;
++
+ 	}
+       
+       if (!expand_workspace(&rrs, &rr_sz, rr_found + 1))
+-- 
+2.17.1
+
