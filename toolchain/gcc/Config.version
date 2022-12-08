@@ -7,6 +7,10 @@ config GCC_VERSION_10
 	default y if GCC_USE_VERSION_10
 	bool
 
+config GCC_VERSION_11
+	default y if GCC_USE_VERSION_10
+	bool
+
 config GCC_VERSION_12
 	default y if GCC_USE_VERSION_12
 	bool

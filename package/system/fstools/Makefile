@@ -12,9 +12,9 @@ PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/fstools.git
-PKG_MIRROR_HASH:=d63d5d08883e04973bb38085038c88c447085f858c40a1af14eab8626b98d27a
-PKG_SOURCE_DATE:=2022-02-05
-PKG_SOURCE_VERSION:=922f1b3c091dbe12af4ba12a76ba8563418b688c
+PKG_MIRROR_HASH:=28be14a1e28fc62e80681e1b5e7f2435692ee326b66afcc1f3d158764df686d5
+PKG_SOURCE_DATE:=2022-11-10
+PKG_SOURCE_VERSION:=3affe9ea5098c8bb90111ce97d50ad976ef0c034
 CMAKE_INSTALL:=1
 
 PKG_LICENSE:=GPL-2.0
@@ -73,6 +73,10 @@ define Package/snapshot-tool
   CATEGORY:=Base system
   TITLE:=rootfs snapshoting tool
   DEPENDS:=+libubox +fstools
+endef
+
+define Package/block-mount/conffiles
+/etc/config/fstab
 endef
 
 define Package/block-mount
