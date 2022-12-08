@@ -142,7 +142,7 @@ index 42d9c21..1489856 100644
 +	  if (mode == RRFILTER_HTTPS && type != T_HTTPS)
 +	    continue;
 +
-+	  if (mode == RRFILTER_UNKNOWN && is_query_type_unknown(qtype))
++	  if (mode == RRFILTER_UNKNOWN && !is_query_type_unknown(qtype))
 +	    continue;
 +
  	}
