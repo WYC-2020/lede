@@ -1,6 +1,17 @@
+From 5cca1a52047b9fcafe97eda06d78ae481113d576 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Fri, 9 Dec 2022 12:13:51 +0800
+Subject: [PATCH] configure hardening
+
+---
+ configure.ac | 47 -----------------------------------------------
+ 1 file changed, 47 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index a4f8f94..2f1a549 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -74,53 +74,6 @@ AC_ARG_ENABLE(harden,
+@@ -87,53 +87,6 @@ AC_ARG_ENABLE(harden,
  
  if test "$hardenbuild" -eq 1; then
  	AC_MSG_NOTICE(Checking for available hardened build flags:)
@@ -11,15 +22,15 @@
 -
 -		OLDLDFLAGS="$LDFLAGS"
 -		TESTFLAGS="-Wl,-pie"
--		LDFLAGS="$LDFLAGS $TESTFLAGS"
--		AC_LINK_IFELSE([AC_LANG_PROGRAM([])], 
--			[AC_MSG_NOTICE([Setting $TESTFLAGS])], 
+-		LDFLAGS="$TESTFLAGS $LDFLAGS"
+-		AC_LINK_IFELSE([AC_LANG_PROGRAM([])],
+-			[AC_MSG_NOTICE([Setting $TESTFLAGS])],
 -			[
 -				LDFLAGS="$OLDLDFLAGS"
 -				TESTFLAGS="-pie"
--				LDFLAGS="$LDFLAGS $TESTFLAGS"
--				AC_LINK_IFELSE([AC_LANG_PROGRAM([])], 
--					[AC_MSG_NOTICE([Setting $TESTFLAGS])], 
+-				LDFLAGS="$TESTFLAGS $LDFLAGS"
+-				AC_LINK_IFELSE([AC_LANG_PROGRAM([])],
+-					[AC_MSG_NOTICE([Setting $TESTFLAGS])],
 -					[AC_MSG_NOTICE([Not setting $TESTFLAGS]); LDFLAGS="$OLDLDFLAGS" ]
 -					)
 -			]
@@ -27,24 +38,24 @@
 -		# readonly elf relocation sections (relro)
 -		OLDLDFLAGS="$LDFLAGS"
 -		TESTFLAGS="-Wl,-z,now -Wl,-z,relro"
--		LDFLAGS="$LDFLAGS $TESTFLAGS"
--		AC_LINK_IFELSE([AC_LANG_PROGRAM([])], 
--			[AC_MSG_NOTICE([Setting $TESTFLAGS])], 
+-		LDFLAGS="$TESTFLAGS $LDFLAGS"
+-		AC_LINK_IFELSE([AC_LANG_PROGRAM([])],
+-			[AC_MSG_NOTICE([Setting $TESTFLAGS])],
 -			[AC_MSG_NOTICE([Not setting $TESTFLAGS]); LDFLAGS="$OLDLDFLAGS" ]
 -			)
 -	fi # non-static
 -	# stack protector. -strong is good but only in gcc 4.9 or later
 -	OLDCFLAGS="$CFLAGS"
 -	TESTFLAGS="-fstack-protector-strong"
--	CFLAGS="$CFLAGS $TESTFLAGS"
--	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])], 
--	    [AC_MSG_NOTICE([Setting $TESTFLAGS])], 
+-	CFLAGS="$TESTFLAGS $CFLAGS"
+-	AC_LINK_IFELSE([AC_LANG_PROGRAM([])],
+-	    [AC_MSG_NOTICE([Setting $TESTFLAGS])],
 -	    [
 -			CFLAGS="$OLDCFLAGS"
 -			TESTFLAGS="-fstack-protector --param=ssp-buffer-size=4"
--			CFLAGS="$CFLAGS $TESTFLAGS"
--			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])], 
--			    [AC_MSG_NOTICE([Setting $TESTFLAGS])], 
+-			CFLAGS="$TESTFLAGS $CFLAGS"
+-			AC_LINK_IFELSE([AC_LANG_PROGRAM([])],
+-			    [AC_MSG_NOTICE([Setting $TESTFLAGS])],
 -			    [AC_MSG_NOTICE([Not setting $TESTFLAGS]); CFLAGS="$OLDCFLAGS" ]
 -			    )
 -	    ]
@@ -54,3 +65,6 @@
  
  	# Spectre v2 mitigations
  	DB_TRYADDCFLAGS([-mfunction-return=thunk])
+-- 
+2.17.1
+
