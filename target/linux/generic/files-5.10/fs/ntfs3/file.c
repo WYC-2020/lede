@@ -27,22 +27,16 @@ static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
-	if (!bdev_max_discard_sectors(sbi->sb->s_bdev))
-#else
+
 	if (!blk_queue_discard(q))
-#endif
 		return -EOPNOTSUPP;
 
 	user_range = (struct fstrim_range __user *)arg;
 	if (copy_from_user(&range, user_range, sizeof(range)))
 		return -EFAULT;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
-	range.minlen = max_t(u32, range.minlen,
-			     bdev_discard_granularity(sbi->sb->s_bdev));
-#else
+
 	range.minlen = max_t(u32, range.minlen, q->limits.discard_granularity);
-#endif
+
 	err = ntfs_trim_fs(sbi, &range);
 	if (err < 0)
 		return err;
@@ -76,24 +70,12 @@ static long ntfs_compat_ioctl(struct file *filp, u32 cmd, unsigned long arg)
 /*
  * ntfs_getattr - inode_operations::getattr
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-int ntfs_getattr(struct user_namespace *mnt_userns, const struct path *path,
+int ntfs_getattr(const struct path *path,
 		 struct kstat *stat, u32 request_mask, u32 flags)
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
-int ntfs_getattr(const struct path *path, struct kstat *stat,
-		 u32 request_mask, u32 flags)
-#else
-int ntfs_getattr(struct vfsmount *mnt, struct dentry *dentry,
-		 struct kstat *stat)
-#endif
 {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
 	struct inode *inode = d_inode(path->dentry);
 	struct ntfs_inode *ni = ntfs_i(inode);
-#else
-	struct inode *inode = d_inode(dentry);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
+
 	if (is_compressed(ni))
 		stat->attributes |= STATX_ATTR_COMPRESSED;
 
@@ -101,17 +83,13 @@ int ntfs_getattr(struct vfsmount *mnt, struct dentry *dentry,
 		stat->attributes |= STATX_ATTR_ENCRYPTED;
 
 	stat->attributes_mask |= STATX_ATTR_COMPRESSED | STATX_ATTR_ENCRYPTED;
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-	generic_fillattr(mnt_userns, inode, stat);
-#else
+
 	generic_fillattr(inode, stat);
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
+
 	stat->result_mask |= STATX_BTIME;
 	stat->btime = ni->i_crtime;
 	stat->blksize = ni->mi.sbi->cluster_size; /* 512, 1K, ..., 2M */
-#endif
+
 	return 0;
 }
 
@@ -178,22 +156,17 @@ static int ntfs_extend_initialized_size(struct file *file,
 
 		if (pos + len > new_valid)
 			len = new_valid - pos;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
-		err = ntfs_write_begin(file, mapping, pos, len, &page, NULL);
-#else
-		err = pagecache_write_begin(file, mapping, pos, len, 0, &page,  &fsdata);
-#endif
+
+		err = pagecache_write_begin(file, mapping, pos, len, 0, &page,
+					    &fsdata);
 		if (err)
 			goto out;
 
 		zero_user_segment(page, zerofrom, PAGE_SIZE);
 
 		/* This function in any case puts page. */
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
-		err = ntfs_write_end(file, mapping, pos, len, len, page, NULL);
-#else
-		err = pagecache_write_end(file, mapping, pos, len, len, page,fsdata);
-#endif
+		err = pagecache_write_end(file, mapping, pos, len, len, page,
+					  fsdata);
 		if (err < 0)
 			goto out;
 		pos += len;
@@ -272,11 +245,8 @@ static int ntfs_zero_range(struct inode *inode, u64 vbo, u64 vbo_to)
 				lock_buffer(bh);
 				bh->b_end_io = end_buffer_read_sync;
 				get_bh(bh);
-#if LINUX_VERSION_CODE > KERNEL_VERSION(6, 0, 0)
-				submit_bh(REQ_OP_READ, bh);
-#else
 				submit_bh(REQ_OP_READ, 0, bh);
-#endif
+
 				wait_on_buffer(bh);
 				if (!buffer_uptodate(bh)) {
 					unlock_page(page);
@@ -525,7 +495,7 @@ static int ntfs_truncate(struct inode *inode, loff_t new_size)
 
 	down_write(&ni->file.run_lock);
 	err = attr_set_size(ni, ATTR_DATA, NULL, 0, &ni->file.run, new_size,
-			    &new_valid, ni->mi.sbi->options->prealloc, NULL);
+			    &new_valid, true, NULL);
 	up_write(&ni->file.run_lock);
 
 	if (new_valid < ni->i_valid)
@@ -692,13 +662,7 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
 		/*
 		 * Normal file: Allocate clusters, do not change 'valid' size.
 		 */
-		loff_t new_size = max(end, i_size);
-
-		err = inode_newsize_ok(inode, new_size);
-		if (err)
-			goto out;
-
-		err = ntfs_set_size(inode, new_size);
+		err = ntfs_set_size(inode, max(end, i_size));
 		if (err)
 			goto out;
 
@@ -765,11 +729,7 @@ out:
 /*
  * ntfs3_setattr - inode_operations::setattr
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-int ntfs3_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-#else
 int ntfs3_setattr(struct dentry *dentry,
-#endif
 		  struct iattr *attr)
 {
 	struct super_block *sb = dentry->d_sb;
@@ -788,11 +748,7 @@ int ntfs3_setattr(struct dentry *dentry,
 		ia_valid = attr->ia_valid;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-	err = setattr_prepare(mnt_userns, dentry, attr);
-#else
 	err = setattr_prepare(dentry, attr);
-#endif
 	if (err)
 		goto out;
 
@@ -806,7 +762,7 @@ int ntfs3_setattr(struct dentry *dentry,
 		}
 		inode_dio_wait(inode);
 
-		if (attr->ia_size <= oldsize)
+		if (attr->ia_size < oldsize)
 			err = ntfs_truncate(inode, attr->ia_size);
 		else if (attr->ia_size > oldsize)
 			err = ntfs_extend(inode, attr->ia_size, 0, NULL);
@@ -817,18 +773,10 @@ int ntfs3_setattr(struct dentry *dentry,
 		ni->ni_flags |= NI_FLAG_UPDATE_PARENT;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-	setattr_copy(mnt_userns, inode, attr);
-#else
 	setattr_copy(inode, attr);
-#endif
 
 	if (mode != inode->i_mode) {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-		err = ntfs_acl_chmod(mnt_userns, inode);
-#else
 		err = ntfs_acl_chmod(inode);
-#endif
 		if (err)
 			goto out;
 
@@ -1042,11 +990,7 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
 		frame_vbo = pos & ~(frame_size - 1);
 		index = frame_vbo >> PAGE_SHIFT;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
-		if (unlikely(fault_in_iov_iter_readable(from, bytes))) {
-#else
- 		if (unlikely(iov_iter_fault_in_readable(from, bytes))) {
-#endif
+		if (unlikely(iov_iter_fault_in_readable(from, bytes))) {
 			err = -EFAULT;
 			goto out;
 		}
@@ -1085,15 +1029,10 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
 			size_t cp, tail = PAGE_SIZE - off;
 
 			page = pages[ip];
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
-				cp = copy_page_from_iter_atomic(page, off,
-							    min(tail, bytes),from);
-#else
-				cp = iov_iter_copy_from_user_atomic(page, from, off,
- 							    min(tail, bytes));
-#endif
+			cp = iov_iter_copy_from_user_atomic(page, from, off,
+							    min(tail, bytes));
 			flush_dcache_page(page);
-
+			iov_iter_advance(from, cp);
 			copied += cp;
 			bytes -= cp;
 			if (!bytes || !cp)
@@ -1271,14 +1210,10 @@ int ntfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
 {
 	int err;
 	struct ntfs_inode *ni = ntfs_i(inode);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+
 	err = fiemap_prep(inode, fieinfo, start, &len, ~FIEMAP_FLAG_XATTR);
 	if (err)
 		return err;
-#else
-	if (fieinfo->fi_flags & FIEMAP_FLAG_XATTR)
-		return -EOPNOTSUPP;
-#endif
 
 	ni_lock(ni);
 

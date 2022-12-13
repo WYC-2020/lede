@@ -34,3 +34,12 @@ ntfs3-$(CONFIG_NTFS3_LZX_XPRESS) += $(addprefix lib/,\
 		lzx_decompress.o \
 		xpress_decompress.o \
 		)
+
+ccflags-$(CONFIG_NTFS3_LZX_XPRESS) += -DCONFIG_NTFS3_LZX_XPRESS
+ccflags-$(CONFIG_NTFS3_FS_POSIX_ACL) += -DCONFIG_NTFS3_FS_POSIX_ACL
+
+all:
+	make -C /lib/modules/$(KVERSION)/build M=$(PWD) modules
+
+clean:
+	make -C /lib/modules/$(KVERSION)/build M=$(PWD) clean

@@ -629,12 +629,7 @@ static noinline int ntfs_get_block_vbo(struct inode *inode, u64 vbo,
 			bh->b_size = block_size;
 			off = vbo & (PAGE_SIZE - 1);
 			set_bh_page(bh, page, off);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
-			ll_rw_block(REQ_OP_READ, 1, &bh);
-#else
 			ll_rw_block(REQ_OP_READ, 0, 1, &bh);
-#endif
-
 			wait_on_buffer(bh);
 			if (!buffer_uptodate(bh)) {
 				err = -EIO;
@@ -680,14 +675,9 @@ static sector_t ntfs_bmap(struct address_space *mapping, sector_t block)
 {
 	return generic_block_bmap(mapping, block, ntfs_get_block_bmap);
 }
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-static int ntfs_read_folio(struct file *file, struct folio *folio)
+
+static int ntfs_readpage(struct file *file, struct page *page)
 {
-	struct page *page = &folio->page;
-#else
-static int ntfs_read_folio(struct file *file, struct page *page)
-{
-#endif
 	int err;
 	struct address_space *mapping = page->mapping;
 	struct inode *inode = mapping->host;
@@ -711,13 +701,9 @@ static int ntfs_read_folio(struct file *file, struct page *page)
 	}
 
 	/* Normal + sparse files. */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-	return mpage_read_folio(folio, ntfs_get_block);
-#else
 	return mpage_readpage(page, ntfs_get_block);
-#endif
 }
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
+
 static void ntfs_readahead(struct readahead_control *rac)
 {
 	struct address_space *mapping = rac->mapping;
@@ -747,22 +733,6 @@ static void ntfs_readahead(struct readahead_control *rac)
 
 	mpage_readahead(rac, ntfs_get_block);
 }
-#else
-static int ntfs_readahead(struct file *file, struct address_space *mapping,
-		struct list_head *pages, unsigned int nr_pages)
-{
-	struct inode *inode = mapping->host;
-	struct ntfs_inode *ni = ntfs_i(inode);
-
-	if (is_resident(ni))
-		return 0;
-
-	if (is_compressed(ni))
-		return 0;
-
-	return mpage_readpages(mapping, pages, nr_pages, ntfs_get_block);
-}
-#endif
 
 static int ntfs_get_block_direct_IO_R(struct inode *inode, sector_t iblock,
 				      struct buffer_head *bh_result, int create)
@@ -787,7 +757,6 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
 	loff_t vbo = iocb->ki_pos;
 	loff_t end;
 	int wr = iov_iter_rw(iter) & WRITE;
-	size_t iter_count = iov_iter_count(iter);
 	loff_t valid;
 	ssize_t ret;
 
@@ -801,13 +770,10 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
 				 wr ? ntfs_get_block_direct_IO_W
 				    : ntfs_get_block_direct_IO_R);
 
-	if (ret > 0)
-		end = vbo + ret;
-	else if (wr && ret == -EIOCBQUEUED)
-		end = vbo + iter_count;
-	else
+	if (ret <= 0)
 		goto out;
 
+	end = vbo + ret;
 	valid = ni->i_valid;
 	if (wr) {
 		if (end > valid && !S_ISBLK(inode->i_mode)) {
@@ -880,10 +846,12 @@ static int ntfs_writepage(struct page *page, struct writeback_control *wbc)
 static int ntfs_writepages(struct address_space *mapping,
 			   struct writeback_control *wbc)
 {
+	struct inode *inode = mapping->host;
+	struct ntfs_inode *ni = ntfs_i(inode);
 	/* Redirect call to 'ntfs_writepage' for resident files. */
-	if (is_resident(ntfs_i(mapping->host)))
-		return generic_writepages(mapping, wbc);
-	return mpage_writepages(mapping, wbc, ntfs_get_block);
+	get_block_t *get_block = is_resident(ni) ? NULL : &ntfs_get_block;
+
+	return mpage_writepages(mapping, wbc, get_block);
 }
 
 static int ntfs_get_block_write_begin(struct inode *inode, sector_t vbn,
@@ -893,12 +861,9 @@ static int ntfs_get_block_write_begin(struct inode *inode, sector_t vbn,
 				  bh_result, create, GET_BLOCK_WRITE_BEGIN);
 }
 
-int ntfs_write_begin(struct file *file, struct address_space *mapping,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-		loff_t pos, u32 len, struct page **pagep, void **fsdata)
-#else
-		loff_t pos, u32 len, u32 flags, struct page **pagep,  void **fsdata)
-#endif
+static int ntfs_write_begin(struct file *file, struct address_space *mapping,
+			    loff_t pos, u32 len, u32 flags, struct page **pagep,
+			    void **fsdata)
 {
 	int err;
 	struct inode *inode = mapping->host;
@@ -907,11 +872,7 @@ int ntfs_write_begin(struct file *file, struct address_space *mapping,
 	*pagep = NULL;
 	if (is_resident(ni)) {
 		struct page *page = grab_cache_page_write_begin(
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-			mapping, pos >> PAGE_SHIFT);
-#else
 			mapping, pos >> PAGE_SHIFT, flags);
-#endif
 
 		if (!page) {
 			err = -ENOMEM;
@@ -932,11 +893,8 @@ int ntfs_write_begin(struct file *file, struct address_space *mapping,
 		if (err != E_NTFS_NONRESIDENT)
 			goto out;
 	}
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-	err = block_write_begin(mapping, pos, len, pagep,
-#else
+
 	err = block_write_begin(mapping, pos, len, flags, pagep,
-#endif
 				ntfs_get_block_write_begin);
 
 out:
@@ -946,9 +904,10 @@ out:
 /*
  * ntfs_write_end - Address_space_operations::write_end.
  */
-int ntfs_write_end(struct file *file, struct address_space *mapping,
-		   loff_t pos, u32 len, u32 copied, struct page *page,
-		   void *fsdata)
+static int ntfs_write_end(struct file *file, struct address_space *mapping,
+			  loff_t pos, u32 len, u32 copied, struct page *page,
+			  void *fsdata)
+
 {
 	struct inode *inode = mapping->host;
 	struct ntfs_inode *ni = ntfs_i(inode);
@@ -1015,11 +974,8 @@ int reset_log_file(struct inode *inode)
 		struct page *page;
 
 		len = pos + PAGE_SIZE > log_size ? (log_size - pos) : PAGE_SIZE;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-		err = block_write_begin(mapping, pos, len, &page,
-#else
+
 		err = block_write_begin(mapping, pos, len, 0, &page,
-#endif
 					ntfs_get_block_write_begin);
 		if (err)
 			goto out;
@@ -1090,11 +1046,7 @@ int ntfs_flush_inodes(struct super_block *sb, struct inode *i1,
 	if (!ret && i2)
 		ret = writeback_inode(i2);
 	if (!ret)
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
-		ret = sync_blockdev_nowait(sb->s_bdev);
-#else
 		ret = filemap_flush(sb->s_bdev->bd_inode->i_mapping);
-#endif
 	return ret;
 }
 
@@ -1210,11 +1162,8 @@ out:
 	kfree(rp);
 	return ERR_PTR(err);
 }
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
-struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
-#else
+
 struct inode *ntfs_create_inode(
-#endif
 				struct inode *dir, struct dentry *dentry,
 				const struct cpu_str *uni, umode_t mode,
 				dev_t dev, const char *symname, u32 size,
@@ -1331,11 +1280,7 @@ struct inode *ntfs_create_inode(
 		goto out3;
 	}
 	inode = &ni->vfs_inode;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
-	inode_init_owner(mnt_userns, inode, dir, mode);
-#else
 	inode_init_owner(inode, dir, mode);
-#endif
 	mode = inode->i_mode;
 
 	inode->i_atime = inode->i_mtime = inode->i_ctime = ni->i_crtime =
@@ -1634,7 +1579,7 @@ struct inode *ntfs_create_inode(
 
 #ifdef CONFIG_NTFS3_FS_POSIX_ACL
 	if (!S_ISLNK(mode) && (sb->s_flags & SB_POSIXACL)) {
-		err = ntfs_init_acl(mnt_userns, inode, dir);
+		err = ntfs_init_acl(inode, dir);
 		if (err)
 			goto out7;
 	} else
@@ -1997,40 +1942,19 @@ const struct inode_operations ntfs_link_inode_operations = {
 };
 
 const struct address_space_operations ntfs_aops = {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-	.read_folio	= ntfs_read_folio,
-#else
-	.readpage	= ntfs_read_folio,
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
+	.readpage	= ntfs_readpage,
 	.readahead	= ntfs_readahead,
-#else
-	.readpages 	= ntfs_readahead,
-#endif
 	.writepage	= ntfs_writepage,
 	.writepages	= ntfs_writepages,
 	.write_begin	= ntfs_write_begin,
 	.write_end	= ntfs_write_end,
 	.direct_IO	= ntfs_direct_IO,
 	.bmap		= ntfs_bmap,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0) 
-	.dirty_folio	= block_dirty_folio,
-	.invalidate_folio = block_invalidate_folio,
-#else
 	.set_page_dirty = __set_page_dirty_buffers,
-#endif
 };
 
 const struct address_space_operations ntfs_aops_cmpr = {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
-	.read_folio	= ntfs_read_folio,
-#else
-	.readpage	= ntfs_read_folio,
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
+	.readpage	= ntfs_readpage,
 	.readahead	= ntfs_readahead,
-#else
-	.readpages 	= ntfs_readahead,
-#endif
 };
 // clang-format on

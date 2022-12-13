@@ -1442,7 +1442,7 @@ int ntfs_write_bh(struct ntfs_sb_info *sbi, struct NTFS_RECORD_HEADER *rhdr,
 
 	return err;
 }
-#if LINUX_VERSION_CODE <= KERNEL_VERSION(5, 18, 0)
+
 static inline struct bio *ntfs_alloc_bio(u32 nr_vecs)
 {
 	struct bio *bio = bio_alloc(GFP_NOFS | __GFP_HIGH, nr_vecs);
@@ -1453,7 +1453,7 @@ static inline struct bio *ntfs_alloc_bio(u32 nr_vecs)
 	}
 	return bio;
 }
-#endif
+
 /*
  * ntfs_bio_pages - Read/write pages from/to disk.
  */
@@ -1496,11 +1496,7 @@ int ntfs_bio_pages(struct ntfs_sb_info *sbi, const struct runs_tree *run,
 		lbo = ((u64)lcn << cluster_bits) + off;
 		len = ((u64)clen << cluster_bits) - off;
 new_bio:
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 18, 0)
-		new = bio_alloc(bdev, nr_pages - page_idx, op, GFP_NOFS);
-#else
 		new = ntfs_alloc_bio(nr_pages - page_idx);
-#endif
 		if (!new) {
 			err = -ENOMEM;
 			goto out;
@@ -1510,13 +1506,10 @@ new_bio:
 			submit_bio(bio);
 		}
 		bio = new;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
-		bio->bi_iter.bi_sector = lbo >> 9;
-#else
 		bio_set_dev(bio, bdev);
 		bio->bi_iter.bi_sector = lbo >> 9;
 		bio->bi_opf = op;
-#endif
+
 		while (len) {
 			off = vbo & (PAGE_SIZE - 1);
 			add = off + len > PAGE_SIZE ? (PAGE_SIZE - off) : len;
@@ -1606,33 +1599,19 @@ int ntfs_bio_fill_1(struct ntfs_sb_info *sbi, const struct runs_tree *run)
 		lbo = (u64)lcn << cluster_bits;
 		len = (u64)clen << cluster_bits;
 new_bio:
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 18, 0)
-		new = bio_alloc(bdev, BIO_MAX_VECS, REQ_OP_WRITE, GFP_NOFS);
-#else
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
 		new = ntfs_alloc_bio(BIO_MAX_PAGES);
-#else
-		new = ntfs_alloc_bio(BIO_MAX_VECS);
-#endif
-#endif
 		if (!new) {
 			err = -ENOMEM;
 			break;
 		}
-
 		if (bio) {
 			bio_chain(bio, new);
 			submit_bio(bio);
 		}
 		bio = new;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 0)
-		bio->bi_iter.bi_sector = lbo >> 9;
-#else
 		bio_set_dev(bio, bdev);
 		bio->bi_opf = REQ_OP_WRITE;
 		bio->bi_iter.bi_sector = lbo >> 9;
-#endif
-
 
 		for (;;) {
 			u32 add = len > PAGE_SIZE ? PAGE_SIZE : len;
@@ -1646,6 +1625,7 @@ new_bio:
 			len -= add;
 		}
 	} while (run_get_entry(run, ++run_idx, NULL, &lcn, &clen));
+
 	if (bio) {
 		if (!err)
 			err = submit_bio_wait(bio);
