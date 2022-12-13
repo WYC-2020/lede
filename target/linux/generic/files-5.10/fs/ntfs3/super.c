@@ -248,7 +248,12 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
 	fsparam_string("iocharset",		Opt_iocharset),
 	{}
 };
-
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0) 
+static const struct fs_parameter_description ntfs3_fs_parameters = {
+	.name		= "ntfs3",
+	.specs		= ntfs_fs_parameters,
+};
+#endif
 /*
  * Load nls table or if @nls is utf8 then return NULL.
  */
@@ -278,8 +283,12 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
 	struct ntfs_mount_options *opts = fc->fs_private;
 	struct fs_parse_result result;
 	int opt;
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 0) 
 	opt = fs_parse(fc, ntfs_fs_parameters, param, &result);
+#else
+	opt = fs_parse(fc, &ntfs3_fs_parameters, param, &result);
+
+#endif
 	if (opt < 0)
 		return opt;
 
@@ -399,8 +408,11 @@ static struct kmem_cache *ntfs_inode_cachep;
 
 static struct inode *ntfs_alloc_inode(struct super_block *sb)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0) 
+	struct ntfs_inode *ni = alloc_inode_sb(sb, ntfs_inode_cachep, GFP_NOFS);
+#else
 	struct ntfs_inode *ni = kmem_cache_alloc(ntfs_inode_cachep, GFP_NOFS);
-
+#endif
 	if (!ni)
 		return NULL;
 
@@ -511,11 +523,12 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
 	struct super_block *sb = root->d_sb;
 	struct ntfs_sb_info *sbi = sb->s_fs_info;
 	struct ntfs_mount_options *opts = sbi->options;
+	struct user_namespace *user_ns = seq_user_ns(m);
 
 	seq_printf(m, ",uid=%u",
-		  from_kuid_munged(&init_user_ns, opts->fs_uid));
+		  from_kuid_munged(user_ns, opts->fs_uid));
 	seq_printf(m, ",gid=%u",
-		  from_kgid_munged(&init_user_ns, opts->fs_gid));
+		  from_kgid_munged(user_ns, opts->fs_gid));
 	if (opts->fmask)
 		seq_printf(m, ",fmask=%04o", ~opts->fs_fmask_inv);
 	if (opts->dmask)
@@ -667,9 +680,11 @@ static u32 format_size_gb(const u64 bytes, u32 *mb)
 
 static u32 true_sectors_per_clst(const struct NTFS_BOOT *boot)
 {
-	return boot->sectors_per_clusters <= 0x80
-		       ? boot->sectors_per_clusters
-		       : (1u << (0 - boot->sectors_per_clusters));
+	if (boot->sectors_per_clusters <= 0x80)
+		return boot->sectors_per_clusters;
+	if (boot->sectors_per_clusters >= 0xf4) /* limit shift to 2MB max */
+		return 1U << (0 - boot->sectors_per_clusters);
+	return -EINVAL;
 }
 
 /*
@@ -712,6 +727,8 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
 
 	/* cluster size: 512, 1K, 2K, 4K, ... 2M */
 	sct_per_clst = true_sectors_per_clst(boot);
+	if ((int)sct_per_clst < 0)
+		goto out;
 	if (!is_power_of_2(sct_per_clst))
 		goto out;
 
@@ -910,17 +927,26 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
 		err = -EINVAL;
 		goto out;
 	}
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
+	if (bdev_max_discard_sectors(bdev) && bdev_discard_granularity(bdev)) {
+		sbi->discard_granularity = bdev_discard_granularity(bdev);
+#else
 	rq = bdev_get_queue(bdev);
 	if (blk_queue_discard(rq) && rq->limits.discard_granularity) {
 		sbi->discard_granularity = rq->limits.discard_granularity;
+#endif
 		sbi->discard_granularity_mask_inv =
 			~(u64)(sbi->discard_granularity - 1);
 	}
 
 	/* Parse boot. */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0) 
+	err = ntfs_init_from_boot(sb, bdev_logical_block_size(bdev),
+				bdev_nr_bytes(bdev));
+#else
 	err = ntfs_init_from_boot(sb, rq ? queue_logical_block_size(rq) : 512,
-				  bdev->bd_inode->i_size);
+				bdev->bd_inode->i_size);
+#endif
 	if (err)
 		goto out;
 
@@ -1334,7 +1360,11 @@ int ntfs_discard(struct ntfs_sb_info *sbi, CLST lcn, CLST len)
 		return 0;
 
 	err = blkdev_issue_discard(sb->s_bdev, start >> 9, (end - start) >> 9,
-				   GFP_NOFS, 0);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0) 
+				GFP_NOFS);
+#else
+ 				GFP_NOFS, 0);
+#endif
 
 	if (err == -EOPNOTSUPP)
 		sbi->flags |= NTFS_FLAGS_NODISCARD;
@@ -1432,9 +1462,17 @@ static struct file_system_type ntfs_fs_type = {
 	.owner			= THIS_MODULE,
 	.name			= "ntfs3",
 	.init_fs_context	= ntfs_init_fs_context,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 0) 
 	.parameters		= ntfs_fs_parameters,
+#else
+	.parameters		= &ntfs3_fs_parameters,
+#endif
 	.kill_sb		= kill_block_super,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0) 
+	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+#else
 	.fs_flags		= FS_REQUIRES_DEV,
+#endif
 };
 // clang-format on
 

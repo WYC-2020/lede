@@ -92,12 +92,19 @@ static struct dentry *ntfs_lookup(struct inode *dir, struct dentry *dentry,
 /*
  * ntfs_create - inode_operations::create
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
+#else
 static int ntfs_create(struct inode *dir,
+#endif
 		       struct dentry *dentry, umode_t mode, bool excl)
 {
 	struct inode *inode;
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFREG | mode,
+#else
 	inode = ntfs_create_inode(dir, dentry, NULL, S_IFREG | mode,
+#endif
 				  0, NULL, 0, NULL);
 
 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
@@ -108,12 +115,20 @@ static int ntfs_create(struct inode *dir,
  *
  * inode_operations::mknod
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+static int ntfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+#else
 static int ntfs_mknod(struct inode *dir,
+#endif
+
 		      struct dentry *dentry, umode_t mode, dev_t rdev)
 {
 	struct inode *inode;
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, mode, rdev,
+#else
 	inode = ntfs_create_inode(dir, dentry, NULL, mode, rdev,
+#endif
 				  NULL, 0, NULL);
 
 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
@@ -181,13 +196,20 @@ static int ntfs_unlink(struct inode *dir, struct dentry *dentry)
 /*
  * ntfs_symlink - inode_operations::symlink
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+static int ntfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+#else
 static int ntfs_symlink(struct inode *dir,
+#endif
 			struct dentry *dentry, const char *symname)
 {
 	u32 size = strlen(symname);
 	struct inode *inode;
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFLNK | 0777,
+#else
 	inode = ntfs_create_inode(dir, dentry, NULL, S_IFLNK | 0777,
+#endif
 				  0, symname, size, NULL);
 
 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
@@ -196,12 +218,19 @@ static int ntfs_symlink(struct inode *dir,
 /*
  * ntfs_mkdir- inode_operations::mkdir
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+static int ntfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
+#else
 static int ntfs_mkdir(struct inode *dir,
+#endif
 		      struct dentry *dentry, umode_t mode)
 {
 	struct inode *inode;
-
-	inode = ntfs_create_inode(dir, dentry, NULL, S_IFDIR | mode,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFDIR | mode,
+#else
+	inode = ntfs_create_inode( dir, dentry, NULL, S_IFDIR | mode,
+#endif
 				  0, NULL, 0, NULL);
 
 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
@@ -227,7 +256,11 @@ static int ntfs_rmdir(struct inode *dir, struct dentry *dentry)
 /*
  * ntfs_rename - inode_operations::rename
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
+static int ntfs_rename(struct user_namespace *mnt_userns, struct inode *dir,
+#else
 static int ntfs_rename(struct inode *dir,
+#endif
 		       struct dentry *dentry, struct inode *new_dir,
 		       struct dentry *new_dentry, u32 flags)
 {
