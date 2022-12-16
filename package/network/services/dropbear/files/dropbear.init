@@ -117,6 +117,7 @@ validate_section_dropbear()
 {
 	uci_load_validate dropbear dropbear "$1" "$2" \
 		'PasswordAuth:bool:1' \
+		'Qos:bool:1' \
 		'enable:bool:1' \
 		'Interface:string' \
 		'GatewayPorts:bool:0' \
@@ -159,6 +160,7 @@ dropbear_instance()
 	procd_set_param command "$PROG" -F -P "$pid_file"
 	[ "${PasswordAuth}" -eq 0 ] && procd_append_param command -s
 	[ "${GatewayPorts}" -eq 1 ] && procd_append_param command -a
+	[ "${Qos}" -eq 1 ] && procd_append_param command -z
 	[ "${RootPasswordAuth}" -eq 0 ] && procd_append_param command -g
 	[ "${RootLogin}" -eq 0 ] && procd_append_param command -w
 	if [ -n "${rsakeyfile}" ]; then
