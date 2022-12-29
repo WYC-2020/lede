@@ -14,8 +14,12 @@ PKG_SOURCE_URL:=https://github.com/upx/upx/releases/download/v$(PKG_VERSION)
 PKG_HASH:=77003c8e2e29aa9804e2fbaeb30f055903420b3e01d95eafe01aed957fb7e190
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-src
+HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)-$(PKG_VERSION)-src
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
+
+CMAKE_OPTIONS += -DCMAKE_BUILD_TYPE=Release
 
 define Package/upx
   SECTION:=utils
@@ -38,4 +42,13 @@ define Package/upx/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/release/upx $(1)/usr/bin/upx
 endef
 
+define Host/Install
+	$(CP) $(HOST_BUILD_DIR)/build/release/upx $(STAGING_DIR_HOST)/bin/upx
+endef
+
+define Host/Clean
+	rm -f $(STAGING_DIR_HOST)/bin/upx
+endef
+
 $(eval $(call BuildPackage,upx))
+$(eval $(call HostBuild))
