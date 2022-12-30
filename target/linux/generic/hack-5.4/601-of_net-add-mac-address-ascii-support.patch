@@ -1,17 +1,17 @@
-From 3e525e7e4ee9ee243963c403d2f0c3ed8e951a3f Mon Sep 17 00:00:00 2001
+From ad7585deb6beb3fa7e86edb05d88bc57f23465ad Mon Sep 17 00:00:00 2001
 From: W_Y_CPP <383152993@qq.com>
-Date: Fri, 30 Dec 2022 10:01:53 +0800
-Subject: [PATCH] 12
+Date: Fri, 30 Dec 2022 10:33:29 +0800
+Subject: [PATCH] 00
 
 ---
  net/ethernet/eth.c | 87 +++++++++++++++++++++++++++++++++++++++-------
  1 file changed, 74 insertions(+), 13 deletions(-)
 
 diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
-index cdb4f33..3eff9c6 100644
+index 585ff68..6c37fa2 100644
 --- a/net/ethernet/eth.c
 +++ b/net/ethernet/eth.c
-@@ -544,6 +544,63 @@ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+@@ -589,6 +589,63 @@ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
  }
  EXPORT_SYMBOL(eth_platform_get_mac_address);
  
@@ -73,9 +73,9 @@ index cdb4f33..3eff9c6 100644
 +};
 +
  /**
-  * nvmem_get_mac_address - Obtain the MAC address from an nvmem cell named
-  * 'mac-address' associated with given device.
-@@ -557,20 +614,24 @@ int nvmem_get_mac_address(struct device *dev, void *addrbuf)
+  * Obtain the MAC address from an nvmem cell named 'mac-address' associated
+  * with given device.
+@@ -602,20 +659,24 @@ int nvmem_get_mac_address(struct device *dev, void *addrbuf)
  {
  	struct nvmem_cell *cell;
  	const void *mac;
