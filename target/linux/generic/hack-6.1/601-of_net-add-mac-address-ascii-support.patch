@@ -87,7 +87,9 @@ index 828b04b..8b8696a 100644
 -
 -	mac = nvmem_cell_read(cell, &len);
 -	nvmem_cell_put(cell);
--
++	struct nvmem_cell_mac_address_property *property;
++	int i;
+ 
 -	if (IS_ERR(mac))
 -		return PTR_ERR(mac);
 +	struct nvmem_cell_mac_address_property *property;

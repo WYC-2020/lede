@@ -11,7 +11,7 @@ diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
 index cdb4f33..3eff9c6 100644
 --- a/net/ethernet/eth.c
 +++ b/net/ethernet/eth.c
-@@ -544,6 +544,63 @@ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+@@ -538,6 +538,63 @@ int eth_platform_get_mac_address(struct
  }
  EXPORT_SYMBOL(eth_platform_get_mac_address);
  
@@ -75,7 +75,7 @@ index cdb4f33..3eff9c6 100644
  /**
   * nvmem_get_mac_address - Obtain the MAC address from an nvmem cell named
   * 'mac-address' associated with given device.
-@@ -557,20 +614,24 @@ int nvmem_get_mac_address(struct device *dev, void *addrbuf)
+@@ -551,19 +608,23 @@ int nvmem_get_mac_address(struct device
  {
  	struct nvmem_cell *cell;
  	const void *mac;
