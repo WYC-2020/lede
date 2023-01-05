@@ -1,0 +1,4 @@
+config TARGET_IMAGES_LIBDEFLATE_GZIP
+	bool "LibDeflate GZip images"
+	default y
+

@@ -99,6 +99,7 @@ define Build/append-metadata
 	}
 endef
 
+
 define Build/append-rootfs
 	dd if=$(IMAGE_ROOTFS) >> $@
 endef
@@ -306,16 +307,17 @@ define Build/fit
 	@mv $@.new $@
 endef
 
-define Build/libdeflate-gzip
+ifdef CONFIG_TARGET_IMAGES_LIBDEFLATE_GZIP
+define Build/gzip
 	$(STAGING_DIR_HOST)/bin/libdeflate-gzip -f -12 -c $@ $(1) > $@.new
 	@mv $@.new $@
 endef
-
+else
 define Build/gzip
 	$(STAGING_DIR_HOST)/bin/gzip -f -9n -c $@ $(1) > $@.new
 	@mv $@.new $@
 endef
-
+endif
 define Build/install-dtb
 	$(call locked, \
 		$(foreach dts,$(DEVICE_DTS), \

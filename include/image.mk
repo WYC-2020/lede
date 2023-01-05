@@ -138,10 +138,17 @@ define Image/BuildKernel/MkuImage
 endef
 
 ifdef CONFIG_TARGET_IMAGES_GZIP
+ifdef CONFIG_TARGET_IMAGES_LIBDEFLATE_GZIP
+  define Image/Gzip
+	rm -f $(1).gz
+	libdeflate-gzip -12 $(1)
+  endef
+else
   define Image/Gzip
 	rm -f $(1).gz
 	gzip -9n $(1)
   endef
+endif
 endif
 
 
