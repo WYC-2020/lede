@@ -210,8 +210,12 @@ ismounted() {
 	return 1
 }
 
-append_addnhosts() {
+append_extramount() {
 	ismounted "$1" || append EXTRA_MOUNT "$1"
+}
+
+append_addnhosts() {
+	append_extramount "$1"
 	xappend "--addn-hosts=$1"
 }
 
