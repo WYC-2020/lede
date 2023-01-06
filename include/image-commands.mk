@@ -213,6 +213,7 @@ define Build/check-size
 	[ $$limitsize -ge $$imagesize ] || { \
 		$(call ERROR_MESSAGE,    WARNING: Image file $@ is too big: $$imagesize > $$limitsize); \
 		rm -f $@; \
+		exit 1; \
 	}
 endef
 
