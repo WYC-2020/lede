@@ -21,10 +21,10 @@ sect=63
 # create partition table
 set $(ptgen -o "$OUTPUT" -h $head -s $sect ${GUID:+-g} -p "${KERNELSIZE}m" -p "${ROOTFSSIZE}m" ${ALIGN:+-l $ALIGN} ${SIGNATURE:+-S 0x$SIGNATURE} ${GUID:+-G $GUID})
 
-KERNELOFFSET="$(($1 / 512))"
+KERNELOFFSET="$(($1 / $ALIGN))"
 KERNELSIZE="$2"
-ROOTFSOFFSET="$(($3 / 512))"
-ROOTFSSIZE="$(($4 / 512))"
+ROOTFSOFFSET="$(($3 / $ALIGN))"
+ROOTFSSIZE="$(($4 / $ALIGN))"
 
 # Using mcopy -s ... is using READDIR(3) to iterate through the directory
 # entries, hence they end up in the FAT filesystem in traversal order which
@@ -44,15 +44,15 @@ dos_dircopy() {
   done
 }
 
-[ -n "$PADDING" ] && dd if=/dev/zero of="$OUTPUT" bs=512 seek="$ROOTFSOFFSET" conv=notrunc count="$ROOTFSSIZE"
-dd if="$ROOTFSIMAGE" of="$OUTPUT" bs=512 seek="$ROOTFSOFFSET" conv=notrunc
+[ -n "$PADDING" ] && dd if=/dev/zero of="$OUTPUT" bs="$ALIGN" seek="$ROOTFSOFFSET" conv=notrunc count="$ROOTFSSIZE"
+dd if="$ROOTFSIMAGE" of="$OUTPUT" bs="$ALIGN" seek="$ROOTFSOFFSET" conv=notrunc
 
 if [ -n "$GUID" ]; then
-    [ -n "$PADDING" ] && dd if=/dev/zero of="$OUTPUT" bs=512 seek="$((ROOTFSOFFSET + ROOTFSSIZE))" conv=notrunc count="$sect"
-    mkfs.fat --invariant -n kernel -C "$OUTPUT.kernel" -S 512 "$((KERNELSIZE / 1024))"
+    [ -n "$PADDING" ] && dd if=/dev/zero of="$OUTPUT" bs="$ALIGN" seek="$((ROOTFSOFFSET + ROOTFSSIZE))" conv=notrunc count="$sect"
+    mkfs.fat --invariant -n kernel -C "$OUTPUT.kernel" -S "$ALIGN" "$((KERNELSIZE / ${ALIGN}))"
     LC_ALL=C dos_dircopy "$KERNELDIR" /
 else
     make_ext4fs -J -L kernel -l "$KERNELSIZE" ${SOURCE_DATE_EPOCH:+-T ${SOURCE_DATE_EPOCH}} "$OUTPUT.kernel" "$KERNELDIR"
 fi
-dd if="$OUTPUT.kernel" of="$OUTPUT" bs=512 seek="$KERNELOFFSET" conv=notrunc
+dd if="$OUTPUT.kernel" of="$OUTPUT" bs="$ALIGN" seek="$KERNELOFFSET" conv=notrunc
 rm -f "$OUTPUT.kernel"
