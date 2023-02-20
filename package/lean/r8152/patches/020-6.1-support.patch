@@ -18,21 +18,17 @@
  		(value < 64 ? ((1ULL << value) - 1) : 0xFFFFFFFFFFFFFFFFULL)
 --- a/r8152.c
 +++ b/r8152.c
-@@ -20718,10 +20718,17 @@
- 
- 	usb_set_intfdata(intf, tp);
- 
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
+@@ -20710,8 +20710,11 @@ static int rtl8152_probe(struct usb_interface *intf,
+ 		netif_napi_add(netdev, &tp->napi, r8152_poll, 256);
+ 	else
+ 		netif_napi_add(netdev, &tp->napi, r8152_poll, 64);
+-#else /* LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0) */
+-  netif_napi_add(netdev, &tp->napi, r8152_poll);
++#else /* LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0) */	
 +	if (tp->support_2500full)
 +		netif_napi_add_weight(netdev, &tp->napi, r8152_poll, 256);
 +	else
 +		netif_napi_add_weight(netdev, &tp->napi, r8152_poll, 64);
-+#else
- 	if (tp->support_2500full)
- 		netif_napi_add(netdev, &tp->napi, r8152_poll, 256);
- 	else
- 		netif_napi_add(netdev, &tp->napi, r8152_poll, 64);
-+#endif
+ #endif /* LINUX_VERSION_CODE < KERNEL_VERSION(6,1,0) */
  
  	ret = register_netdev(netdev);
- 	if (ret != 0) {
