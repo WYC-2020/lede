@@ -352,7 +352,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  
  static const struct nfnl_callback ctnl_cb[IPCTNL_MSG_MAX] = {
  	[IPCTNL_MSG_CT_NEW]	= {
-@@ -3869,8 +3882,12 @@ static int __net_init ctnetlink_net_init
+@@ -3872,8 +3885,12 @@ static int __net_init ctnetlink_net_init
  static void ctnetlink_net_pre_exit(struct net *net)
  {
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
