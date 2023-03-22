@@ -128,6 +128,19 @@ index 2d9523b71..8b0b1fce2 100644
  config IRQ_BYPASS_MANAGER
 -	tristate
 +	tristate "IRQ offload/bypass manager"
+diff --git a/drivers/bluetooth/Kconfig b/drivers/bluetooth/Kconfig
+index aae665a..81a9241 100644
+--- a/drivers/bluetooth/Kconfig
++++ b/drivers/bluetooth/Kconfig
+@@ -8,7 +8,7 @@ config BT_INTEL
+ 	select REGMAP
+ 
+ config BT_BCM
+-	tristate
++	tristate "Bluetooth support for Broadcom devices"
+ 	select FW_LOADER
+ 
+ config BT_RTL
 -- 
 2.17.1
 

@@ -51,6 +51,7 @@ define KernelPackage/bluetooth
 	CONFIG_BT_HCIUART_NOKIA=n \
 	CONFIG_BT_HCIUART_QCA=y \
 	CONFIG_BT_HCIUART_SERDEV=y \
+	CONFIG_BT_BCM \
 	CONFIG_BT_HIDP
   $(call AddDepends/rfkill)
   FILES:= \
@@ -60,7 +61,7 @@ define KernelPackage/bluetooth
 	$(LINUX_DIR)/net/bluetooth/hidp/hidp.ko \
 	$(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btusb.ko \
-	$(LINUX_DIR)/drivers/bluetooth/btbcm.ko@ge5.17 \
+	$(LINUX_DIR)/drivers/bluetooth/btbcm.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btqca.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btmtk.ko@ge5.17 \
 	$(LINUX_DIR)/drivers/bluetooth/btintel.ko
