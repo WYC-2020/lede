@@ -8,8 +8,9 @@ board_config_update
 
 json_is_a network object && exit 0
 
-ucidef_set_interface_lan 'eth1 eth2 eth3'
-[ -d /sys/class/net/eth1 ] && ucidef_set_interface_wan 'eth0'
+# ucidef_set_interface_lan 'eth1 eth2 eth3'
+# [ -d /sys/class/net/eth1 ] && ucidef_set_interface_wan 'eth0'
+ucidef_auto_set_interface
 
 board_config_flush
 

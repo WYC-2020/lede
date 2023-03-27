@@ -86,6 +86,28 @@ ucidef_set_interface_wan() {
 	ucidef_set_interface "wan" ifname "$1" protocol "${2:-dhcp}"
 }
 
+ucidef_auto_set_interface() {
+	local interface=$(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' )
+	local num=$(echo "$interface" | wc -l)
+	[ ${num} -gt 0 ] && {
+	local lannet=""
+	local wannet=""
+	for i in $(seq 1 $num)
+	do
+		if [[ 1 = $num ]];then
+			lannet="${lannet} $(echo "$interface" | sed -n ${i}p)"
+		else
+			if [[ ${i} = $num ]];then
+			wannet="${wannet} $(echo "$interface" | sed -n ${i}p)"
+			else
+			lannet="${lannet} $(echo "$interface" | sed -n ${i}p)"
+			fi
+		fi
+	done
+	ucidef_set_interface_lan "${lannet}"
+	ucidef_set_interface_wan "${wannet}"
+	}
+}
 ucidef_set_interfaces_lan_wan() {
 	local lan_if="$1"
 	local wan_if="$2"
