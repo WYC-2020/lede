@@ -12,10 +12,10 @@
 --- a/src/option.c
 +++ b/src/option.c
 @@ -185,6 +185,7 @@ struct myoption {
- #define LOPT_FAST_RETRY    376
  #define LOPT_STALE_CACHE   377
  #define LOPT_NORR          378
-+#define LOPT_MINTTL        379
+ #define LOPT_NO_IDENT      379
++#define LOPT_MINTTL        400
  
  #ifdef HAVE_GETOPT_LONG
  static const struct option opts[] =  

@@ -54,13 +54,13 @@ index 3b50442..c718bab 100644
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
 @@ -281,7 +281,9 @@ struct event_desc {
- #define OPT_STRIP_ECS      69
  #define OPT_STRIP_MAC      70
  #define OPT_NORR           71
--#define OPT_LAST           72
-+#define OPT_FILTER_HTTPS   72
-+#define OPT_FILTER_UNKNOWN 73
-+#define OPT_LAST           74
+ #define OPT_NO_IDENT       72
+-#define OPT_LAST           73
++#define OPT_FILTER_HTTPS   73
++#define OPT_FILTER_UNKNOWN 74
++#define OPT_LAST           75
  
  #define OPTION_BITS (sizeof(unsigned int)*8)
  #define OPTION_SIZE ( (OPT_LAST/OPTION_BITS)+((OPT_LAST%OPTION_BITS)!=0) )
@@ -104,9 +104,9 @@ index e70000b..32df0d0 100644
 --- a/src/option.c
 +++ b/src/option.c
 @@ -186,6 +186,8 @@ struct myoption {
- #define LOPT_STALE_CACHE   377
  #define LOPT_NORR          378
- #define LOPT_MINTTL        379
+ #define LOPT_NO_IDENT      379
+ #define LOPT_MINTTL        400
 +#define LOPT_FILTER_HTTPS  380
 +#define LOPT_FILTER_UNKNOWN 381
  
