@@ -178,6 +178,7 @@ define Package/dmesg
 $(call Package/util-linux/Default)
   TITLE:=print or control the kernel ring buffer
   DEPENDS:= +libncursesw
+  SUBMENU=Terminal
 endef
 
 define Package/dmesg/description

@@ -1531,7 +1531,7 @@ config BUSYBOX_DEFAULT_CHRT
 	default n
 config BUSYBOX_DEFAULT_DMESG
 	bool
-	default y
+	default n
 config BUSYBOX_DEFAULT_FEATURE_DMESG_PRETTY
 	bool
 	default y

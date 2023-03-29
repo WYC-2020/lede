@@ -1044,7 +1044,7 @@ CONFIG_BUSYBOX_DEFAULT_DEFAULT_DEPMOD_FILE=""
 # CONFIG_BUSYBOX_DEFAULT_BLOCKDEV is not set
 # CONFIG_BUSYBOX_DEFAULT_CAL is not set
 # CONFIG_BUSYBOX_DEFAULT_CHRT is not set
-CONFIG_BUSYBOX_DEFAULT_DMESG=y
+# CONFIG_BUSYBOX_DEFAULT_DMESG is not set
 CONFIG_BUSYBOX_DEFAULT_FEATURE_DMESG_PRETTY=y
 # CONFIG_BUSYBOX_DEFAULT_EJECT is not set
 # CONFIG_BUSYBOX_DEFAULT_FEATURE_EJECT_SCSI is not set
@@ -7169,6 +7169,7 @@ CONFIG_PACKAGE_bash=y
 # Terminal
 #
 # CONFIG_PACKAGE_agetty is not set
+CONFIG_PACKAGE_dmesg=y
 # CONFIG_PACKAGE_dvtm is not set
 # CONFIG_PACKAGE_kitty-terminfo is not set
 # CONFIG_PACKAGE_minicom is not set
@@ -7448,7 +7449,6 @@ CONFIG_PACKAGE_dbus=y
 # CONFIG_PACKAGE_dfu-util is not set
 # CONFIG_PACKAGE_digitemp is not set
 # CONFIG_PACKAGE_digitemp-usb is not set
-# CONFIG_PACKAGE_dmesg is not set
 # CONFIG_PACKAGE_dmidecode is not set
 CONFIG_PACKAGE_docker=y
 # CONFIG_PACKAGE_docker-compose is not set
