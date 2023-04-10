@@ -26,6 +26,8 @@ export SHELL:=/bin/sh
 include $(INCLUDE_DIR)/package.mk
 
 ifeq ($(DUMP),)
+  VERMAGIC=`grep CONFIG_KERNEL_VERMAGIC $(TOPDIR)/.config | awk -F= '{print $$$$2}' | sed -e 's/"\(.*\)"/\1/g'`; \
+  [ -n "$$$$VERMAGIC" ] &&STAMP_BUILT:=$(STAMP_BUILT)_$$$$VERMAGIC || \
  STAMP_BUILT:= $(STAMP_BUILT)_$(if $(wildcard $(LINUX_DIR)/.config),$(shell $(SCRIPT_DIR)/kconfig.pl $(LINUX_DIR)/.config | $(MKHASH) md5))
   -include $(LINUX_DIR)/.config
 endif

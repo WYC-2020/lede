@@ -46,6 +46,12 @@ config KERNEL_DEBUG_FS
 	  write to these files. Many common debugging facilities, such as
 	  ftrace, require the existence of debugfs.
 
+config KERNEL_VERMAGIC
+	string "Specify vermagic for the build"
+	default "6a814ff38e9d5ce92952e4250bb1650e"
+	help
+	  Specify kernel vermagic. Leave it empty if you don't know what it is.
+
 config KERNEL_MIPS_FP_SUPPORT
 	bool
 	default y if TARGET_pistachio
