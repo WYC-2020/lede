@@ -7,8 +7,6 @@ Subject: [PATCH] iptables multipor extended to 100
  include/uapi/linux/netfilter/xt_multiport.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/netfilter/xt_multiport.h b/include/uapi/linux/netfilter/xt_multiport.h
-index ffecf69..5ba1742 100644
 --- a/include/uapi/linux/netfilter/xt_multiport.h
 +++ b/include/uapi/linux/netfilter/xt_multiport.h
 @@ -10,7 +10,7 @@ enum xt_multiport_flags {
@@ -20,6 +18,3 @@ index ffecf69..5ba1742 100644
  
  /* Must fit inside union xt_matchinfo: 16 bytes */
  struct xt_multiport {
--- 
-2.17.1
-

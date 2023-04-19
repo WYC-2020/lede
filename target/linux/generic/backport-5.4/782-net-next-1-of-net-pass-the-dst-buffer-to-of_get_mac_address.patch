@@ -787,7 +787,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	mv643xx_eth_property(pnp, "tx-sram-addr", ppd.tx_sram_addr);
 --- a/drivers/net/ethernet/marvell/mvneta.c
 +++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -4526,7 +4526,6 @@ static int mvneta_probe(struct platform_
+@@ -4546,7 +4546,6 @@ static int mvneta_probe(struct platform_
  	struct net_device *dev;
  	struct phylink *phylink;
  	struct phy *comphy;
@@ -795,7 +795,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	char hw_mac_addr[ETH_ALEN];
  	const char *mac_from;
  	int tx_csum_limit;
-@@ -4623,10 +4622,9 @@ static int mvneta_probe(struct platform_
+@@ -4643,10 +4642,9 @@ static int mvneta_probe(struct platform_
  		goto err_free_ports;
  	}
  

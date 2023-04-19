@@ -7,15 +7,12 @@ Subject: [PATCH] add read_poll_timeout function
  include/linux/iopoll.h | 44 ++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 44 insertions(+)
 
-diff --git a/include/linux/iopoll.h b/include/linux/iopoll.h
-index 35e15df..70f89b3 100644
 --- a/include/linux/iopoll.h
 +++ b/include/linux/iopoll.h
-@@ -13,6 +13,50 @@
- #include <linux/errno.h>
+@@ -14,6 +14,50 @@
  #include <linux/io.h>
  
-+/**
+ /**
 + * read_poll_timeout - Periodically poll an address until a condition is
 + *			met or a timeout occurs
 + * @op: accessor function (takes @args as its arguments)
@@ -59,9 +56,7 @@ index 35e15df..70f89b3 100644
 +	(cond) ? 0 : -ETIMEDOUT; \
 +})
 +
- /**
++/**
   * readx_poll_timeout - Periodically poll an address until a condition is met or a timeout occurs
   * @op: accessor function (takes @addr as its only argument)
--- 
-2.17.1
-
+  * @addr: Address to poll

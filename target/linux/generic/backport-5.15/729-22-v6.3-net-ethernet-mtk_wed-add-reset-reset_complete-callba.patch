@@ -37,7 +37,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -205,6 +205,48 @@ mtk_wed_wo_reset(struct mtk_wed_device *
+@@ -206,6 +206,48 @@ mtk_wed_wo_reset(struct mtk_wed_device *
  	iounmap(reg);
  }
  

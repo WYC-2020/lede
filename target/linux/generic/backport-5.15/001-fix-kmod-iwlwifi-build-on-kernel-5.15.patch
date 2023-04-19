@@ -8,11 +8,9 @@ Subject: [PATCH] fix kmod-iwlwifi build on kernel 5.15
  include/linux/thermal.h        |  8 ++++++++
  2 files changed, 26 insertions(+)
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 13891745a..65d7d11be 100644
 --- a/drivers/thermal/thermal_core.c
 +++ b/drivers/thermal/thermal_core.c
-@@ -508,6 +508,24 @@ void thermal_zone_device_update(struct thermal_zone_device *tz,
+@@ -508,6 +508,24 @@ void thermal_zone_device_update(struct t
  }
  EXPORT_SYMBOL_GPL(thermal_zone_device_update);
  
@@ -37,11 +35,9 @@ index 13891745a..65d7d11be 100644
  static void thermal_zone_device_check(struct work_struct *work)
  {
  	struct thermal_zone_device *tz = container_of(work, struct
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index c31489397..40d9e106d 100644
 --- a/include/linux/thermal.h
 +++ b/include/linux/thermal.h
-@@ -393,6 +393,8 @@ int thermal_zone_get_offset(struct thermal_zone_device *tz);
+@@ -394,6 +394,8 @@ int thermal_zone_get_offset(struct therm
  int thermal_zone_device_enable(struct thermal_zone_device *tz);
  int thermal_zone_device_disable(struct thermal_zone_device *tz);
  void thermal_zone_device_critical(struct thermal_zone_device *tz);
@@ -50,7 +46,7 @@ index c31489397..40d9e106d 100644
  #else
  static inline struct thermal_zone_device *thermal_zone_device_register(
  	const char *type, int trips, int mask, void *devdata,
-@@ -441,6 +443,12 @@ static inline int thermal_zone_device_enable(struct thermal_zone_device *tz)
+@@ -442,6 +444,12 @@ static inline int thermal_zone_device_en
  
  static inline int thermal_zone_device_disable(struct thermal_zone_device *tz)
  { return -ENODEV; }
@@ -63,6 +59,3 @@ index c31489397..40d9e106d 100644
  #endif /* CONFIG_THERMAL */
  
  #endif /* __THERMAL_H__ */
--- 
-2.17.1
-

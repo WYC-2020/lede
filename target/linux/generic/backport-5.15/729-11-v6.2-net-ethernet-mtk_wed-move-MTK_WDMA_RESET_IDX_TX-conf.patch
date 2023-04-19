@@ -16,7 +16,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -135,16 +135,15 @@ mtk_wdma_tx_reset(struct mtk_wed_device
+@@ -136,16 +136,15 @@ mtk_wdma_tx_reset(struct mtk_wed_device
  
  	wdma_clr(dev, MTK_WDMA_GLO_CFG, MTK_WDMA_GLO_CFG_TX_DMA_EN);
  	if (readx_poll_timeout(mtk_wdma_read_reset, dev, status,
@@ -37,7 +37,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  }
  
  static void
-@@ -573,12 +572,6 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -574,12 +573,6 @@ mtk_wed_detach(struct mtk_wed_device *de
  
  	mtk_wdma_rx_reset(dev);
  	mtk_wed_reset(dev, MTK_WED_RESET_WED);

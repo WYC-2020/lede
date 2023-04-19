@@ -9,11 +9,9 @@ Subject: [PATCH] make of_mmc_spi.c resource provider agnostic
  include/linux/spi/mmc_spi.h   |  9 ---------
  3 files changed, 5 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index 451c25f..ce96ab1 100644
 --- a/drivers/mmc/host/Makefile
 +++ b/drivers/mmc/host/Makefile
-@@ -36,9 +36,7 @@ obj-$(CONFIG_MMC_MVSDIO)	+= mvsdio.o
+@@ -35,9 +35,7 @@ obj-$(CONFIG_MMC_MVSDIO)	+= mvsdio.o
  obj-$(CONFIG_MMC_DAVINCI)       += davinci_mmc.o
  obj-$(CONFIG_MMC_GOLDFISH)	+= android-goldfish.o
  obj-$(CONFIG_MMC_SPI)		+= mmc_spi.o
@@ -23,11 +21,9 @@ index 451c25f..ce96ab1 100644
  obj-$(CONFIG_MMC_S3C)   	+= s3cmci.o
  obj-$(CONFIG_MMC_SDRICOH_CS)	+= sdricoh_cs.o
  obj-$(CONFIG_MMC_TMIO)		+= tmio_mmc.o
-diff --git a/drivers/mmc/host/of_mmc_spi.c b/drivers/mmc/host/of_mmc_spi.c
-index 3c4d950..d1f6278 100644
 --- a/drivers/mmc/host/of_mmc_spi.c
 +++ b/drivers/mmc/host/of_mmc_spi.c
-@@ -54,21 +54,21 @@ static void of_mmc_spi_exit(struct device *dev, void *mmc)
+@@ -54,21 +54,21 @@ static void of_mmc_spi_exit(struct devic
  
  struct mmc_spi_platform_data *mmc_spi_get_pdata(struct spi_device *spi)
  {
@@ -65,8 +61,6 @@ index 3c4d950..d1f6278 100644
  		return;
  
  	kfree(oms);
-diff --git a/include/linux/spi/mmc_spi.h b/include/linux/spi/mmc_spi.h
-index 778ae8e..9ad9a06 100644
 --- a/include/linux/spi/mmc_spi.h
 +++ b/include/linux/spi/mmc_spi.h
 @@ -35,16 +35,7 @@ struct mmc_spi_platform_data {
@@ -86,6 +80,3 @@ index 778ae8e..9ad9a06 100644
 -#endif /* CONFIG_OF */
  
  #endif /* __LINUX_SPI_MMC_SPI_H */
--- 
-2.17.1
-

@@ -13,8 +13,6 @@ Subject: [PATCH] refresh kernel Kconfig
  virt/lib/Kconfig           | 2 +-
  7 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index ce60ec30e..868236029 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
 @@ -3,7 +3,7 @@
@@ -26,8 +24,6 @@ index ce60ec30e..868236029 100644
  
  #
  # async_tx api: hardware offloaded memory transfer/transform support
-diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
-index 09ba3af12..5b5f57d15 100644
 --- a/drivers/usb/gadget/Kconfig
 +++ b/drivers/usb/gadget/Kconfig
 @@ -143,7 +143,7 @@ source "drivers/usb/gadget/udc/Kconfig"
@@ -39,8 +35,6 @@ index 09ba3af12..5b5f57d15 100644
  	select CONFIGFS_FS
  	depends on USB_GADGET
  
-diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-index 79b2e79dd..ac3840aab 100644
 --- a/drivers/usb/host/Kconfig
 +++ b/drivers/usb/host/Kconfig
 @@ -183,7 +183,7 @@ config USB_EHCI_TT_NEWSCHED
@@ -52,8 +46,6 @@ index 79b2e79dd..ac3840aab 100644
  	depends on USB_PCI
  	default y
  
-diff --git a/drivers/usb/serial/Kconfig b/drivers/usb/serial/Kconfig
-index 67279c6bc..2e68ab037 100644
 --- a/drivers/usb/serial/Kconfig
 +++ b/drivers/usb/serial/Kconfig
 @@ -540,7 +540,7 @@ config USB_SERIAL_CYBERJACK
@@ -65,11 +57,9 @@ index 67279c6bc..2e68ab037 100644
  
  config USB_SERIAL_OPTION
  	tristate "USB driver for GSM and CDMA modems"
-diff --git a/init/Kconfig b/init/Kconfig
-index f23e90d99..68cb96820 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -2384,7 +2384,7 @@ config PADATA
+@@ -2388,7 +2388,7 @@ config PADATA
  	bool
  
  config ASN1
@@ -78,8 +68,6 @@ index f23e90d99..68cb96820 100644
  	help
  	  Build a simple ASN.1 grammar compiler that produces a bytecode output
  	  that can be interpreted by the ASN.1 stream decoder and used to
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 3321d04df..e437796e7 100644
 --- a/lib/Kconfig
 +++ b/lib/Kconfig
 @@ -9,7 +9,7 @@ config BINARY_PRINTF
@@ -119,8 +107,6 @@ index 3321d04df..e437796e7 100644
  config ASN1_ENCODER
 -       tristate
 +       tristate "asn1 encoder"
-diff --git a/virt/lib/Kconfig b/virt/lib/Kconfig
-index 2d9523b71..8b0b1fce2 100644
 --- a/virt/lib/Kconfig
 +++ b/virt/lib/Kconfig
 @@ -1,3 +1,3 @@
@@ -128,8 +114,6 @@ index 2d9523b71..8b0b1fce2 100644
  config IRQ_BYPASS_MANAGER
 -	tristate
 +	tristate "IRQ offload/bypass manager"
-diff --git a/drivers/bluetooth/Kconfig b/drivers/bluetooth/Kconfig
-index aae665a..81a9241 100644
 --- a/drivers/bluetooth/Kconfig
 +++ b/drivers/bluetooth/Kconfig
 @@ -8,7 +8,7 @@ config BT_INTEL
@@ -141,6 +125,3 @@ index aae665a..81a9241 100644
  	select FW_LOADER
  
  config BT_RTL
--- 
-2.17.1
-

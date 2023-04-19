@@ -21,7 +21,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  #include <linux/mfd/syscon.h>
  #include <linux/debugfs.h>
  #include <linux/soc/mediatek/mtk_wed.h>
-@@ -23,6 +24,7 @@
+@@ -24,6 +25,7 @@
  #define MTK_WED_PKT_SIZE		1900
  #define MTK_WED_BUF_SIZE		2048
  #define MTK_WED_BUF_PER_PAGE		(PAGE_SIZE / 2048)
@@ -29,7 +29,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  #define MTK_WED_TX_RING_SIZE		2048
  #define MTK_WED_WDMA_RING_SIZE		1024
-@@ -31,6 +33,10 @@
+@@ -32,6 +34,10 @@
  #define MTK_WED_PER_GROUP_PKT		128
  
  #define MTK_WED_FBUF_SIZE		128
@@ -40,7 +40,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  static struct mtk_wed_hw *hw_list[2];
  static DEFINE_MUTEX(hw_lock);
-@@ -65,12 +71,76 @@ wdma_set(struct mtk_wed_device *dev, u32
+@@ -66,12 +72,76 @@ wdma_set(struct mtk_wed_device *dev, u32
  	wdma_m32(dev, reg, 0, mask);
  }
  
@@ -117,7 +117,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static void
  mtk_wed_reset(struct mtk_wed_device *dev, u32 mask)
  {
-@@ -82,6 +152,54 @@ mtk_wed_reset(struct mtk_wed_device *dev
+@@ -83,6 +153,54 @@ mtk_wed_reset(struct mtk_wed_device *dev
  		WARN_ON_ONCE(1);
  }
  
@@ -172,7 +172,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static struct mtk_wed_hw *
  mtk_wed_assign(struct mtk_wed_device *dev)
  {
-@@ -116,7 +234,7 @@ out:
+@@ -117,7 +235,7 @@ out:
  }
  
  static int
@@ -181,7 +181,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  {
  	struct mtk_wdma_desc *desc;
  	dma_addr_t desc_phys;
-@@ -133,16 +251,16 @@ mtk_wed_buffer_alloc(struct mtk_wed_devi
+@@ -134,16 +252,16 @@ mtk_wed_buffer_alloc(struct mtk_wed_devi
  	if (!page_list)
  		return -ENOMEM;
  
@@ -202,7 +202,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  	for (i = 0, page_idx = 0; i < ring_size; i += MTK_WED_BUF_PER_PAGE) {
  		dma_addr_t page_phys, buf_phys;
-@@ -203,10 +321,10 @@ mtk_wed_buffer_alloc(struct mtk_wed_devi
+@@ -204,10 +322,10 @@ mtk_wed_buffer_alloc(struct mtk_wed_devi
  }
  
  static void
@@ -216,7 +216,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	int page_idx;
  	int i;
  
-@@ -216,7 +334,8 @@ mtk_wed_free_buffer(struct mtk_wed_devic
+@@ -217,7 +335,8 @@ mtk_wed_free_buffer(struct mtk_wed_devic
  	if (!desc)
  		goto free_pagelist;
  
@@ -226,7 +226,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		void *page = page_list[page_idx++];
  		dma_addr_t buf_addr;
  
-@@ -229,13 +348,59 @@ mtk_wed_free_buffer(struct mtk_wed_devic
+@@ -230,13 +349,59 @@ mtk_wed_free_buffer(struct mtk_wed_devic
  		__free_page(page);
  	}
  
@@ -288,7 +288,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static void
  mtk_wed_free_ring(struct mtk_wed_device *dev, struct mtk_wed_ring *ring)
  {
-@@ -247,6 +412,13 @@ mtk_wed_free_ring(struct mtk_wed_device
+@@ -248,6 +413,13 @@ mtk_wed_free_ring(struct mtk_wed_device
  }
  
  static void
@@ -302,7 +302,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  mtk_wed_free_tx_rings(struct mtk_wed_device *dev)
  {
  	int i;
-@@ -291,6 +463,38 @@ mtk_wed_set_512_support(struct mtk_wed_d
+@@ -292,6 +464,38 @@ mtk_wed_set_512_support(struct mtk_wed_d
  	}
  }
  
@@ -341,7 +341,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static void
  mtk_wed_dma_disable(struct mtk_wed_device *dev)
  {
-@@ -304,20 +508,25 @@ mtk_wed_dma_disable(struct mtk_wed_devic
+@@ -305,20 +509,25 @@ mtk_wed_dma_disable(struct mtk_wed_devic
  		MTK_WED_GLO_CFG_TX_DMA_EN |
  		MTK_WED_GLO_CFG_RX_DMA_EN);
  
@@ -371,7 +371,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		mtk_wed_set_512_support(dev, false);
  	}
  }
-@@ -338,6 +547,13 @@ mtk_wed_stop(struct mtk_wed_device *dev)
+@@ -339,6 +548,13 @@ mtk_wed_stop(struct mtk_wed_device *dev)
  	wdma_w32(dev, MTK_WDMA_INT_MASK, 0);
  	wdma_w32(dev, MTK_WDMA_INT_GRP2, 0);
  	wed_w32(dev, MTK_WED_WPDMA_INT_MASK, 0);
@@ -385,7 +385,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  }
  
  static void
-@@ -353,11 +569,21 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -354,11 +570,21 @@ mtk_wed_detach(struct mtk_wed_device *de
  	wdma_w32(dev, MTK_WDMA_RESET_IDX, 0);
  
  	mtk_wed_reset(dev, MTK_WED_RESET_WED);
@@ -409,7 +409,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  	if (dev->wlan.bus_type == MTK_WED_BUS_PCIE) {
  		struct device_node *wlan_node;
-@@ -441,10 +667,12 @@ mtk_wed_set_wpdma(struct mtk_wed_device
+@@ -442,10 +668,12 @@ mtk_wed_set_wpdma(struct mtk_wed_device
  	} else {
  		mtk_wed_bus_init(dev);
  
@@ -426,7 +426,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	}
  }
  
-@@ -494,6 +722,132 @@ mtk_wed_hw_init_early(struct mtk_wed_dev
+@@ -495,6 +723,132 @@ mtk_wed_hw_init_early(struct mtk_wed_dev
  	}
  }
  
@@ -559,7 +559,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static void
  mtk_wed_hw_init(struct mtk_wed_device *dev)
  {
-@@ -505,11 +859,11 @@ mtk_wed_hw_init(struct mtk_wed_device *d
+@@ -506,11 +860,11 @@ mtk_wed_hw_init(struct mtk_wed_device *d
  	wed_w32(dev, MTK_WED_TX_BM_CTRL,
  		MTK_WED_TX_BM_CTRL_PAUSE |
  		FIELD_PREP(MTK_WED_TX_BM_CTRL_VLD_GRP_NUM,
@@ -573,7 +573,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  	wed_w32(dev, MTK_WED_TX_BM_BUF_LEN, MTK_WED_PKT_SIZE);
  
-@@ -536,9 +890,9 @@ mtk_wed_hw_init(struct mtk_wed_device *d
+@@ -537,9 +891,9 @@ mtk_wed_hw_init(struct mtk_wed_device *d
  		wed_w32(dev, MTK_WED_TX_TKID_CTRL,
  			MTK_WED_TX_TKID_CTRL_PAUSE |
  			FIELD_PREP(MTK_WED_TX_TKID_CTRL_VLD_GRP_NUM,
@@ -585,7 +585,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		wed_w32(dev, MTK_WED_TX_TKID_DYN_THR,
  			FIELD_PREP(MTK_WED_TX_TKID_DYN_THR_LO, 0) |
  			MTK_WED_TX_TKID_DYN_THR_HI);
-@@ -546,18 +900,28 @@ mtk_wed_hw_init(struct mtk_wed_device *d
+@@ -547,18 +901,28 @@ mtk_wed_hw_init(struct mtk_wed_device *d
  
  	mtk_wed_reset(dev, MTK_WED_RESET_TX_BM);
  
@@ -617,7 +617,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  {
  	void *head = (void *)ring->desc;
  	int i;
-@@ -567,7 +931,10 @@ mtk_wed_ring_reset(struct mtk_wed_ring *
+@@ -568,7 +932,10 @@ mtk_wed_ring_reset(struct mtk_wed_ring *
  
  		desc = (struct mtk_wdma_desc *)(head + i * ring->desc_size);
  		desc->buf0 = 0;
@@ -629,7 +629,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		desc->buf1 = 0;
  		desc->info = 0;
  	}
-@@ -623,7 +990,8 @@ mtk_wed_reset_dma(struct mtk_wed_device
+@@ -624,7 +991,8 @@ mtk_wed_reset_dma(struct mtk_wed_device
  		if (!dev->tx_ring[i].desc)
  			continue;
  
@@ -639,7 +639,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	}
  
  	if (mtk_wed_poll_busy(dev))
-@@ -641,6 +1009,9 @@ mtk_wed_reset_dma(struct mtk_wed_device
+@@ -642,6 +1010,9 @@ mtk_wed_reset_dma(struct mtk_wed_device
  	wdma_w32(dev, MTK_WDMA_RESET_IDX, MTK_WDMA_RESET_IDX_RX);
  	wdma_w32(dev, MTK_WDMA_RESET_IDX, 0);
  
@@ -649,7 +649,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	if (busy) {
  		mtk_wed_reset(dev, MTK_WED_RESET_WDMA_INT_AGENT);
  		mtk_wed_reset(dev, MTK_WED_RESET_WDMA_RX_DRV);
-@@ -675,12 +1046,11 @@ mtk_wed_reset_dma(struct mtk_wed_device
+@@ -676,12 +1047,11 @@ mtk_wed_reset_dma(struct mtk_wed_device
  			MTK_WED_WPDMA_RESET_IDX_RX);
  		wed_w32(dev, MTK_WED_WPDMA_RESET_IDX, 0);
  	}
@@ -663,7 +663,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  {
  	ring->desc = dma_alloc_coherent(dev->hw->dev, size * desc_size,
  					&ring->desc_phys, GFP_KERNEL);
-@@ -689,7 +1059,7 @@ mtk_wed_ring_alloc(struct mtk_wed_device
+@@ -690,7 +1060,7 @@ mtk_wed_ring_alloc(struct mtk_wed_device
  
  	ring->desc_size = desc_size;
  	ring->size = size;
@@ -672,7 +672,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  	return 0;
  }
-@@ -698,9 +1068,14 @@ static int
+@@ -699,9 +1069,14 @@ static int
  mtk_wed_wdma_rx_ring_setup(struct mtk_wed_device *dev, int idx, int size)
  {
  	u32 desc_size = sizeof(struct mtk_wdma_desc) * dev->hw->version;
@@ -689,7 +689,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		return -ENOMEM;
  
  	wdma_w32(dev, MTK_WDMA_RING_RX(idx) + MTK_WED_RING_OFS_BASE,
-@@ -717,6 +1092,60 @@ mtk_wed_wdma_rx_ring_setup(struct mtk_we
+@@ -718,6 +1093,60 @@ mtk_wed_wdma_rx_ring_setup(struct mtk_we
  	return 0;
  }
  
@@ -750,7 +750,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static void
  mtk_wed_configure_irq(struct mtk_wed_device *dev, u32 irq_mask)
  {
-@@ -739,6 +1168,8 @@ mtk_wed_configure_irq(struct mtk_wed_dev
+@@ -740,6 +1169,8 @@ mtk_wed_configure_irq(struct mtk_wed_dev
  
  		wed_clr(dev, MTK_WED_WDMA_INT_CTRL, wdma_mask);
  	} else {
@@ -759,7 +759,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		/* initail tx interrupt trigger */
  		wed_w32(dev, MTK_WED_WPDMA_INT_CTRL_TX,
  			MTK_WED_WPDMA_INT_CTRL_TX0_DONE_EN |
-@@ -757,6 +1188,16 @@ mtk_wed_configure_irq(struct mtk_wed_dev
+@@ -758,6 +1189,16 @@ mtk_wed_configure_irq(struct mtk_wed_dev
  			FIELD_PREP(MTK_WED_WPDMA_INT_CTRL_TX_FREE_DONE_TRIG,
  				   dev->wlan.txfree_tbit));
  
@@ -776,7 +776,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		wed_w32(dev, MTK_WED_WDMA_INT_CLR, wdma_mask);
  		wed_set(dev, MTK_WED_WDMA_INT_CTRL,
  			FIELD_PREP(MTK_WED_WDMA_INT_CTRL_POLL_SRC_SEL,
-@@ -794,9 +1235,15 @@ mtk_wed_dma_enable(struct mtk_wed_device
+@@ -795,9 +1236,15 @@ mtk_wed_dma_enable(struct mtk_wed_device
  		wdma_set(dev, MTK_WDMA_GLO_CFG,
  			 MTK_WDMA_GLO_CFG_RX_INFO3_PRERES);
  	} else {
@@ -792,7 +792,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		wed_set(dev, MTK_WED_WPDMA_GLO_CFG,
  			MTK_WED_WPDMA_GLO_CFG_RX_DRV_R0_PKT_PROC |
  			MTK_WED_WPDMA_GLO_CFG_RX_DRV_R0_CRX_SYNC);
-@@ -804,6 +1251,15 @@ mtk_wed_dma_enable(struct mtk_wed_device
+@@ -805,6 +1252,15 @@ mtk_wed_dma_enable(struct mtk_wed_device
  		wed_clr(dev, MTK_WED_WPDMA_GLO_CFG,
  			MTK_WED_WPDMA_GLO_CFG_TX_TKID_KEEP |
  			MTK_WED_WPDMA_GLO_CFG_TX_DMAD_DW3_PREV);
@@ -808,7 +808,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	}
  }
  
-@@ -829,7 +1285,19 @@ mtk_wed_start(struct mtk_wed_device *dev
+@@ -830,7 +1286,19 @@ mtk_wed_start(struct mtk_wed_device *dev
  		val |= BIT(0) | (BIT(1) * !!dev->hw->index);
  		regmap_write(dev->hw->mirror, dev->hw->index * 4, val);
  	} else {
@@ -829,7 +829,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	}
  
  	mtk_wed_dma_enable(dev);
-@@ -863,7 +1331,7 @@ mtk_wed_attach(struct mtk_wed_device *de
+@@ -864,7 +1332,7 @@ mtk_wed_attach(struct mtk_wed_device *de
  	if (!hw) {
  		module_put(THIS_MODULE);
  		ret = -ENODEV;
@@ -838,7 +838,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	}
  
  	device = dev->wlan.bus_type == MTK_WED_BUS_PCIE
-@@ -876,15 +1344,24 @@ mtk_wed_attach(struct mtk_wed_device *de
+@@ -877,15 +1345,24 @@ mtk_wed_attach(struct mtk_wed_device *de
  	dev->dev = hw->dev;
  	dev->irq = hw->irq;
  	dev->wdma_idx = hw->index;
@@ -866,7 +866,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	}
  
  	mtk_wed_hw_init_early(dev);
-@@ -893,8 +1370,10 @@ mtk_wed_attach(struct mtk_wed_device *de
+@@ -894,8 +1371,10 @@ mtk_wed_attach(struct mtk_wed_device *de
  				   BIT(hw->index), 0);
  	else
  		ret = mtk_wed_wo_init(hw);
@@ -878,7 +878,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	mutex_unlock(&hw_lock);
  
  	return ret;
-@@ -917,10 +1396,11 @@ mtk_wed_tx_ring_setup(struct mtk_wed_dev
+@@ -918,10 +1397,11 @@ mtk_wed_tx_ring_setup(struct mtk_wed_dev
  	 * WDMA RX.
  	 */
  
@@ -892,7 +892,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		return -ENOMEM;
  
  	if (mtk_wed_wdma_rx_ring_setup(dev, idx, MTK_WED_WDMA_RING_SIZE))
-@@ -967,6 +1447,37 @@ mtk_wed_txfree_ring_setup(struct mtk_wed
+@@ -968,6 +1448,37 @@ mtk_wed_txfree_ring_setup(struct mtk_wed
  	return 0;
  }
  
@@ -930,7 +930,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  static u32
  mtk_wed_irq_get(struct mtk_wed_device *dev, u32 mask)
  {
-@@ -1063,7 +1574,9 @@ void mtk_wed_add_hw(struct device_node *
+@@ -1064,7 +1575,9 @@ void mtk_wed_add_hw(struct device_node *
  	static const struct mtk_wed_ops wed_ops = {
  		.attach = mtk_wed_attach,
  		.tx_ring_setup = mtk_wed_tx_ring_setup,
@@ -940,7 +940,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		.start = mtk_wed_start,
  		.stop = mtk_wed_stop,
  		.reset_dma = mtk_wed_reset_dma,
-@@ -1072,6 +1585,7 @@ void mtk_wed_add_hw(struct device_node *
+@@ -1073,6 +1586,7 @@ void mtk_wed_add_hw(struct device_node *
  		.irq_get = mtk_wed_irq_get,
  		.irq_set_mask = mtk_wed_irq_set_mask,
  		.detach = mtk_wed_detach,

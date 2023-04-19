@@ -15,7 +15,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
 
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -526,9 +526,9 @@ mtk_wed_dma_disable(struct mtk_wed_devic
+@@ -527,9 +527,9 @@ mtk_wed_dma_disable(struct mtk_wed_devic
  			MTK_WED_WPDMA_RX_D_RX_DRV_EN);
  		wed_clr(dev, MTK_WED_WDMA_GLO_CFG,
  			MTK_WED_WDMA_GLO_CFG_TX_DDONE_CHK);
@@ -27,7 +27,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  }
  
  static void
-@@ -1297,9 +1297,10 @@ mtk_wed_start(struct mtk_wed_device *dev
+@@ -1298,9 +1298,10 @@ mtk_wed_start(struct mtk_wed_device *dev
  		if (mtk_wed_rro_cfg(dev))
  			return;
  
@@ -39,7 +39,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	mtk_wed_dma_enable(dev);
  	dev->running = true;
  }
-@@ -1365,11 +1366,13 @@ mtk_wed_attach(struct mtk_wed_device *de
+@@ -1366,11 +1367,13 @@ mtk_wed_attach(struct mtk_wed_device *de
  	}
  
  	mtk_wed_hw_init_early(dev);

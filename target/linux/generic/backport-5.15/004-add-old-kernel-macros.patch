@@ -7,8 +7,6 @@ Subject: [PATCH] add missing macro
  include/linux/firmware.h | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/firmware.h b/include/linux/firmware.h
-index 25109192c..f1b38c389 100644
 --- a/include/linux/firmware.h
 +++ b/include/linux/firmware.h
 @@ -9,6 +9,9 @@
@@ -21,6 +19,3 @@ index 25109192c..f1b38c389 100644
  struct firmware {
  	size_t size;
  	const u8 *data;
--- 
-2.17.1
-

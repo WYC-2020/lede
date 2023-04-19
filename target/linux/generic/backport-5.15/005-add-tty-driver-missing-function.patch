@@ -10,7 +10,7 @@ Subject: [PATCH] add tty driver missing function
 
 --- a/drivers/tty/tty_io.c
 +++ b/drivers/tty/tty_io.c
-@@ -3438,6 +3438,12 @@ void tty_driver_kref_put(struct tty_driv
+@@ -3440,6 +3440,12 @@ void tty_driver_kref_put(struct tty_driv
  }
  EXPORT_SYMBOL(tty_driver_kref_put);
  

@@ -14,7 +14,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -539,14 +539,8 @@ mtk_wed_dma_disable(struct mtk_wed_devic
+@@ -540,14 +540,8 @@ mtk_wed_dma_disable(struct mtk_wed_devic
  static void
  mtk_wed_stop(struct mtk_wed_device *dev)
  {
@@ -29,7 +29,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  	wed_w32(dev, MTK_WED_WPDMA_INT_TRIGGER, 0);
  	wed_w32(dev, MTK_WED_WDMA_INT_TRIGGER, 0);
  	wdma_w32(dev, MTK_WDMA_INT_MASK, 0);
-@@ -558,7 +552,27 @@ mtk_wed_stop(struct mtk_wed_device *dev)
+@@ -559,7 +553,27 @@ mtk_wed_stop(struct mtk_wed_device *dev)
  
  	wed_w32(dev, MTK_WED_EXT_INT_MASK1, 0);
  	wed_w32(dev, MTK_WED_EXT_INT_MASK2, 0);
@@ -58,7 +58,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  }
  
  static void
-@@ -568,7 +582,7 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -569,7 +583,7 @@ mtk_wed_detach(struct mtk_wed_device *de
  
  	mutex_lock(&hw_lock);
  
@@ -67,7 +67,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  
  	mtk_wdma_rx_reset(dev);
  	mtk_wed_reset(dev, MTK_WED_RESET_WED);
-@@ -677,7 +691,7 @@ mtk_wed_hw_init_early(struct mtk_wed_dev
+@@ -678,7 +692,7 @@ mtk_wed_hw_init_early(struct mtk_wed_dev
  {
  	u32 mask, set;
  

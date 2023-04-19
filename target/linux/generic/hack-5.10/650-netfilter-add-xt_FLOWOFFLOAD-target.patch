@@ -817,4 +817,3 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  void nf_flow_snat_port(const struct flow_offload *flow,
  		       struct sk_buff *skb, unsigned int thoff,
  		       u8 protocol, enum flow_offload_tuple_dir dir);
---

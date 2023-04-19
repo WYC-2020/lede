@@ -7,8 +7,6 @@ Subject: [PATCH] add link pthread
  scripts/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile b/scripts/Makefile
-index 9adb6d247..ead36ceca 100644
 --- a/scripts/Makefile
 +++ b/scripts/Makefile
 @@ -3,7 +3,7 @@
@@ -20,6 +18,3 @@ index 9adb6d247..ead36ceca 100644
  CRYPTO_CFLAGS = $(shell pkg-config --cflags libcrypto 2> /dev/null)
  
  hostprogs-always-$(CONFIG_BUILD_BIN2C)			+= bin2c
--- 
-2.17.1
-

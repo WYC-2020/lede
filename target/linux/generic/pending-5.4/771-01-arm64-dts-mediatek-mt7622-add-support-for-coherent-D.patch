@@ -19,7 +19,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  			interface-type = "ace";
  			reg = <0x5000 0x1000>;
  		};
-@@ -925,6 +925,8 @@
+@@ -926,6 +926,8 @@
  		power-domains = <&scpsys MT7622_POWER_DOMAIN_ETHSYS>;
  		mediatek,ethsys = <&ethsys>;
  		mediatek,sgmiisys = <&sgmiisys>;

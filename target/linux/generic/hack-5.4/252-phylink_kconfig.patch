@@ -7,8 +7,6 @@ Subject: [PATCH] phylink kconfig
  drivers/net/phy/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index dcf2051ef..2733e0d21 100644
 --- a/drivers/net/phy/Kconfig
 +++ b/drivers/net/phy/Kconfig
 @@ -210,7 +210,7 @@ endif
@@ -20,6 +18,3 @@ index dcf2051ef..2733e0d21 100644
  	depends on NETDEVICES
  	select PHYLIB
  	select SWPHY
--- 
-2.17.1
-

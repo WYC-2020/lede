@@ -36,7 +36,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  #define MTK_PCIE_BASE(n)		(0x1a143000 + (n) * 0x2000)
  
  #define MTK_WED_PKT_SIZE		1900
-@@ -355,6 +356,8 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -355,6 +357,8 @@ mtk_wed_detach(struct mtk_wed_device *de
  
  	mtk_wed_free_buffer(dev);
  	mtk_wed_free_tx_rings(dev);
@@ -45,7 +45,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
  	if (dev->wlan.bus_type == MTK_WED_BUS_PCIE) {
  		struct device_node *wlan_node;
-@@ -885,9 +888,11 @@ mtk_wed_attach(struct mtk_wed_device *de
+@@ -885,9 +889,11 @@ mtk_wed_attach(struct mtk_wed_device *de
  	}
  
  	mtk_wed_hw_init_early(dev);

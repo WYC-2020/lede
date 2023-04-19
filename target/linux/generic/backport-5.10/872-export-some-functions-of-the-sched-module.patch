@@ -7,11 +7,9 @@ Subject: [PATCH] export sched same function
  kernel/sched/core.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5b205bb..d4cb5b0 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5512,17 +5512,19 @@ int sched_setscheduler(struct task_struct *p, int policy,
+@@ -5511,17 +5511,19 @@ int sched_setscheduler(struct task_struc
  {
  	return _sched_setscheduler(p, policy, param, true);
  }
@@ -32,6 +30,3 @@ index 5b205bb..d4cb5b0 100644
  /**
   * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
   * @p: the task in question.
--- 
-2.17.1
-

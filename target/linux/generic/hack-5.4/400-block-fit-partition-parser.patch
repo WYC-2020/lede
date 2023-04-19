@@ -70,7 +70,7 @@
  static DEVICE_ATTR(partition, 0444, part_partition_show, NULL);
  static DEVICE_ATTR(start, 0444, part_start_show, NULL);
  static DEVICE_ATTR(size, 0444, part_size_show, NULL);
-@@ -188,6 +204,7 @@ static DEVICE_ATTR(alignment_offset, 044
+@@ -188,6 +199,7 @@ static DEVICE_ATTR(alignment_offset, 044
  static DEVICE_ATTR(discard_alignment, 0444, part_discard_alignment_show, NULL);
  static DEVICE_ATTR(stat, 0444, part_stat_show, NULL);
  static DEVICE_ATTR(inflight, 0444, part_inflight_show, NULL);
@@ -78,7 +78,7 @@
  #ifdef CONFIG_FAIL_MAKE_REQUEST
  static struct device_attribute dev_attr_fail =
  	__ATTR(make-it-fail, 0644, part_fail_show, part_fail_store);
-@@ -202,6 +219,7 @@ static struct attribute *part_attrs[] =
+@@ -202,6 +214,7 @@ static struct attribute *part_attrs[] =
  	&dev_attr_discard_alignment.attr,
  	&dev_attr_stat.attr,
  	&dev_attr_inflight.attr,
@@ -86,7 +86,7 @@
  #ifdef CONFIG_FAIL_MAKE_REQUEST
  	&dev_attr_fail.attr,
  #endif
-@@ -641,6 +659,10 @@ rescan:
+@@ -641,6 +654,10 @@ rescan:
  		if (state->parts[p].flags & ADDPART_FLAG_RAID)
  			md_autodetect_dev(part_to_dev(part)->devt);
  #endif

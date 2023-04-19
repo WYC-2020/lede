@@ -9,9 +9,9 @@ Subject: [PATCH] add missing ioremap macro
 
 --- a/arch/arc/include/asm/io.h
 +++ b/arch/arc/include/asm/io.h
-@@ -34,6 +34,10 @@ static inline void ioport_unmap(void __iomem *addr)
+@@ -34,6 +34,10 @@ static inline void ioport_unmap(void __i
  
- extern void iounmap(const void __iomem *addr);
+ extern void iounmap(const volatile void __iomem *addr);
  
 +#define ioremap_nocache(phy, sz)	ioremap(phy, sz)
 +#define ioremap_wc(phy, sz)		ioremap(phy, sz)
@@ -22,7 +22,7 @@ Subject: [PATCH] add missing ioremap macro
   */
 --- a/arch/arm/include/asm/io.h
 +++ b/arch/arm/include/asm/io.h
-@@ -384,7 +384,7 @@ static inline void memcpy_toio(volatile void __iomem *to, const void *from,
+@@ -384,7 +384,7 @@ static inline void memcpy_toio(volatile
   */
  void __iomem *ioremap(resource_size_t res_cookie, size_t size);
  #define ioremap ioremap
@@ -31,6 +31,3 @@ Subject: [PATCH] add missing ioremap macro
  /*
   * Do not use ioremap_cache for mapping memory. Use memremap instead.
   */
--- 
-2.17.1
-

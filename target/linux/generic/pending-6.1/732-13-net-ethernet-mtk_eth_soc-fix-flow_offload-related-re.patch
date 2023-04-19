@@ -1,15 +1,11 @@
-From: Felix Fietkau <nbd@nbd.name>
-Date: Thu, 17 Nov 2022 11:58:21 +0100
-Subject: [PATCH] net: ethernet: mtk_eth_soc: fix flow_offload related refcount
- bug
+From 26ed914d612cc0612abd8b426134c7026747fe25 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Wed, 19 Apr 2023 16:20:36 +0800
+Subject: [PATCH] 1
 
-Since we call flow_block_cb_decref on FLOW_BLOCK_UNBIND, we need to call
-flow_block_cb_incref unconditionally, even for a newly allocated cb.
-Fixes a use-after-free bug
-
-Fixes: 502e84e2382d ("net: ethernet: mtk_eth_soc: add flow offloading support")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
+ mtk_ppe_offload.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
 --- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
 +++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
@@ -21,7 +17,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	flow_setup_cb_t *cb;
  
  	if (!eth->soc->offload_version)
-@@ -568,17 +569,19 @@ mtk_eth_setup_tc_block(struct net_device
+@@ -568,17 +569,20 @@ mtk_eth_setup_tc_block(struct net_device
  	switch (f->command) {
  	case FLOW_BLOCK_BIND:
  		block_cb = flow_block_cb_lookup(f->block, cb, dev);
@@ -43,11 +39,11 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		flow_block_cb_incref(block_cb);
 -		flow_block_cb_add(block_cb, f);
 -		list_add_tail(&block_cb->driver_list, &block_cb_list);
-+
 +		if (register_block) {
 +			flow_block_cb_add(block_cb, f);
 +			list_add_tail(&block_cb->driver_list, &block_cb_list);
 +		}
++
  		return 0;
  	case FLOW_BLOCK_UNBIND:
  		block_cb = flow_block_cb_lookup(f->block, cb, dev);

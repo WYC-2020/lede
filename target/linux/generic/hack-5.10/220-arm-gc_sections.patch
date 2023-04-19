@@ -22,7 +22,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  	select HAVE_OPROFILE if HAVE_PERF_EVENTS
 --- a/arch/arm/boot/compressed/Makefile
 +++ b/arch/arm/boot/compressed/Makefile
-@@ -100,6 +100,7 @@ $(foreach o, $(libfdt_objs) atags_to_fdt.o, \
+@@ -100,6 +100,7 @@ $(foreach o, $(libfdt_objs) atags_to_fdt
  ifdef building_out_of_srctree
  $(shell rm -f $(addprefix $(obj)/, fdt_rw.c fdt_ro.c fdt_wip.c fdt.c))
  endif
@@ -69,7 +69,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 +		KEEP(*(.pv_table))
  		__pv_table_end = .;
  	}
-
+ 
 --- a/arch/arm/include/asm/vmlinux.lds.h
 +++ b/arch/arm/include/asm/vmlinux.lds.h
 @@ -42,13 +42,13 @@
@@ -129,7 +129,3 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  	}								\
  	ARM_LMA(__stubs, .stubs);					\
  	. = __stubs_lma + SIZEOF(.stubs);				\
- 
--- 
-2.17.1
-

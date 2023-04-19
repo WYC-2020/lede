@@ -21,8 +21,6 @@ Subject: [PATCH] 1232
  create mode 100644 drivers/net/ethernet/mediatek/mtk_wed_regs.h
  create mode 100644 include/linux/soc/mediatek/mtk_wed.h
 
-diff --git a/drivers/net/ethernet/mediatek/Kconfig b/drivers/net/ethernet/mediatek/Kconfig
-index 0f8aaf096..3373cbec1 100644
 --- a/drivers/net/ethernet/mediatek/Kconfig
 +++ b/drivers/net/ethernet/mediatek/Kconfig
 @@ -7,6 +7,10 @@ config NET_VENDOR_MEDIATEK
@@ -36,8 +34,6 @@ index 0f8aaf096..3373cbec1 100644
  config NET_MEDIATEK_SOC
  	tristate "MediaTek SoC Gigabit Ethernet support"
  	select PHYLINK
-diff --git a/drivers/net/ethernet/mediatek/Makefile b/drivers/net/ethernet/mediatek/Makefile
-index 05fb2e751..9267aff82 100644
 --- a/drivers/net/ethernet/mediatek/Makefile
 +++ b/drivers/net/ethernet/mediatek/Makefile
 @@ -5,3 +5,8 @@
@@ -50,8 +46,6 @@ index 05fb2e751..9267aff82 100644
 +endif
 +obj-$(CONFIG_NET_MEDIATEK_SOC_WED) += mtk_wed_ops.o
 \ No newline at end of file
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index a50a257d0..4c091dbed 100644
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
 @@ -26,6 +26,7 @@
@@ -62,7 +56,7 @@ index a50a257d0..4c091dbed 100644
  
  static int mtk_msg_level = -1;
  module_param_named(msg_level, mtk_msg_level, int, 0);
-@@ -3142,6 +3143,22 @@ static int mtk_probe(struct platform_dev
+@@ -3190,6 +3191,22 @@ static int mtk_probe(struct platform_dev
  		}
  	}
  
@@ -85,8 +79,6 @@ index a50a257d0..4c091dbed 100644
  	for (i = 0; i < 3; i++) {
  		if (MTK_HAS_CAPS(eth->soc->caps, MTK_SHARED_INT) && i > 0)
  			eth->irq[i] = eth->irq[0];
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index cdd4195d5..ec0bc254e 100644
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
 @@ -292,6 +292,9 @@
@@ -99,9 +91,6 @@ index cdd4195d5..ec0bc254e 100644
  /* QDMA descriptor txd4 */
  #define TX_DMA_CHKSUM		(0x7 << 29)
  #define TX_DMA_TSO		BIT(28)
-diff --git a/drivers/net/ethernet/mediatek/mtk_wed.c b/drivers/net/ethernet/mediatek/mtk_wed.c
-new file mode 100644
-index 000000000..f0eacf819
 --- /dev/null
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
 @@ -0,0 +1,875 @@
@@ -980,9 +969,6 @@ index 000000000..f0eacf819
 +		kfree(hw);
 +	}
 +}
-diff --git a/drivers/net/ethernet/mediatek/mtk_wed.h b/drivers/net/ethernet/mediatek/mtk_wed.h
-new file mode 100644
-index 000000000..404c9a9b1
 --- /dev/null
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.h
 @@ -0,0 +1,128 @@
@@ -1114,9 +1100,6 @@ index 000000000..404c9a9b1
 +#endif
 +
 +#endif
-diff --git a/drivers/net/ethernet/mediatek/mtk_wed_debugfs.c b/drivers/net/ethernet/mediatek/mtk_wed_debugfs.c
-new file mode 100644
-index 000000000..a81d3fd1a
 --- /dev/null
 +++ b/drivers/net/ethernet/mediatek/mtk_wed_debugfs.c
 @@ -0,0 +1,175 @@
@@ -1295,9 +1278,6 @@ index 000000000..a81d3fd1a
 +	debugfs_create_file_unsafe("regval", 0600, dir, hw, &fops_regval);
 +	debugfs_create_file_unsafe("txinfo", 0400, dir, hw, &wed_txinfo_fops);
 +}
-diff --git a/drivers/net/ethernet/mediatek/mtk_wed_ops.c b/drivers/net/ethernet/mediatek/mtk_wed_ops.c
-new file mode 100644
-index 000000000..a5d9d8a5b
 --- /dev/null
 +++ b/drivers/net/ethernet/mediatek/mtk_wed_ops.c
 @@ -0,0 +1,8 @@
@@ -1309,9 +1289,6 @@ index 000000000..a5d9d8a5b
 +
 +const struct mtk_wed_ops __rcu *mtk_soc_wed_ops;
 +EXPORT_SYMBOL_GPL(mtk_soc_wed_ops);
-diff --git a/drivers/net/ethernet/mediatek/mtk_wed_regs.h b/drivers/net/ethernet/mediatek/mtk_wed_regs.h
-new file mode 100644
-index 000000000..0a0465ea5
 --- /dev/null
 +++ b/drivers/net/ethernet/mediatek/mtk_wed_regs.h
 @@ -0,0 +1,251 @@
@@ -1566,9 +1543,6 @@ index 000000000..0a0465ea5
 +#define HIFSYS_DMA_AG_MAP				0x008
 +
 +#endif
-diff --git a/include/linux/soc/mediatek/mtk_wed.h b/include/linux/soc/mediatek/mtk_wed.h
-new file mode 100644
-index 000000000..0a0465ea5
 --- /dev/null
 +++ b/include/linux/soc/mediatek/mtk_wed.h
 @@ -0,0 +1,150 @@
@@ -1722,6 +1696,3 @@ index 000000000..0a0465ea5
 +#endif
 +
 +#endif
--- 
-2.17.1
-

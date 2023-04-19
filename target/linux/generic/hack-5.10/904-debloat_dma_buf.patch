@@ -90,4 +90,3 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
  {
---

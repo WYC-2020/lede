@@ -8,8 +8,6 @@ Subject: [PATCH] wrap literal addresses in absolute_pointer
  arch/x86/boot/main.c |  2 +-
  2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/arch/x86/boot/boot.h b/arch/x86/boot/boot.h
-index ca866f1c..e3738e2b 100644
 --- a/arch/x86/boot/boot.h
 +++ b/arch/x86/boot/boot.h
 @@ -111,65 +111,65 @@ typedef unsigned int addr_t;
@@ -90,8 +88,6 @@ index ca866f1c..e3738e2b 100644
  }
  
  /* Note: these only return true/false, not a signed return value! */
-diff --git a/arch/x86/boot/main.c b/arch/x86/boot/main.c
-index e3add857..c421af5a 100644
 --- a/arch/x86/boot/main.c
 +++ b/arch/x86/boot/main.c
 @@ -33,7 +33,7 @@ static void copy_boot_params(void)
@@ -103,6 +99,3 @@ index e3add857..c421af5a 100644
  
  	BUILD_BUG_ON(sizeof(boot_params) != 4096);
  	memcpy(&boot_params.hdr, &hdr, sizeof(hdr));
--- 
-2.17.1
-

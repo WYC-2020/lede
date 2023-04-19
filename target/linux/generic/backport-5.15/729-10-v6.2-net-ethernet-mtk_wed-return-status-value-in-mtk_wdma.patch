@@ -16,7 +16,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -101,17 +101,21 @@ mtk_wdma_read_reset(struct mtk_wed_devic
+@@ -102,17 +102,21 @@ mtk_wdma_read_reset(struct mtk_wed_devic
  	return wdma_r32(dev, MTK_WDMA_GLO_CFG);
  }
  
@@ -42,7 +42,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  	for (i = 0; i < ARRAY_SIZE(dev->rx_wdma); i++) {
  		if (dev->rx_wdma[i].desc)
  			continue;
-@@ -119,6 +123,8 @@ mtk_wdma_rx_reset(struct mtk_wed_device
+@@ -120,6 +124,8 @@ mtk_wdma_rx_reset(struct mtk_wed_device
  		wdma_w32(dev,
  			 MTK_WDMA_RING_RX(i) + MTK_WED_RING_OFS_CPU_IDX, 0);
  	}
@@ -51,7 +51,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  }
  
  static void
-@@ -565,9 +571,7 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -566,9 +572,7 @@ mtk_wed_detach(struct mtk_wed_device *de
  
  	mtk_wed_stop(dev);
  
@@ -62,7 +62,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  	mtk_wed_reset(dev, MTK_WED_RESET_WED);
  	if (mtk_wed_get_rx_capa(dev)) {
  		wdma_clr(dev, MTK_WDMA_GLO_CFG, MTK_WDMA_GLO_CFG_TX_DMA_EN);
-@@ -582,7 +586,6 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -583,7 +587,6 @@ mtk_wed_detach(struct mtk_wed_device *de
  		mtk_wed_wo_reset(dev);
  		mtk_wed_free_rx_rings(dev);
  		mtk_wed_wo_deinit(hw);
@@ -70,7 +70,7 @@ Signed-off-by: Paolo Abeni <pabeni@redhat.com>
  	}
  
  	if (dev->wlan.bus_type == MTK_WED_BUS_PCIE) {
-@@ -1006,11 +1009,7 @@ mtk_wed_reset_dma(struct mtk_wed_device
+@@ -1007,11 +1010,7 @@ mtk_wed_reset_dma(struct mtk_wed_device
  		wed_w32(dev, MTK_WED_RESET_IDX, 0);
  	}
  

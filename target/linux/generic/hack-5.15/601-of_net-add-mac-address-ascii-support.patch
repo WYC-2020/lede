@@ -7,8 +7,6 @@ Subject: [PATCH] 12
  net/ethernet/eth.c | 87 +++++++++++++++++++++++++++++++++++++++-------
  1 file changed, 74 insertions(+), 13 deletions(-)
 
-diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
-index cdb4f33..3eff9c6 100644
 --- a/net/ethernet/eth.c
 +++ b/net/ethernet/eth.c
 @@ -538,6 +538,63 @@ int eth_platform_get_mac_address(struct
@@ -75,7 +73,7 @@ index cdb4f33..3eff9c6 100644
  /**
   * nvmem_get_mac_address - Obtain the MAC address from an nvmem cell named
   * 'mac-address' associated with given device.
-@@ -551,19 +608,23 @@ int nvmem_get_mac_address(struct device
+@@ -551,20 +608,24 @@ int nvmem_get_mac_address(struct device
  {
  	struct nvmem_cell *cell;
  	const void *mac;
@@ -84,15 +82,14 @@ index cdb4f33..3eff9c6 100644
 -	cell = nvmem_cell_get(dev, "mac-address");
 -	if (IS_ERR(cell))
 -		return PTR_ERR(cell);
--
++	struct nvmem_cell_mac_address_property *property;
++	int i;
+ 
 -	mac = nvmem_cell_read(cell, &len);
 -	nvmem_cell_put(cell);
 -
 -	if (IS_ERR(mac))
 -		return PTR_ERR(mac);
-+	struct nvmem_cell_mac_address_property *property;
-+	int i;
-+
 +	for (i = 0; i < ARRAY_SIZE(nvmem_cell_mac_address_properties); i++) {
 +		property = &nvmem_cell_mac_address_properties[i];
 +		cell = nvmem_cell_get(dev, property->name);
@@ -113,6 +110,3 @@ index cdb4f33..3eff9c6 100644
  		return -EINVAL;
  	}
  
--- 
-2.17.1
-

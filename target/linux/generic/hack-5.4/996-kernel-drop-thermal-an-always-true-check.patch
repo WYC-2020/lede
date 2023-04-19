@@ -7,11 +7,9 @@ Subject: [PATCH] kernel:drop thermal an always true check
  drivers/acpi/thermal.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
-index 859b1de3..d62bf6df 100644
 --- a/drivers/acpi/thermal.c
 +++ b/drivers/acpi/thermal.c
-@@ -1120,8 +1120,6 @@ static int acpi_thermal_resume(struct device *dev)
+@@ -1153,8 +1153,6 @@ static int acpi_thermal_resume(struct de
  		return -EINVAL;
  
  	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
@@ -20,6 +18,3 @@ index 859b1de3..d62bf6df 100644
  		if (!tz->trips.active[i].flags.valid)
  			break;
  		tz->trips.active[i].flags.enabled = 1;
--- 
-2.17.1
-
