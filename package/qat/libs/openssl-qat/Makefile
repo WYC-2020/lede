@@ -48,7 +48,8 @@ CONFIGURE_ARGS += --prefix=$(PKG_INSTALL_DIR)
 
 CONFIGURE_ARGS += $(if $(CONFIG_QAT_C3XXX)                            ,--with-qat_hw_dir=$(KERNEL_BUILD_DIR)/quickassist-c3xxx-1.7)
 CONFIGURE_ARGS += $(if $(CONFIG_QAT_C2XXX)                            ,--with-qat_hw_dir=$(KERNEL_BUILD_DIR)/quickassist-c2xxx-1.5)
-
+CONFIGURE_ARGS += $(if $(CONFIG_QAT_NONE)                             ,--disable-qat_hw)
+CONFIGURE_ARGS += $(if $(CONFIG_QAT_NONE)                             ,--disable-qat_sw)
 CONFIGURE_ARGS += $(if $(CONFIG_QAT_ENGINE_DISABLE_RSA)               ,--disable-qat_rsa)
 CONFIGURE_ARGS += $(if $(CONFIG_QAT_ENGINE_DISABLE_DSA)               ,--disable-qat_dsa)
 CONFIGURE_ARGS += $(if $(CONFIG_QAT_ENGINE_DISABLE_DH)                ,--disable-qat_dh)
