@@ -109,7 +109,7 @@ xcode-select --install  or Command_Line_Tools_for_Xcode_11.5
 ```
 2、安装Homebrew
 ```bash
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 3、安装编译环境
 ```bash
