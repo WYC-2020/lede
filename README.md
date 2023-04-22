@@ -113,7 +113,7 @@ xcode-select --install  or Command_Line_Tools_for_Xcode_11.5
 ```
 3、安装编译环境
 ```bash
-brew install coreutils findutils gawk grep gnu-getopt gnu-tar wget diffutils git-extras quilt svn make ncurses pkg-config
+brew install coreutils findutils gawk grep gnu-getopt gnu-tar wget diffutils git-extras quilt svn make ncurses pkg-config  aria2 qemu SDL2 
 ```
 4、更新环境变量
 ```bash
