@@ -113,23 +113,71 @@ xcode-select --install  or Command_Line_Tools_for_Xcode_11.5
 ```
 3、安装编译环境
 ```bash
-brew install coreutils findutils gawk grep gnu-getopt gnu-tar wget diffutils git-extras quilt svn make ncurses pkg-config  aria2 qemu SDL2 
+brew install coreutils findutils gawk grep gnu-getopt gnu-tar wget diffutils git-extras quilt svn make ncurses pkg-config  aria2 qemu
 ```
-4、更新环境变量
+4、更新环境变量  
+>> 查看是否存在~/.bashrc文件：
 ```bash
-echo 'export PATH="/usr/local/opt/make/libexec/gnubin:$PATH"' >> ~/.bashrc
-echo 'export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"' >> ~/.bashrc
-echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bashrc
+ls -a ~
+```
+>> 存在~/.bashrc文件：  
+```bash
 echo 'export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"' >> ~/.bashrc
 echo 'export PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/gawk/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/make/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/ncurses/bin:$PATH"' >> ~/.bashrc
+```
+>> 不存在~/.bashrc文件：
+```bash
+vim ~/.bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+
+```
+
+```bash
+vim ~/.bashrc
+
+# .bashrc
+
+# User specific aliases and functions
+. .alias
+alias ducks='du -cks * | sort -rn | head -15'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+PATH=$PATH:/usr/local/Homebrew
+export PATH
+
+echo 'export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/gawk/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/make/libexec/gnubin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/opt/ncurses/bin:$PATH"' >> ~/.bashrc
+
 ```
 5、生效环境变量
 ```bash
 source ~/.bashrc
 ```
->> 然后输入 bash 命令，进入bash shell，就可以和 Ubuntu(第三步开始)一样正常编译了
-
-6、可能遇到问题:
+6、进入bash,然后就可以想ubuntu那样编译了
+```bash
+bash
+```
+7、可能遇到问题:
 ```bash
 SSL certificate problem: certificate has expire in macOS
 Rename /etc/ssl/cert.pem to something else. (I suggest /etc/ssl/cert.pem.org)
