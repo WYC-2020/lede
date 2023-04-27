@@ -173,9 +173,11 @@ echo 'export PATH="/usr/local/opt/ncurses/bin:$PATH"' >> ~/.bashrc
 ```bash
 source ~/.bashrc
 ```
->> 然后输入 bash 命令，进入bash shell，就可以和 Ubuntu(第三步开始)一样正常编译了
-
-6、可能遇到问题:
+6、进入bash,然后就可以想ubuntu那样编译了
+```bash
+bash
+```
+7、可能遇到问题:
 ```bash
 SSL certificate problem: certificate has expire in macOS
 Rename /etc/ssl/cert.pem to something else. (I suggest /etc/ssl/cert.pem.org)
