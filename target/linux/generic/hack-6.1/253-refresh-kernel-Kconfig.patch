@@ -59,7 +59,7 @@ Subject: [PATCH] refresh kernel Kconfig
  	tristate "USB driver for GSM and CDMA modems"
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -2007,7 +2007,7 @@ config PADATA
+@@ -2003,7 +2003,7 @@ config PADATA
  	bool
  
  config ASN1
