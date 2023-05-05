@@ -29,11 +29,11 @@ define Package/libcryptopp/description
 endef
 
 TARGET_CFLAGS += $(FPIC)
-MAKE_FLAGS +=dynamic
+MAKE_FLAGS +=dynamic -f GNUmakefile-cross
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
-	$(CP) $(PKG_BUILD_DIR)/../cryptopp-CRYPTOPP_$(subst .,_,$(PKG_VERSION))/* $(PKG_BUILD_DIR)
+	mv $(PKG_BUILD_DIR)/../cryptopp-CRYPTOPP_$(subst .,_,$(PKG_VERSION))/* $(PKG_BUILD_DIR)
 endef
 
 define Build/InstallDev
