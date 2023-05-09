@@ -2,72 +2,80 @@ From: Felix Fietkau <nbd@nbd.name>
 Subject: netfilter: optional tcp window check
 
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Christian 'Ansuel' Marangi <ansuelsmth@gmail.com>
 ---
  net/netfilter/nf_conntrack_proto_tcp.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
 --- a/net/netfilter/nf_conntrack_proto_tcp.c
 +++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -31,6 +31,9 @@
- #include <net/netfilter/ipv4/nf_conntrack_ipv4.h>
- #include <net/netfilter/ipv6/nf_conntrack_ipv6.h>
- 
-+/* Do not check the TCP window for incoming packets  */
-+static int nf_ct_tcp_no_window_check __read_mostly = 1;
-+
- /* "Be conservative in what you do,
-     be liberal in what you accept from others."
-     If it's non-zero, we mark only out of window RST segments as INVALID. */
-@@ -476,6 +479,9 @@ static bool tcp_in_window(const struct n
+@@ -476,6 +476,9 @@ static bool tcp_in_window(const struct n
  	s32 receiver_offset;
  	bool res, in_recv_win;
  
-+	if (nf_ct_tcp_no_window_check)
++	if (tn->tcp_no_window_check)
 +		return true;
 +
  	/*
  	 * Get the required data from the packet.
  	 */
-@@ -1139,7 +1145,7 @@ int nf_conntrack_tcp_packet(struct nf_co
+@@ -1139,7 +1142,7 @@ int nf_conntrack_tcp_packet(struct nf_co
  		 IP_CT_TCP_FLAG_DATA_UNACKNOWLEDGED &&
  		 timeouts[new_state] > timeouts[TCP_CONNTRACK_UNACK])
  		timeout = timeouts[TCP_CONNTRACK_UNACK];
 -	else if (ct->proto.tcp.last_win == 0 &&
-+	else if (!nf_ct_tcp_no_window_check && ct->proto.tcp.last_win == 0 &&
++	else if (!tn->tcp_no_window_check && ct->proto.tcp.last_win == 0 &&
  		 timeouts[new_state] > timeouts[TCP_CONNTRACK_RETRANS])
  		timeout = timeouts[TCP_CONNTRACK_RETRANS];
  	else
+@@ -1457,6 +1460,7 @@ void nf_conntrack_tcp_init_net(struct ne
+ 	tn->tcp_loose = nf_ct_tcp_loose;
+ 	tn->tcp_be_liberal = nf_ct_tcp_be_liberal;
+ 	tn->tcp_max_retrans = nf_ct_tcp_max_retrans;
++	tn->tcp_no_window_check = 0;
+ 
+ #if IS_ENABLED(CONFIG_NF_FLOW_TABLE)
+ 	tn->offload_timeout = 30 * HZ;
 --- a/net/netfilter/nf_conntrack_standalone.c
 +++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -25,6 +25,9 @@
- #include <net/netfilter/nf_conntrack_timestamp.h>
- #include <linux/rculist_nulls.h>
- 
-+/* Do not check the TCP window for incoming packets  */
-+static int nf_ct_tcp_no_window_check __read_mostly = 1;
-+
- static bool enable_hooks __read_mostly;
- MODULE_PARM_DESC(enable_hooks, "Always enable conntrack hooks");
- module_param(enable_hooks, bool, 0000);
-@@ -659,6 +662,7 @@ enum nf_ct_sysctl_index {
- 	NF_SYSCTL_CT_PROTO_TIMEOUT_GRE_STREAM,
+@@ -625,6 +625,7 @@ enum nf_ct_sysctl_index {
  #endif
- 
+ 	NF_SYSCTL_CT_PROTO_TCP_LOOSE,
+ 	NF_SYSCTL_CT_PROTO_TCP_LIBERAL,
 +	NF_SYSCTL_CT_PROTO_TCP_NO_WINDOW_CHECK,
- 	__NF_SYSCTL_CT_LAST_SYSCTL,
- };
- 
-@@ -1007,6 +1011,13 @@ static struct ctl_table nf_ct_sysctl_tab
- 		.proc_handler   = proc_dointvec_jiffies,
+ 	NF_SYSCTL_CT_PROTO_TCP_MAX_RETRANS,
+ 	NF_SYSCTL_CT_PROTO_TIMEOUT_UDP,
+ 	NF_SYSCTL_CT_PROTO_TIMEOUT_UDP_STREAM,
+@@ -847,6 +848,14 @@ static struct ctl_table nf_ct_sysctl_tab
+ 		.extra1 	= SYSCTL_ZERO,
+ 		.extra2 	= SYSCTL_ONE,
  	},
- #endif
 +	[NF_SYSCTL_CT_PROTO_TCP_NO_WINDOW_CHECK] = {
 +		.procname       = "nf_conntrack_tcp_no_window_check",
-+		.data           = &nf_ct_tcp_no_window_check,
 +		.maxlen         = sizeof(unsigned int),
 +		.mode           = 0644,
-+		.proc_handler   = proc_dointvec,
++		.proc_handler	= proc_douintvec_minmax,
++		.extra1 	= SYSCTL_ZERO,
++		.extra2 	= SYSCTL_ONE,
 +	},
- 	{}
- };
+ 	[NF_SYSCTL_CT_PROTO_TCP_MAX_RETRANS] = {
+ 		.procname	= "nf_conntrack_tcp_max_retrans",
+ 		.maxlen		= sizeof(unsigned int),
+@@ -1046,6 +1055,7 @@ static void nf_conntrack_standalone_init
  
+ 	XASSIGN(LOOSE, &tn->tcp_loose);
+ 	XASSIGN(LIBERAL, &tn->tcp_be_liberal);
++	XASSIGN(NO_WINDOW_CHECK, &tn->tcp_no_window_check);
+ 	XASSIGN(MAX_RETRANS, &tn->tcp_max_retrans);
+ #undef XASSIGN
+ 
+--- a/include/net/netns/conntrack.h
++++ b/include/net/netns/conntrack.h
+@@ -26,6 +26,7 @@ struct nf_tcp_net {
+ 	unsigned int timeouts[TCP_CONNTRACK_TIMEOUT_MAX];
+ 	int tcp_loose;
+ 	int tcp_be_liberal;
++	int tcp_no_window_check;
+ 	int tcp_max_retrans;
+ #if IS_ENABLED(CONFIG_NF_FLOW_TABLE)
+ 	unsigned int offload_timeout;

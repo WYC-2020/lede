@@ -16,14 +16,12 @@
  
  /*
   * ecm_nss_ported_ipv4_connection_callback()
-@@ -372,6 +374,10 @@
+@@ -372,6 +374,8 @@
  	uint8_t dest_mac_xlate[ETH_ALEN];
  	ecm_db_direction_t ecm_dir;
  	ecm_front_end_acceleration_mode_t result_mode;
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 12, 0)
 +	struct net *net = nf_ct_net(ct);
 +	struct nf_tcp_net *tn = nf_tcp_pernet(net);
-+#endif
  
  	DEBUG_CHECK_MAGIC(npci, ECM_NSS_PORTED_IPV4_CONNECTION_INSTANCE_MAGIC, "%px: magic failed", npci);
  
@@ -32,7 +30,8 @@
  			nircm->tcp_rule.return_max_end = ct->proto.tcp.seen[return_dir].td_maxend;
  #ifdef ECM_OPENWRT_SUPPORT
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 12, 0)
- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
+- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
++ 			if (nf_ct_tcp_be_liberal || tn->tcp_no_window_check
  #else
 +			if (tn->tcp_be_liberal || tn->tcp_no_window_check
 +#endif
@@ -63,14 +62,12 @@
  
  /*
   * ecm_nss_ported_ipv6_connection_callback()
-@@ -376,6 +378,10 @@
+@@ -376,6 +378,8 @@
  	ip_addr_t src_ip;
  	ip_addr_t dest_ip;
  	ecm_front_end_acceleration_mode_t result_mode;
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 12, 0)
 +	struct net *net = nf_ct_net(ct);
 +	struct nf_tcp_net *tn = nf_tcp_pernet(net);
-+#endif
  
  	DEBUG_CHECK_MAGIC(npci, ECM_NSS_PORTED_IPV6_CONNECTION_INSTANCE_MAGIC, "%px: magic failed", npci);
  
@@ -79,7 +76,8 @@
  			nircm->tcp_rule.return_max_end = ct->proto.tcp.seen[return_dir].td_maxend;
  #ifdef ECM_OPENWRT_SUPPORT
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 12, 0)
- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
+- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
++ 			if (nf_ct_tcp_be_liberal || tn->tcp_no_window_check
  #else
 +			if (tn->tcp_be_liberal || tn->tcp_no_window_check
 +#endif
@@ -94,14 +92,12 @@
  					|| (ct->proto.tcp.seen[return_dir].flags & IP_CT_TCP_FLAG_BE_LIBERAL)) {
 --- a/frontends/sfe/ecm_sfe_ported_ipv4.c
 +++ b/frontends/sfe/ecm_sfe_ported_ipv4.c
-@@ -422,6 +422,10 @@
+@@ -422,6 +422,8 @@
  	int32_t interface_type_counts[ECM_DB_IFACE_TYPE_COUNT];
  	bool rule_invalid;
  	ecm_db_direction_t ecm_dir;
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 12, 0)
 +	struct net *net = nf_ct_net(ct);
 +	struct nf_tcp_net *tn = nf_tcp_pernet(net);
-+#endif
  	ecm_front_end_acceleration_mode_t result_mode;
  
  	DEBUG_CHECK_MAGIC(npci, ECM_SFE_PORTED_IPV4_CONNECTION_INSTANCE_MAGIC, "%px: magic failed", npci);
@@ -110,7 +106,8 @@
  			nircm->tcp_rule.return_max_end = ct->proto.tcp.seen[return_dir].td_maxend;
  #ifdef ECM_OPENWRT_SUPPORT
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 12, 0)
- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
+- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
++ 			if (nf_ct_tcp_be_liberal || tn->tcp_no_window_check
  #else
 +			if (tn->tcp_be_liberal || tn->tcp_no_window_check)
 +#endif
@@ -125,14 +122,12 @@
  					|| (ct->proto.tcp.seen[return_dir].flags & IP_CT_TCP_FLAG_BE_LIBERAL)) {
 --- a/frontends/sfe/ecm_sfe_ported_ipv6.c
 +++ b/frontends/sfe/ecm_sfe_ported_ipv6.c
-@@ -426,6 +426,10 @@
+@@ -426,6 +426,8 @@
  	int32_t interface_type_counts[ECM_DB_IFACE_TYPE_COUNT];
  	bool rule_invalid;
  	ip_addr_t src_ip;
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 12, 0)
 +	struct net *net = nf_ct_net(ct);
 +	struct nf_tcp_net *tn = nf_tcp_pernet(net);
-+#endif
  	ip_addr_t dest_ip;
  	ecm_front_end_acceleration_mode_t result_mode;
  
@@ -141,7 +136,8 @@
  			nircm->tcp_rule.return_max_end = ct->proto.tcp.seen[return_dir].td_maxend;
  #ifdef ECM_OPENWRT_SUPPORT
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 12, 0)
- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
+- 			if (nf_ct_tcp_be_liberal || nf_ct_tcp_no_window_check
++ 			if (nf_ct_tcp_be_liberal || tn->tcp_no_window_check
  #else
 +			if (tn->tcp_be_liberal || tn->tcp_no_window_check)
 +#endif
