@@ -167,8 +167,9 @@ DTC_FLAGS += \
   -Wno-unique_unit_address
 
 define Image/pad-to
-	dd if=$(1) of=$(1).new bs=$(2) conv=sync
-	mv $(1).new $(1)
+#	dd if=$(1) of=$(1).new bs=$(2) conv=sync
+#	mv $(1).new $(1)
+	truncate -s $(2) $(1)
 endef
 
 ROOTFS_PARTSIZE=$(shell echo $$(($(CONFIG_TARGET_ROOTFS_PARTSIZE)*1024*1024)))
