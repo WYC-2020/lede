@@ -41,7 +41,7 @@ NOSTDINC_FLAGS := \
 	-I$(STAGING_DIR)/usr/include/mac80211/uapi \
 	-include backport/backport.h
 
-ifeq ($(GCC_MAJOR_VERSION),12)
+ifneq ($(filter $(GCC_MAJOR_VERSION),12 13),)
 	TARGET_CFLAGS += -Wno-error=address -Wno-error=stringop-overread
 endif
 
