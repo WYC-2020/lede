@@ -246,6 +246,14 @@ menu "Global build settings"
 
 	comment "Hardening build options"
 
+	config PKG_FANALYZER
+		bool
+		prompt "Enable gcc fanalyzer"
+		depends on GCC_USE_VERSION_13
+		default n
+		help
+		  Add -fanalyzer to the CFLAGS.
+
 	config PKG_CHECK_FORMAT_SECURITY
 		bool
 		prompt "Enable gcc format-security"

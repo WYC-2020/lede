@@ -8,6 +8,7 @@ PKG_ASLR_PIE_REGULAR ?= 0
 PKG_SSP ?= 1
 PKG_FORTIFY_SOURCE ?= 1
 PKG_RELRO ?= 1
+PKG_FANALYZER ?= 0
 
 ifdef CONFIG_PKG_CHECK_FORMAT_SECURITY
   ifeq ($(strip $(PKG_CHECK_FORMAT_SECURITY)),1)
@@ -58,4 +59,8 @@ ifdef CONFIG_PKG_RELRO_FULL
     TARGET_LDFLAGS += -znow -zrelro
   endif
 endif
-
+ifdef CONFIG_PKG_FANALYZER
+  ifeq ($(strip $(PKG_RELRO)),1)
+    TARGET_CFLAGS += -Wl,-z,now -Wl,-z,relro
+  endif
+endif
