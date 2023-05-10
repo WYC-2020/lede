@@ -91,7 +91,7 @@ bin/targets
 ```
 
 ## WSL或WSL2进行编译：
->> 由于wsl的PATH路径中包含带有空格的Windows路径，有可能会导致编译失败，请在将make -j1 V=s或make -j$(($(nproc) + 1)) V=s改为
+>> 由于wsl的PATH路径中包含带有空格的Windows路径，有可能会导致编译失败，请用以下命令进行编译
 
 #### 首次编译：
 ```bash
