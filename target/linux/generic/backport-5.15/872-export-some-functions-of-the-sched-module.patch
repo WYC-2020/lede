@@ -9,7 +9,7 @@ Subject: [PATCH] 1
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -7600,11 +7600,13 @@ int sched_setscheduler(struct task_struc
+@@ -7603,11 +7603,13 @@ int sched_setscheduler(struct task_struc
  {
  	return _sched_setscheduler(p, policy, param, true);
  }

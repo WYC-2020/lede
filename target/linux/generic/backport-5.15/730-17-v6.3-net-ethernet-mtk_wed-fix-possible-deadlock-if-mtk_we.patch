@@ -15,7 +15,7 @@ Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
 --- a/drivers/net/ethernet/mediatek/mtk_wed.c
 +++ b/drivers/net/ethernet/mediatek/mtk_wed.c
-@@ -619,12 +619,10 @@ mtk_wed_deinit(struct mtk_wed_device *de
+@@ -620,12 +620,10 @@ mtk_wed_deinit(struct mtk_wed_device *de
  }
  
  static void
@@ -29,7 +29,7 @@ Signed-off-by: Jakub Kicinski <kuba@kernel.org>
  	mtk_wed_deinit(dev);
  
  	mtk_wdma_rx_reset(dev);
-@@ -657,6 +655,13 @@ mtk_wed_detach(struct mtk_wed_device *de
+@@ -658,6 +656,13 @@ mtk_wed_detach(struct mtk_wed_device *de
  	module_put(THIS_MODULE);
  
  	hw->wed_dev = NULL;
@@ -43,7 +43,7 @@ Signed-off-by: Jakub Kicinski <kuba@kernel.org>
  	mutex_unlock(&hw_lock);
  }
  
-@@ -1545,8 +1550,10 @@ mtk_wed_attach(struct mtk_wed_device *de
+@@ -1546,8 +1551,10 @@ mtk_wed_attach(struct mtk_wed_device *de
  		ret = mtk_wed_wo_init(hw);
  	}
  out:
