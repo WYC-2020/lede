@@ -207,7 +207,7 @@ Subject: [PATCH] 00
  	static const struct ubus_method session_methods[] = {
  		UBUS_METHOD("create",  rpc_handle_create,  new_policy),
  		UBUS_METHOD("list",    rpc_handle_list,    sid_policy),
-@@ -1437,3 +1481,87 @@ void rpc_session_thaw(void)
+@@ -1437,3 +1481,89 @@ void rpc_session_thaw(void)
  
  	uci_free_context(uci);
  }
@@ -216,11 +216,13 @@ Subject: [PATCH] 00
 +{
 +	for (int i = 0; i < TABLE_SIZE; i++) 
 +	{
++		pthread_mutex_lock(&locks[i]);
 +		if(hashtable[i])
 +		{
 +         	   free(hashtable[i]->key);
 +         	   free(hashtable[i]);
 +		}
++    		pthread_mutex_unlock(&locks[i]);
 +	}
 +
 + 	for (int i = 0; i < TABLE_SIZE; i++) {
