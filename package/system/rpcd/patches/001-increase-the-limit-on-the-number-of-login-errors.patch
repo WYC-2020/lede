@@ -1,0 +1,297 @@
+From e259bfdbe910766e3fb6dae6ee0cfe10c767ea17 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Thu, 11 May 2023 02:23:35 -0400
+Subject: [PATCH] 00
+
+---
+ include/rpcd/session.h |   1 +
+ main.c                 |   2 +-
+ session.c              | 149 +++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 139 insertions(+), 13 deletions(-)
+
+--- a/include/rpcd/session.h
++++ b/include/rpcd/session.h
+@@ -67,6 +67,7 @@ struct rpc_session_acl {
+ };
+ 
+ int rpc_session_api_init(struct ubus_context *ctx);
++void rpc_session_api_destory();
+ 
+ bool rpc_session_access(const char *sid, const char *scope,
+                         const char *object, const char *function);
+--- a/main.c
++++ b/main.c
+@@ -130,6 +130,6 @@ int main(int argc, char **argv)
+ 
+ 	if (respawn)
+ 		exec_self(argc, argv);
+-
++	rpc_session_api_destory();
+ 	return 0;
+ }
+--- a/session.c
++++ b/session.c
+@@ -27,7 +27,11 @@
+ #include <glob.h>
+ #include <uci.h>
+ #include <limits.h>
+-
++#include <time.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <pthread.h>
+ #ifdef HAVE_SHADOW
+ #include <shadow.h>
+ #endif
+@@ -40,6 +44,23 @@ static struct blob_buf buf;
+ static LIST_HEAD(create_callbacks);
+ static LIST_HEAD(destroy_callbacks);
+ 
++#define TABLE_SIZE 100
++
++struct login_info{
++    char* key;
++    int fail_num;
++    time_t  last_time;
++    struct login_info* next;
++} ;
++
++struct login_info* hashtable[TABLE_SIZE];
++pthread_mutex_t locks[TABLE_SIZE];
++
++static unsigned int hash(const char* key);
++static int lookup(const char* key,time_t* ptime);
++static void insert(const char* key);
++static void reset(const char* key);
++
+ enum {
+ 	RPC_SN_TIMEOUT,
+ 	__RPC_SN_MAX,
+@@ -246,6 +267,7 @@ rpc_session_dump(struct rpc_session *ses
+ 	rpc_session_to_blob(ses, true);
+ 
+ 	ubus_send_reply(ctx, req, buf.head);
++	blob_buf_free(&buf);
+ }
+ 
+ static void
+@@ -622,7 +644,7 @@ rpc_handle_access(struct ubus_context *c
+ 	}
+ 
+ 	ubus_send_reply(ctx, req, buf.head);
+-
++	blob_buf_free(&buf);
+ 	return 0;
+ }
+ 
+@@ -718,7 +740,7 @@ rpc_handle_get(struct ubus_context *ctx,
+ 
+ 	blobmsg_close_table(&buf, c);
+ 	ubus_send_reply(ctx, req, buf.head);
+-
++	blob_buf_free(&buf);
+ 	return 0;
+ }
+ 
+@@ -827,13 +849,13 @@ rpc_login_test_password(const char *hash
+ 
+ static struct uci_section *
+ rpc_login_test_login(struct uci_context *uci,
+-                     const char *username, const char *password)
++                     const char *username, const char *password,int*failure_reason)
+ {
+ 	struct uci_package *p = NULL;
+ 	struct uci_section *s;
+ 	struct uci_element *e;
++	*failure_reason=0;
+ 	struct uci_ptr ptr = { .package = "rpcd" };
+-
+ 	if (!uci_lookup_ptr(uci, &ptr, NULL, false) && ptr.p) {
+ 		uci_unload(uci, ptr.p);
+ 		ptr.flags = 0;
+@@ -845,6 +867,7 @@ rpc_login_test_login(struct uci_context
+ 	if (!p)
+ 		return false;
+ 
++	*failure_reason=-1;
+ 	uci_foreach_element(&p->sections, e)
+ 	{
+ 		s = uci_to_section(e);
+@@ -876,7 +899,7 @@ rpc_login_test_login(struct uci_context
+ 		/* test for matching password */
+ 		ptr.option = "password";
+ 		ptr.o = NULL;
+-
++		*failure_reason=0;
+ 		if (uci_lookup_ptr(uci, &ptr, NULL, true))
+ 			continue;
+ 
+@@ -1127,7 +1150,8 @@ rpc_handle_login(struct ubus_context *ct
+ 	struct blob_attr *tb[__RPC_L_MAX];
+ 	int timeout = RPC_DEFAULT_SESSION_TIMEOUT;
+ 	int rv = 0;
+-
++	time_t last_time=0;
++	int failure_reason=0;
+ 	blobmsg_parse(login_policy, __RPC_L_MAX, tb, blob_data(msg), blob_len(msg));
+ 
+ 	if (!tb[RPC_L_USERNAME] || !tb[RPC_L_PASSWORD]) {
+@@ -1135,21 +1159,38 @@ rpc_handle_login(struct ubus_context *ct
+ 		goto out;
+ 	}
+ 
+-	uci = uci_alloc_context();
++	if(lookup(blobmsg_get_string(tb[RPC_L_USERNAME]),&last_time)>=5)
++	{
++		if(difftime(time(NULL), last_time)<=1.0*60)
++		{
++			ses = rpc_session_create(timeout);
++			ses->timeout=0;
++			if (ses){
++				rpc_session_dump(ses, ctx, req);
++				rpc_session_destroy(ses);
++			}
++			goto out;
++		}else
++	  		reset(blobmsg_get_string(tb[RPC_L_USERNAME]));
++	}
+ 
++	uci = uci_alloc_context();
+ 	if (!uci) {
+ 		rv = UBUS_STATUS_UNKNOWN_ERROR;
+ 		goto out;
+ 	}
+ 
+ 	login = rpc_login_test_login(uci, blobmsg_get_string(tb[RPC_L_USERNAME]),
+-	                                  blobmsg_get_string(tb[RPC_L_PASSWORD]));
++	                                  blobmsg_get_string(tb[RPC_L_PASSWORD]),&failure_reason);
+ 
+ 	if (!login) {
+ 		rv = UBUS_STATUS_PERMISSION_DENIED;
++		if(-1!=failure_reason) //Insert only if the username is correct
++			insert(blobmsg_get_string(tb[RPC_L_USERNAME]));
+ 		goto out;
++	}else{
++	  reset(blobmsg_get_string(tb[RPC_L_USERNAME]));
+ 	}
+-
+ 	if (tb[RPC_L_TIMEOUT])
+ 		timeout = blobmsg_get_u32(tb[RPC_L_TIMEOUT]);
+ 
+@@ -1274,7 +1315,7 @@ rpc_session_from_blob(struct uci_context
+ 	struct rpc_session *ses;
+ 	struct uci_section *login;
+ 	struct blob_attr *tb[__RPC_DUMP_MAX], *data;
+-
++	int failure_reason=0;
+ 	blobmsg_parse(dump_policy, __RPC_DUMP_MAX, tb,
+ 	              blob_data(attr), blob_len(attr));
+ 
+@@ -1302,7 +1343,7 @@ rpc_session_from_blob(struct uci_context
+ 	}
+ 
+ 	if (uci && user) {
+-		login = rpc_login_test_login(uci, user, NULL);
++		login = rpc_login_test_login(uci, user, NULL,&failure_reason);
+ 		if (login)
+ 			rpc_login_setup_acls(ses, login);
+ 	}
+@@ -1318,6 +1359,9 @@ int rpc_session_api_init(struct ubus_con
+ {
+ 	struct rpc_session *ses;
+ 
++    	for (int i = 0; i < TABLE_SIZE; i++) {
++        	pthread_mutex_init(&locks[i], NULL);
++   	 }
+ 	static const struct ubus_method session_methods[] = {
+ 		UBUS_METHOD("create",  rpc_handle_create,  new_policy),
+ 		UBUS_METHOD("list",    rpc_handle_list,    sid_policy),
+@@ -1437,3 +1481,87 @@ void rpc_session_thaw(void)
+ 
+ 	uci_free_context(uci);
+ }
++
++void rpc_session_api_destory()
++{
++	for (int i = 0; i < TABLE_SIZE; i++) 
++	{
++		if(hashtable[i])
++		{
++         	   free(hashtable[i]->key);
++         	   free(hashtable[i]);
++		}
++	}
++
++ 	for (int i = 0; i < TABLE_SIZE; i++) {
++		pthread_mutex_destroy(&locks[i]);
++    	}
++}
++
++static unsigned int hash(const char* key) {
++    unsigned int hashval = 0;
++    for (; *key != '\0'; key++) {
++        hashval = *key + 31 * hashval;
++    }
++    return hashval % TABLE_SIZE;
++}
++
++static int lookup(const char* key,time_t* ptime) {
++    int hashval = hash(key);
++    pthread_mutex_lock(&locks[hashval]);
++    struct login_info* np = hashtable[hashval];
++    while (np != NULL) {
++        if (strcmp(key, np->key) == 0) {
++            pthread_mutex_unlock(&locks[hashval]);
++	    *ptime=np->last_time;
++            return np->fail_num;
++        }
++        np = np->next;
++    }
++    pthread_mutex_unlock(&locks[hashval]);
++    return -1;
++}
++
++static void insert(const char* key) {
++    int hashval = hash(key);
++    pthread_mutex_lock(&locks[hashval]);
++    struct login_info* np = hashtable[hashval];
++    while (np != NULL) {
++        if (strcmp(key, np->key) == 0) {
++            ++(np->fail_num);
++	    np->last_time=  time(NULL);
++            pthread_mutex_unlock(&locks[hashval]);
++            return;
++        }
++        np = np->next;
++    }
++    np = (struct login_info*) malloc(sizeof(struct login_info));
++    if(!np){
++	pthread_mutex_unlock(&locks[hashval]);
++ 	return;
++    }
++    np->key = strdup(key);
++    np->fail_num= 1;
++    np->last_time=  time(NULL);
++    np->next = hashtable[hashval];
++    hashtable[hashval] = np;
++    pthread_mutex_unlock(&locks[hashval]);
++}
++
++static void reset(const char* key) {
++    int hashval = hash(key);
++    pthread_mutex_lock(&locks[hashval]);
++    struct login_info* np = hashtable[hashval];
++    while (np != NULL) {
++        if (strcmp(key, np->key) == 0) {
++            np->fail_num=0;
++	    np->last_time=  time(NULL);
++            pthread_mutex_unlock(&locks[hashval]);
++            return;
++        }
++        np = np->next;
++    }
++    pthread_mutex_unlock(&locks[hashval]);
++    insert(key);
++}
++
