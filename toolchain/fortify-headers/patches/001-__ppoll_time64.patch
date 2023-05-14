@@ -16,11 +16,10 @@ index 24691f1..33d25e9 100644
  }
 
 -#ifdef _GNU_SOURCE
-+#if defined(_GNU_SOURCE) && !_REDIR_TIME64
 +#if defined(_GNU_SOURCE) && !(defined(_REDIR_TIME64) && _REDIR_TIME64)
  #undef ppoll
  _FORTIFY_FN(ppoll) int ppoll(struct pollfd *__f, nfds_t __n, const struct timespec *__s,
                               const sigset_t *__m)
--- 
+--
 2.17.1
 
