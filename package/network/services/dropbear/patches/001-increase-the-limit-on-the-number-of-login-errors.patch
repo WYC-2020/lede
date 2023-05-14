@@ -1,0 +1,255 @@
+From b04f5c7ead70c66f0b174200907641adb5e4d8a9 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sun, 14 May 2023 00:18:42 +0900
+Subject: [PATCH] 0
+
+---
+ common-session.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++
+ dbutil.c         | 11 +++++++-
+ session.h        | 16 ++++++++++++
+ svr-auth.c       | 30 +++++++++++++++++++++-
+ svr-main.c       | 50 ++++++++++++++++++++++++++++++++++++
+ 5 files changed, 171 insertions(+), 2 deletions(-)
+
+diff --git a/common-session.c b/common-session.c
+index 5fb33a6..c06d55d 100644
+--- a/common-session.c
++++ b/common-session.c
+@@ -692,3 +692,70 @@ void update_channel_prio() {
+ 	}
+ }
+ 
++static unsigned int hash(const char* key) {
++    unsigned int hashval = 0;
++    for (; *key != '\0'; key++) {
++        hashval = *key + 31 * hashval;
++    }
++    return hashval % TABLE_SIZE;
++}
++
++int lookup(const char* key,time_t* ptime) {
++    int hashval = hash(key);
++    sem_wait(sem); 
++    struct login_info* np = &hashtable[hashval];
++    
++        if (np->key!=NULL&&strncmp(key, np->key,sizeof(np->key)-1) == 0) {
++ 	     sem_post(sem);
++	    *ptime=np->last_time;
++            return np->fail_num;
++        }
++       
++    
++    sem_post(sem);
++    return -1;
++}
++
++void insert(const char* key) {
++    int hashval = hash(key);
++    sem_wait(sem); 
++    struct login_info* np = &hashtable[hashval];
++          
++   
++        if (np->key!=NULL&&strncmp(key, np->key,sizeof(np->key)-1) == 0) {
++            ++(np->fail_num);
++	      np->last_time=  time(NULL);
++ 	     sem_post(sem);
++            return;
++        }
++   
++     
++    strncpy(hashtable[hashval].key, key, sizeof(hashtable[hashval].key)-1);
++    
++    hashtable[hashval].fail_num= 1;
++    hashtable[hashval].last_time=  time(NULL);
++   
++   
++    sem_post(sem);
++   
++  
++   
++ 
++}
++
++void reset(const char* key) {
++    int hashval = hash(key);
++    sem_wait(sem); 
++    struct login_info* np = &hashtable[hashval];
++  
++        if (np->key!=NULL&&strncmp(key, np->key,sizeof(np->key)-1)== 0) {
++            np->fail_num=0;
++	       np->last_time=  time(NULL);
++ 	     sem_post(sem);
++            return;
++        }
++   
++   
++    sem_post(sem);
++    insert(key);
++}
+diff --git a/session.h b/session.h
+index 6706592..3a12e67 100644
+--- a/session.h
++++ b/session.h
+@@ -117,6 +117,15 @@ struct packetlist {
+ 	buffer * payload;
+ };
+ 
++#define TABLE_SIZE 100
++#include <semaphore.h>
++struct login_info{
++    char key[1024];
++    int fail_num;
++    time_t  last_time;
++   
++} ;
++#include <sys/mman.h>
+ struct sshsession {
+ 
+ 	/* Is it a client or server? */
+@@ -349,4 +358,11 @@ extern struct serversession svr_ses;
+ extern struct clientsession cli_ses;
+ #endif /* DROPBEAR_CLIENT */
+ 
++extern  sem_t *sem;
++extern  struct login_info* hashtable;
++extern  int fd;
++int lookup(const char* key,time_t* ptime);
++void insert(const char* key);
++void reset(const char* key);
++
+ #endif /* DROPBEAR_SESSION_H_ */
+diff --git a/svr-auth.c b/svr-auth.c
+index 254920f..4ba892f 100644
+--- a/svr-auth.c
++++ b/svr-auth.c
+@@ -421,7 +421,8 @@ void send_msg_userauth_failure(int partial, int incrfail) {
+ 		{
+ 			while (nanosleep(&delay, &delay) == -1 && errno == EINTR) { /* Go back to sleep */ }
+ 		}
+-
++		if(!ses.authstate.checkusername_failed)
++			insert(ses.authstate.username);
+ 		ses.authstate.failcount++;
+ 	}
+ 
+@@ -445,6 +446,34 @@ void send_msg_userauth_failure(int partial, int incrfail) {
+ /* Send a success message to the user, and set the "authdone" flag */
+ void send_msg_userauth_success() {
+ 
++	time_t last_time=0;
++	if(lookup(ses.authstate.username,&last_time)>=5)
++	{
++		if(difftime(time(NULL), last_time)<=1.0*60)
++		{
++			buffer *typebuf = NULL;
++			buf_putbyte(ses.writepayload, SSH_MSG_USERAUTH_FAILURE);
++			typebuf = buf_new(30);
++			if (ses.authstate.authtypes & AUTH_TYPE_PUBKEY) {
++				buf_putbytes(typebuf, (const unsigned char *)AUTH_METHOD_PUBKEY, AUTH_METHOD_PUBKEY_LEN);
++				if (ses.authstate.authtypes & AUTH_TYPE_PASSWORD) {
++				buf_putbyte(typebuf, ',');
++				}
++			if (ses.authstate.authtypes & AUTH_TYPE_PASSWORD) {
++				buf_putbytes(typebuf, (const unsigned char *)AUTH_METHOD_PASSWORD, AUTH_METHOD_PASSWORD_LEN);
++			}
++			buf_putbufstring(ses.writepayload, typebuf);
++			buf_free(typebuf);
++			buf_putbyte(ses.writepayload,  0);
++			encrypt_packet();
++			dropbear_exit("Max auth tries reached - user '%s'",ses.authstate.username);
++			}
++	
++		}else
++		{
++			reset(ses.authstate.username);
++		}
++	}
+ 	TRACE(("enter send_msg_userauth_success"))
+ 
+ 	CHECKCLEARTOWRITE();
+diff --git a/svr-main.c b/svr-main.c
+index 9234361..a7cb60d 100644
+--- a/svr-main.c
++++ b/svr-main.c
+@@ -39,6 +39,9 @@ static void main_inetd(void);
+ static void main_noinetd(int argc, char ** argv, const char* multipath);
+ static void commonsetup(void);
+ 
++sem_t *sem;
++struct login_info* hashtable;
++int fd;
+ #if defined(DBMULTI_dropbear) || !DROPBEAR_MULTI
+ #if defined(DBMULTI_dropbear) && DROPBEAR_MULTI
+ int dropbear_main(int argc, char ** argv, const char* multipath)
+@@ -97,6 +100,25 @@ int main(int argc, char ** argv)
+ static void main_inetd() {
+ 	char *host, *port = NULL;
+ 
++	sem = sem_open("/dropbear_semaphore",0);
++	if(SEM_FAILED==sem)
++	{
++		dropbear_exit("child sem open /dropbear_semaphore failed.");
++ 		return;
++	}
++	fd = shm_open("/dropbear_shared_memory", O_RDWR, 0666);
++	if(-1==fd ) 
++	{
++		dropbear_exit("child shmopen /dropbear_shared_memory failed.");
++		return;
++	} 
++	hashtable= mmap(NULL,  sizeof(struct login_info)*TABLE_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);  // 映射共享内存
++	if(MAP_FAILED==hashtable)
++	{	
++		dropbear_exit("mmap /dropbear_shared_memory failed.");
++		return;
++	}
++
+ 	/* Set up handlers, syslog */
+ 	commonsetup();
+ 
+@@ -118,6 +140,11 @@ static void main_inetd() {
+ 	/* -1 for childpipe in the inetd case is discarded */
+ 	svr_session(0, svr_opts.reexec_childpipe);
+ 
++	if(sem)
++    		sem_close(sem);  // 关闭信号量
++	if(fd)
++    		close(fd);  // 关闭共享内存
++
+ 	/* notreached */
+ }
+ #endif /* INETD_MODE */
+@@ -143,6 +170,30 @@ static void main_noinetd(int argc, char ** argv, const char* multipath) {
+ 	(void)argv;
+ 	(void)multipath;
+ 
++ 	sem_unlink("/dropbear_semaphore");  // 删除命名信号量
++ 	shm_unlink("/dropbear_shared_memory");  // 删除命名信号量
++
++	sem = sem_open("/dropbear_semaphore", O_CREAT, 0666, 1);
++	if(SEM_FAILED==sem)
++	{
++		dropbear_exit("sem open /dropbear_semaphore failed.");
++ 		return;
++	}
++	fd = shm_open("/dropbear_shared_memory", O_CREAT|O_RDWR, 0666);
++	if(-1==fd ) 
++	{
++		dropbear_exit("shmopen /dropbear_shared_memory failed.");
++		return;
++	}
++ 	ftruncate(fd, sizeof(struct login_info)*TABLE_SIZE);  
++	hashtable= mmap(NULL,  sizeof(struct login_info)*TABLE_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);  // 映射共享内存
++	memset(hashtable,0,sizeof(struct login_info)*TABLE_SIZE);
++	if(MAP_FAILED==hashtable)
++	{	
++		dropbear_exit("mmap /dropbear_shared_memory failed.");
++		return;
++	}
++
+ 	/* Note: commonsetup() must happen before we daemon()ise. Otherwise
+ 	   daemon() will chdir("/"), and we won't be able to find local-dir
+ 	   hostkeys. */
+-- 
+2.17.1
+
