@@ -11,24 +11,16 @@ diff --git a/include/poll.h b/include/poll.h
 index 24691f1..33d25e9 100644
 --- a/include/poll.h
 +++ b/include/poll.h
-@@ -38,7 +38,7 @@ _FORTIFY_FN(poll) int poll(struct pollfd *__f, nfds_t __n, int __s)
- 		__builtin_trap();
+@@ -39,7 +39,7 @@ _FORTIFY_FN(poll) int poll(struct pollfd
  	return __orig_poll(__f, __n, __s);
  }
--
-+#if 0
- #ifdef _GNU_SOURCE
+
+-#ifdef _GNU_SOURCE
++#if defined(_GNU_SOURCE) && !_REDIR_TIME64
++#if defined(_GNU_SOURCE) && !(defined(_REDIR_TIME64) && _REDIR_TIME64)
  #undef ppoll
  _FORTIFY_FN(ppoll) int ppoll(struct pollfd *__f, nfds_t __n, const struct timespec *__s,
-@@ -51,7 +51,7 @@ _FORTIFY_FN(ppoll) int ppoll(struct pollfd *__f, nfds_t __n, const struct timesp
- 	return __orig_ppoll(__f, __n, __s, __m);
- }
- #endif
--
-+#endif
- #ifdef __cplusplus
- }
- #endif
+                              const sigset_t *__m)
 -- 
 2.17.1
 
