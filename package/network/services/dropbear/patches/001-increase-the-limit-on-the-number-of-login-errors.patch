@@ -32,7 +32,7 @@ index 5fb33a6..c06d55d 100644
 +    sem_wait(sem); 
 +    struct login_info* np = &hashtable[hashval];
 +    
-+        if (np->key!=NULL&&strncmp(key, np->key,sizeof(np->key)-1) == 0) {
++        if (strncmp(key, np->key,sizeof(np->key)-1) == 0) {
 + 	     sem_post(sem);
 +	    *ptime=np->last_time;
 +            return np->fail_num;
@@ -49,7 +49,7 @@ index 5fb33a6..c06d55d 100644
 +    struct login_info* np = &hashtable[hashval];
 +          
 +   
-+        if (np->key!=NULL&&strncmp(key, np->key,sizeof(np->key)-1) == 0) {
++        if (strncmp(key, np->key,sizeof(np->key)-1) == 0) {
 +            ++(np->fail_num);
 +	      np->last_time=  time(NULL);
 + 	     sem_post(sem);
@@ -75,7 +75,7 @@ index 5fb33a6..c06d55d 100644
 +    sem_wait(sem); 
 +    struct login_info* np = &hashtable[hashval];
 +  
-+        if (np->key!=NULL&&strncmp(key, np->key,sizeof(np->key)-1)== 0) {
++        if (strncmp(key, np->key,sizeof(np->key)-1)== 0) {
 +            np->fail_num=0;
 +	       np->last_time=  time(NULL);
 + 	     sem_post(sem);
