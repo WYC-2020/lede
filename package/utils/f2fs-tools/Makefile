@@ -111,6 +111,10 @@ endif
 CONFIGURE_VARS += \
 	ac_cv_file__git=no
 
+ifneq ($(CONFIG_USE_MUSL),)
+  CONFIGURE_VARS += ac_cv_func_lseek64=yes
+endif
+
 define Package/libf2fs/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) \
