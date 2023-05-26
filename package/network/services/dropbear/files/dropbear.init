@@ -7,6 +7,7 @@ STOP=50
 
 USE_PROCD=1
 PROG=/usr/sbin/dropbear
+OPENSSH_PROG=/usr/sbin/sshd
 NAME=dropbear
 PIDCOUNT=0
 
@@ -61,13 +62,28 @@ hk_config__keyfile()
 	hk_config 'keyfile' "$1"
 }
 
+openssh_generate_as_needed() {
+	for type in rsa ed25519
+	do
+		# check for keys
+		key=/etc/ssh/ssh_host_${type}_key
+		[ ! -f $key ] && {
+			# generate missing keys
+			[ -x /usr/bin/ssh-keygen ] && {
+				/usr/bin/ssh-keygen -N '' -t $type -f $key 2>&- >&-
+			}
+		}
+	done
+}
+
+
 hk_generate_as_needed()
 {
 	local kdir kgen ktype tdir kcount tfile
 	kdir='/etc/dropbear'
 
 	kgen=''
-	for ktype in ed25519 ecdsa rsa; do
+	for ktype in ed25519 ecdsa rsa dss; do
 		hk_verify "${kdir}/dropbear_${ktype}_host_key" && continue
 
 		kgen="${kgen} ${ktype}"
@@ -116,21 +132,26 @@ append_ports()
 validate_section_dropbear()
 {
 	uci_load_validate dropbear dropbear "$1" "$2" \
-		'PasswordAuth:bool:1' \
-		'Qos:bool:1' \
-		'enable:bool:1' \
-		'Interface:string' \
-		'GatewayPorts:bool:0' \
-		'RootPasswordAuth:bool:1' \
-		'RootLogin:bool:1' \
-		'rsakeyfile:file' \
-		'keyfile:list(file)' \
-		'BannerFile:file' \
-		'Port:port:22' \
+		'DropbearEnable:bool:1' \
+		'DropbearInterface:string' \
+		'DropbearPort:port:22' \
+		'DropbearPasswordAuth:bool:1' \
+		'DropbearQos:bool:1' \
+		'DropbearRootPasswordAuth:bool:1' \
+		'DropbearGatewayPorts:bool:0' \
+		'DropbearRootLogin:bool:1' \
 		'SSHKeepAlive:uinteger:300' \
 		'IdleTimeout:uinteger:0' \
 		'MaxAuthTries:uinteger:3' \
 		'RecvWindowSize:uinteger:0' \
+                'rsakeyfile:file' \
+                'keyfile:list(file)' \
+                'BannerFile:file' \
+		'OpensshPasswordAuth:bool:1' \
+		'OpensshEnable:bool:1' \
+		'OpensshRootPasswordAuth:bool:1' \
+		'OpensshMaxAuthTries:string:5' \
+		'OpensshPort:port:9527'  \
 		'mdns:bool:1'
 }
 
@@ -143,26 +164,26 @@ dropbear_instance()
 		return 1
 	}
 
-	[ -n "${Interface}" ] && {
+	[ -n "${DropbearInterface}" ] && {
 		[ -n "${BOOT}" ] && return 0
 
-		network_get_ipaddrs_all ipaddrs "${Interface}" || {
-			echo "interface ${Interface} has no physdev or physdev has no suitable ip"
+		network_get_ipaddrs_all ipaddrs "${DropbearInterface}" || {
+			echo "interface ${DropbearInterface} has no physdev or physdev has no suitable ip"
 			return 1
 		}
 	}
 
-	[ "${enable}" = "0" ] && return 1
+	[ "${DropbearEnable}" = "0" ] && return 1
 	PIDCOUNT="$(( ${PIDCOUNT} + 1))"
 	local pid_file="/var/run/${NAME}.${PIDCOUNT}.pid"
 
 	procd_open_instance
 	procd_set_param command "$PROG" -F -P "$pid_file"
-	[ "${PasswordAuth}" -eq 0 ] && procd_append_param command -s
-	[ "${GatewayPorts}" -eq 1 ] && procd_append_param command -a
-	[ "${Qos}" -eq 1 ] && procd_append_param command -z
-	[ "${RootPasswordAuth}" -eq 0 ] && procd_append_param command -g
-	[ "${RootLogin}" -eq 0 ] && procd_append_param command -w
+	[ "${DropbearPasswordAuth}" -eq 0 ] && procd_append_param command -s
+	[ "${DropbearGatewayPorts}" -eq 1 ] && procd_append_param command -a
+	[ "${DropbearQos}" -eq 1 ] && procd_append_param command -z
+	[ "${DropbearRootPasswordAuth}" -eq 0 ] && procd_append_param command -g
+	[ "${DropbearRootLogin}" -eq 0 ] && procd_append_param command -w
 	if [ -n "${rsakeyfile}" ]; then
 		logger -t ${NAME} -p daemon.warn \
 			"option 'rsakeyfile' is considered to be deprecated and" \
@@ -171,7 +192,7 @@ dropbear_instance()
 	fi
 	config_list_foreach "$1" "keyfile" hk_config__keyfile
 	[ -n "${BannerFile}" ] && procd_append_param command -b "${BannerFile}"
-	append_ports "${ipaddrs}" "${Port}"
+	append_ports "${ipaddrs}" "${DropbearPort}"
 	[ "${IdleTimeout}" -ne 0 ] && procd_append_param command -I "${IdleTimeout}"
 	[ "${SSHKeepAlive}" -ne 0 ] && procd_append_param command -K "${SSHKeepAlive}"
 	[ "${MaxAuthTries}" -ne 0 ] && procd_append_param command -T "${MaxAuthTries}"
@@ -182,12 +203,62 @@ dropbear_instance()
 	procd_close_instance
 }
 
+openssh_instance()
+{
+	[ "$2" = 0 ] || {
+		echo "validation failed"
+		return 1
+	}
+
+	[ "${OpensshEnable}" = "0" ] && return 1
+
+
+	sed -i '/Port/d' /etc/ssh/sshd_config
+	sed -i '$aPort '"$OpensshPort"'' /etc/ssh/sshd_config
+
+	if [ "${OpensshRootPasswordAuth}" -eq 0 ]; then
+		sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+	else
+		sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+		sed -i '$aPermitRootLogin yes' /etc/ssh/sshd_config
+	fi
+
+	if [ "$OpensshPasswordAuth" -eq 0 ]; then
+		sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
+		sed -i '$aPasswordAuthentication no' /etc/ssh/sshd_config
+	else
+		sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
+		sed -i '$aPasswordAuthentication yes' /etc/ssh/sshd_config
+	fi
+
+	if [ "$OpensshMaxAuthTries" -eq 0 ]; then
+		sed -i '/MaxAuthTries/d' /etc/ssh/sshd_config
+	else
+		sed -i '/MaxAuthTries/d' /etc/ssh/sshd_config
+		sed -i '$aMaxAuthTries '"$OpensshMaxAuthTries"'' /etc/ssh/sshd_config
+	fi
+
+	sed -i '/PubkeyAuthentication/d' /etc/ssh/sshd_config
+	sed -i '$aPubkeyAuthentication yes' /etc/ssh/sshd_config
+
+	sed -i '/AuthorizedKeysFile/d' /etc/ssh/sshd_config
+	sed -i '$aAuthorizedKeysFile /etc/ssh/authorized_pub' /etc/ssh/sshd_config
+
+	sed -i '/PubkeyAcceptedAlgorithms/d' /etc/ssh/sshd_config
+	sed -i '$aPubkeyAcceptedAlgorithms +ssh-rsa' /etc/ssh/sshd_config
+
+
+	mkdir -m 0700 -p /var/empty
+	procd_open_instance
+	procd_set_param command $OPENSSH_PROG -D 
+	procd_set_param respawn
+	procd_close_instance
+}
+
 load_interfaces()
 {
-	config_get interface "$1" Interface
-	config_get enable "$1" enable 1
-
-	[ "${enable}" = "1" ] && interfaces=" ${interface} ${interfaces}"
+	config_get interface "$1" DropbearInterface
+	config_get enable "$1" DropbearEnable 1
 }
 
 boot()
@@ -199,25 +270,26 @@ boot()
 start_service()
 {
 	hk_generate_as_needed
-
+	openssh_generate_as_needed
 	. /lib/functions.sh
 	. /lib/functions/network.sh
 
 	config_load "${NAME}"
 	config_foreach validate_section_dropbear dropbear dropbear_instance
+	if [ -x "$OPENSSH_PROG" ]; then
+	config_foreach validate_section_dropbear dropbear openssh_instance
+	fi
 }
 
 service_triggers()
 {
-	local interfaces
-
 	procd_add_config_trigger "config.change" "dropbear" /etc/init.d/dropbear reload
 
 	config_load "${NAME}"
 	config_foreach load_interfaces dropbear
 
-	[ -n "${interfaces}" ] && {
-		for n in $interfaces ; do
+	[ -n "${DropbearInterface}" ] && {
+		for n in $DropbearInterface; do
 			procd_add_interface_trigger "interface.*" $n /etc/init.d/dropbear reload
 		done
 	}
@@ -225,9 +297,10 @@ service_triggers()
 	procd_add_validation validate_section_dropbear
 }
 
-shutdown() {
+stop_service() {
 	# close all open connections
 	killall dropbear
+	killall  sshd
 }
 
 killclients()
