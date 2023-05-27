@@ -30,12 +30,12 @@ ifeq ($(IS_TTY),1)
 endif
 
 define ERROR_MESSAGE
-  printf "$(_R)%s$(_N)\n" "$(1)" >&8
+  printf "$(_R)%s$(_N)\n" "$(1)" >&2
 endef
 
 ifeq ($(findstring s,$(OPENWRT_VERBOSE)),)
   define MESSAGE
-	printf "$(_Y)%s$(_N)\n" "$(1)" >&8
+	printf "$(_Y)%s$(_N)\n" "$(1)" >&2
   endef
 
   ifeq ($(QUIET),1)
