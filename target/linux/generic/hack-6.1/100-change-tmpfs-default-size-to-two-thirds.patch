@@ -7,8 +7,6 @@ Subject: [PATCH] change tmpfs default size to two-thirds
  mm/shmem.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index aae2f40..860679d 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
 @@ -125,14 +125,14 @@ struct shmem_options {
@@ -28,6 +26,3 @@ index aae2f40..860679d 100644
  }
  #endif
  
--- 
-2.17.1
-

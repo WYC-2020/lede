@@ -172,7 +172,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #ifdef CONFIG_RPS
  	remsd = oldsd->rps_ipi_list;
  	oldsd->rps_ipi_list = NULL;
-@@ -11706,6 +11784,7 @@ static int __init net_dev_init(void)
+@@ -10570,6 +10648,7 @@ static int __init net_dev_init(void)
  		sd->cpu = i;
  #endif
  

@@ -9,7 +9,7 @@ Subject: [PATCH] export sched same function
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5511,17 +5511,19 @@ int sched_setscheduler(struct task_struc
+@@ -5514,17 +5514,19 @@ int sched_setscheduler(struct task_struc
  {
  	return _sched_setscheduler(p, policy, param, true);
  }
