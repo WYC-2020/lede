@@ -57,6 +57,7 @@ endif
 endef
 
 EXTRA_CFLAGS+= -I$(STAGING_DIR)/usr/include/qca-nss-gmac
+EXTRA_CFLAGS+= -I$(STAGING_DIR)/usr/include/qca-nss-dp
 
 # Keeping default as ipq806x for branches that does not have subtarget framework
 ifeq ($(CONFIG_TARGET_ipq),y)
@@ -75,6 +76,10 @@ endif
 
 ifeq ($(CONFIG_KERNEL_SKB_FIXED_SIZE_2K),y)
 EXTRA_CFLAGS+= -DNSS_SKB_FIXED_SIZE_2K
+endif
+
+ifneq ($(filter $(GCC_MAJOR_VERSION),12 13),)
+	EXTRA_CFLAGS += -Wno-error=enum-int-mismatch
 endif
 
 DRV_MAKE_OPTS:=
