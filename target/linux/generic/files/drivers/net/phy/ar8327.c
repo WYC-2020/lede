@@ -33,6 +33,8 @@
 extern const struct ar8xxx_mib_desc ar8236_mibs[39];
 extern const struct switch_attr ar8xxx_sw_attr_vlan[1];
 
+MODULE_LICENSE("GPL");
+
 static u32
 ar8327_get_pad_cfg(struct ar8327_pad_cfg *cfg)
 {
