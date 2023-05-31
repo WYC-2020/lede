@@ -30,7 +30,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #endif
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -4156,7 +4156,7 @@ static int rps_ipi_queued(struct softnet
+@@ -4158,7 +4158,7 @@ static int rps_ipi_queued(struct softnet
  #ifdef CONFIG_RPS
  	struct softnet_data *mysd = this_cpu_ptr(&softnet_data);
  
@@ -39,7 +39,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		sd->rps_ipi_next = mysd->rps_ipi_list;
  		mysd->rps_ipi_list = sd;
  
-@@ -5294,6 +5294,8 @@ DEFINE_PER_CPU(struct work_struct, flush
+@@ -5296,6 +5296,8 @@ DEFINE_PER_CPU(struct work_struct, flush
  /* Network device is going away, flush any packets still pending */
  static void flush_backlog(struct work_struct *work)
  {
@@ -48,7 +48,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	struct sk_buff *skb, *tmp;
  	struct softnet_data *sd;
  
-@@ -5309,9 +5311,18 @@ static void flush_backlog(struct work_st
+@@ -5311,9 +5313,18 @@ static void flush_backlog(struct work_st
  			input_queue_head_incr(sd);
  		}
  	}
@@ -67,7 +67,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	skb_queue_walk_safe(&sd->process_queue, skb, tmp) {
  		if (skb->dev->reg_state == NETREG_UNREGISTERING) {
  			__skb_unlink(skb, &sd->process_queue);
-@@ -5319,7 +5330,18 @@ static void flush_backlog(struct work_st
+@@ -5321,7 +5332,18 @@ static void flush_backlog(struct work_st
  			input_queue_head_incr(sd);
  		}
  	}
@@ -86,7 +86,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  }
  
  static void flush_all_backlogs(void)
-@@ -5955,6 +5977,7 @@ static int process_backlog(struct napi_s
+@@ -5957,6 +5979,7 @@ static int process_backlog(struct napi_s
  
  		local_irq_disable();
  		rps_lock(sd);
@@ -94,7 +94,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		if (skb_queue_empty(&sd->input_pkt_queue)) {
  			/*
  			 * Inline a custom version of __napi_complete().
-@@ -5964,7 +5987,8 @@ static int process_backlog(struct napi_s
+@@ -5966,7 +5989,8 @@ static int process_backlog(struct napi_s
  			 * We can use a plain write instead of clear_bit(),
  			 * and we dont need an smp_mb() memory barrier.
  			 */
@@ -104,7 +104,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  			again = false;
  		} else {
  			skb_queue_splice_tail_init(&sd->input_pkt_queue,
-@@ -6388,6 +6412,57 @@ static void napi_workfn(struct work_stru
+@@ -6390,6 +6414,57 @@ static void napi_workfn(struct work_stru
  	}
  }
  
@@ -162,7 +162,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
  		    int (*poll)(struct napi_struct *, int), int weight)
  {
-@@ -10231,6 +10306,9 @@ static int dev_cpu_dead(unsigned int old
+@@ -10233,6 +10308,9 @@ static int dev_cpu_dead(unsigned int old
  	raise_softirq_irqoff(NET_TX_SOFTIRQ);
  	local_irq_enable();
  
@@ -172,7 +172,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #ifdef CONFIG_RPS
  	remsd = oldsd->rps_ipi_list;
  	oldsd->rps_ipi_list = NULL;
-@@ -10570,6 +10648,7 @@ static int __init net_dev_init(void)
+@@ -10572,6 +10650,7 @@ static int __init net_dev_init(void)
  		sd->cpu = i;
  #endif
  
