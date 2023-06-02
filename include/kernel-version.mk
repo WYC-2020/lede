@@ -22,9 +22,44 @@ KERNEL_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_PATCHVER)
 ifeq ($(wildcard $(KERNEL_DETAILS_FILE)),)
   $(error Missing kernel version/hash file for $(KERNEL_PATCHVER). Please create $(KERNEL_DETAILS_FILE))
 endif
-
-
 include $(KERNEL_DETAILS_FILE)
+
+ifdef KERNEL_TESTING_PATCHVER
+  KERNEL_TESTING_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_TESTING_PATCHVER)
+  ifeq ($(wildcard $(KERNEL_TESTING_DETAILS_FILE)),)
+    $(error Missing testing kernel version/hash file for $(KERNEL_TESTING_PATCHVER). Please create $(KERNEL_TESTING_DETAILS_FILE))
+  endif
+
+  include $(KERNEL_TESTING_DETAILS_FILE)
+endif
+
+ifdef KERNEL_BETA_PATCHVER
+  KERNEL_BETA_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_BETA_PATCHVER)
+  ifeq ($(wildcard $(KERNEL_BETA_DETAILS_FILE)),)
+    $(error Missing beta kernel version/hash file for $(KERNEL_BETA_PATCHVER). Please create $(KERNEL_BETA_DETAILS_FILE))
+  endif
+
+  include $(KERNEL_BETA_DETAILS_FILE)
+endif
+
+ifdef KERNEL_RC_PATCHVER
+  KERNEL_RC_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_RC_PATCHVER)
+  ifeq ($(wildcard $(KERNEL_RC_DETAILS_FILE)),)
+    $(error Missing rc kernel version/hash file for $(KERNEL_RC_PATCHVER). Please create $(KERNEL_RC_DETAILS_FILE))
+  endif
+
+  include $(KERNEL_RC_DETAILS_FILE)
+endif
+
+
+ifdef KERNEL_ALPHA_PATCHVER
+  KERNEL_ALPHA_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_ALPHA_PATCHVER)
+  ifeq ($(wildcard $(KERNEL_ALPHA_DETAILS_FILE)),)
+    $(error Missing appha kernel version/hash file for $(KERNEL_ALPHA_PATCHVER). Please create $(KERNEL_ALPHA_DETAILS_FILE))
+  endif
+
+  include $(KERNEL_ALPHA_DETAILS_FILE)
+endif
 
 
 remove_uri_prefix=$(subst git://,,$(subst http://,,$(subst https://,,$(1))))
