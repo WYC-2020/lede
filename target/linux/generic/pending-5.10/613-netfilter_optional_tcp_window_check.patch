@@ -32,7 +32,7 @@ Signed-off-by: Christian 'Ansuel' Marangi <ansuelsmth@gmail.com>
  	tn->tcp_loose = nf_ct_tcp_loose;
  	tn->tcp_be_liberal = nf_ct_tcp_be_liberal;
  	tn->tcp_max_retrans = nf_ct_tcp_max_retrans;
-+	tn->tcp_no_window_check = 0;
++	tn->tcp_no_window_check = 1;
  
  #if IS_ENABLED(CONFIG_NF_FLOW_TABLE)
  	tn->offload_timeout = 30 * HZ;
