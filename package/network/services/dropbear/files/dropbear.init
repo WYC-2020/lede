@@ -257,8 +257,9 @@ openssh_instance()
 
 load_interfaces()
 {
-	config_get interface "$1" DropbearInterface
-	config_get enable "$1" DropbearEnable 1
+	config_get DropbearInterface "$1" DropbearInterface
+	config_get DropbearEnable "$1" DropbearEnable 1
+	config_get OpensshEnable "$1" OpensshEnable 1
 }
 
 boot()
