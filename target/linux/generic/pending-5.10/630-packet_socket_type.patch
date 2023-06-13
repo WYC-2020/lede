@@ -55,7 +55,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		goto out;
  
  	if (!net_eq(dev_net(dev), sock_net(sk)))
-@@ -2090,12 +2092,12 @@ static int packet_rcv(struct sk_buff *sk
+@@ -2088,12 +2090,12 @@ static int packet_rcv(struct sk_buff *sk
  	unsigned int snaplen, res;
  	bool is_drop_n_account = false;
  
@@ -71,7 +71,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	if (!net_eq(dev_net(dev), sock_net(sk)))
  		goto drop;
  
-@@ -2221,12 +2223,12 @@ static int tpacket_rcv(struct sk_buff *s
+@@ -2219,12 +2221,12 @@ static int tpacket_rcv(struct sk_buff *s
  	BUILD_BUG_ON(TPACKET_ALIGN(sizeof(*h.h2)) != 32);
  	BUILD_BUG_ON(TPACKET_ALIGN(sizeof(*h.h3)) != 48);
  

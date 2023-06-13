@@ -39,7 +39,7 @@ and performance for all other cases.
 
 --- a/include/net/netns/ipv4.h
 +++ b/include/net/netns/ipv4.h
-@@ -188,6 +188,7 @@ struct netns_ipv4 {
+@@ -187,6 +187,7 @@ struct netns_ipv4 {
  	int sysctl_udp_wmem_min;
  	int sysctl_udp_rmem_min;
  
@@ -65,7 +65,7 @@ and performance for all other cases.
  	TP_PROTO(const struct sock *sk, const struct request_sock *req),
 --- a/net/ipv4/sysctl_net_ipv4.c
 +++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -1299,6 +1299,13 @@ static struct ctl_table ipv4_net_table[]
+@@ -1302,6 +1302,13 @@ static struct ctl_table ipv4_net_table[]
  		.proc_handler	= proc_dointvec_minmax,
  		.extra1		= SYSCTL_ONE
  	},
@@ -140,12 +140,12 @@ and performance for all other cases.
  	 * and hopefully then we'll have sufficient space.
 --- a/net/ipv4/tcp_ipv4.c
 +++ b/net/ipv4/tcp_ipv4.c
-@@ -2946,6 +2946,8 @@ static int __net_init tcp_sk_init(struct
+@@ -2928,6 +2928,8 @@ static int __net_init tcp_sk_init(struct
  	else
  		net->ipv4.tcp_congestion_control = &tcp_reno;
  
 +	net->ipv4.sysctl_tcp_collapse_max_bytes = 0;
 +
  	return 0;
- fail:
- 	tcp_sk_exit(net);
+ }
+ 
