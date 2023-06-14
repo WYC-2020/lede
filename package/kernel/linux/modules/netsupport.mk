@@ -1538,10 +1538,8 @@ $(eval $(call KernelPackage,qrtr-mhi))
 define KernelPackage/inet-mptcp-diag
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=INET diag support for MultiPath TCP
-  DEPENDS:=@!LINUX_5_4 +kmod-inet-diag
-  KCONFIG:= CONFIG_INET_MPTCP_DIAG \
-	    CONFIG_MPTCP=y \
-	    CONFIG_MPTCP_IPV6=y
+  DEPENDS +=@!LINUX_5_4  $(if $(CONFIG_INET_MPTCP_DIAG),+kmod-inet-diag)
+  KCONFIG:= CONFIG_MPTCP=y
   FILES:= $(LINUX_DIR)/net/mptcp/mptcp_diag.ko
   AUTOLOAD:=$(call AutoProbe,mptcp_diag)
 endef
@@ -1549,6 +1547,18 @@ endef
 define KernelPackage/inet-mptcp-diag/description
 Support for INET (MultiPath TCP) socket monitoring interface used by
 native Linux tools such as ss.
+endef
+
+define KernelPackage/inet-mptcp-diag/config
+  if PACKAGE_kmod-inet-mptcp-diag
+  config INET_MPTCP_DIAG
+            bool "MPTCP: IPv4 support for Multipath TCP"
+            select PACKAGE_kmod-inet-diag
+	    default y
+  config MPTCP_IPV6
+            bool "MPTCP: IPv6 support for Multipath TCP"
+            depends on IPV6=y
+  endif
 endef
 
 $(eval $(call KernelPackage,inet-mptcp-diag))
