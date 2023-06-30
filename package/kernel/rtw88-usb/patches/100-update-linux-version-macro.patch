@@ -76,6 +76,15 @@ index fca4cf6..ffef9bf 100755
  #include <linux/vmalloc.h>
  #include <linux/firmware.h>
  #include <linux/average.h>
+@@ -24,7 +24,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/interrupt.h>
+ #include <linux/workqueue.h>
+-
++#include <linux/module.h>
+ #include "util.h"
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 8, 0)
+ #include <linux/etherdevice.h>
 --- a/sar.c
 +++ b/sar.c
 @@ -3,7 +3,6 @@
