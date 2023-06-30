@@ -1,0 +1,97 @@
+From d1faf3d1a7ec9a0b90abbae2294dafb0be5f1c2a Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Fri, 30 Jun 2023 03:44:44 -0400
+Subject: [PATCH] modify linux version macos
+
+---
+ alt_rtl8821ce/include/basic_types.h         | 2 ++
+ alt_rtl8821ce/include/drv_conf.h            | 4 +++-
+ alt_rtl8821ce/include/osdep_service.h       | 2 ++
+ alt_rtl8821ce/include/osdep_service_linux.h | 2 ++
+ main.h                                      | 3 +++
+ 5 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/alt_rtl8821ce/include/basic_types.h b/alt_rtl8821ce/include/basic_types.h
+index 45e5131..290d59e 100644
+--- a/alt_rtl8821ce/include/basic_types.h
++++ b/alt_rtl8821ce/include/basic_types.h
+@@ -72,6 +72,8 @@
+ 
+ #ifdef PLATFORM_LINUX
+ 	#include <linux/version.h>
++	#undef LINUX_VERSION_CODE
++	#define LINUX_VERSION_CODE 0x060124
+ 	#include <linux/types.h>
+ 	#include <linux/module.h>
+ 	#include <linux/kernel.h>
+diff --git a/alt_rtl8821ce/include/drv_conf.h b/alt_rtl8821ce/include/drv_conf.h
+index eb14e82..7881d94 100644
+--- a/alt_rtl8821ce/include/drv_conf.h
++++ b/alt_rtl8821ce/include/drv_conf.h
+@@ -78,7 +78,9 @@
+ #ifdef CONFIG_RTW_ANDROID
+ 
+ 	#include <linux/version.h>
+-	
++	#undef LINUX_VERSION_CODE
++	#define LINUX_VERSION_CODE 0x060124
++
+ 	#ifndef CONFIG_IOCTL_CFG80211
+ 	#define CONFIG_IOCTL_CFG80211
+ 	#endif
+diff --git a/alt_rtl8821ce/include/osdep_service.h b/alt_rtl8821ce/include/osdep_service.h
+index d86b673..ab8ffb1 100644
+--- a/alt_rtl8821ce/include/osdep_service.h
++++ b/alt_rtl8821ce/include/osdep_service.h
+@@ -47,6 +47,8 @@
+ 
+ #ifdef PLATFORM_LINUX
+ 	#include <linux/version.h>
++	#undef LINUX_VERSION_CODE
++	#define LINUX_VERSION_CODE 0x060145
+ #if defined(CONFIG_RTW_ANDROID_GKI)
+ 	#include <linux/firmware.h>
+ #endif
+diff --git a/alt_rtl8821ce/include/osdep_service_linux.h b/alt_rtl8821ce/include/osdep_service_linux.h
+index fca4cf6..ffef9bf 100755
+--- a/alt_rtl8821ce/include/osdep_service_linux.h
++++ b/alt_rtl8821ce/include/osdep_service_linux.h
+@@ -16,6 +16,8 @@
+ #define __OSDEP_LINUX_SERVICE_H_
+ 
+ #include <linux/version.h>
++#undef LINUX_VERSION_CODE
++#define LINUX_VERSION_CODE 0x060124
+ #include <linux/spinlock.h>
+ #include <linux/compiler.h>
+ #include <linux/kernel.h>
+--- a/main.h
++++ b/main.h
+@@ -10,6 +10,8 @@
+ #include "compiler.h"
+ #endif
+ #include <net/mac80211.h>
++#undef LINUX_VERSION_CODE
++#define LINUX_VERSION_CODE 0x060124
+ #include <linux/vmalloc.h>
+ #include <linux/firmware.h>
+ #include <linux/average.h>
+--- a/sar.c
++++ b/sar.c
+@@ -3,7 +3,6 @@
+  */
+ 
+ #include <linux/version.h>
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
+ #include "sar.h"
+ #include "phy.h"
+ #include "debug.h"
+@@ -112,5 +111,4 @@ int rtw_set_sar_specs(struct rtw_dev *rtwdev,
+ 
+ 	return rtw_apply_sar(rtwdev, &new);
+ }
+-#endif
+ 
+-- 
+2.17.1
+
