@@ -1,0 +1,24 @@
+From 6396fa3e583ab3497f8882a7d3521e1df863b97d Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Tue, 4 Jul 2023 23:38:02 -0400
+Subject: [PATCH] fix missing macro
+
+---
+ mt76.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mt76.h b/mt76.h
+index 1037d23..746c87d 100644
+--- a/mt76.h
++++ b/mt76.h
+@@ -17,6 +17,7 @@
+ #include <net/mac80211.h>
+ #include "util.h"
+ #include "testmode.h"
++#include <linux/moduleparam.h>
+ 
+ #define MT_MCU_RING_SIZE	32
+ #define MT_RX_BUF_SIZE		2048
+-- 
+2.17.1
+
