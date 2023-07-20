@@ -141,6 +141,11 @@ ifneq ($(LOCAL_TYPE),hostapd)
   endif
 endif
 
+ifeq ($(LOCAL_TYPE),supplicant)
+    DRIVER_MAKEOPTS += CONFIG_AP=y
+endif
+
+
 DRV_DEPENDS:=+PACKAGE_kmod-cfg80211:libnl-tiny +kmod-cfg80211
 
 
