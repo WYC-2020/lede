@@ -1,0 +1,28 @@
+From 682229efb18e98f3975cefa1990c5a34f3f98ec5 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Mon, 31 Jul 2023 21:34:51 -0400
+Subject: [PATCH] fix build with less 6.1 kernel
+
+---
+ ath10k-6.2/debug.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/ath10k-6.2/debug.c b/ath10k-6.2/debug.c
+index a02223e..87343e4 100644
+--- a/ath10k-6.2/debug.c
++++ b/ath10k-6.2/debug.c
+@@ -10,7 +10,11 @@
+ #include <linux/vmalloc.h>
+ #include <linux/crc32.h>
+ #include <linux/firmware.h>
++#if (LINUX_VERSION_CODE > KERNEL_VERSION(6, 1, 0))
+ #include <linux/kstrtox.h>
++#else
++#include <linux/kernel.h>
++#endif
+ 
+ #include "core.h"
+ #include "debug.h"
+-- 
+2.17.1
+
