@@ -36,37 +36,6 @@ define Build/mt7986-gpt
 	rm $@.tmp
 endef
 
-metadata_gl_json = \
-	'{ $(if $(IMAGE_METADATA),$(IMAGE_METADATA)$(comma)) \
-		"metadata_version": "1.1", \
-		"compat_version": "$(call json_quote,$(compat_version))", \
-		$(if $(DEVICE_COMPAT_MESSAGE),"compat_message": "$(call json_quote,$(DEVICE_COMPAT_MESSAGE))"$(comma)) \
-		$(if $(filter-out 1.0,$(compat_version)),"new_supported_devices": \
-			[$(call metadata_devices,$(SUPPORTED_DEVICES))]$(comma) \
-			"supported_devices": ["$(call json_quote,$(legacy_supported_message))"]$(comma)) \
-		$(if $(filter 1.0,$(compat_version)),"supported_devices":[$(call metadata_devices,$(SUPPORTED_DEVICES))]$(comma)) \
-		"version": { \
-			"release": "$(call json_quote,$(VERSION_NUMBER))", \
-			"date": "$(shell TZ='Asia/Chongqing' date '+%Y%m%d%H%M%S')", \
-			"dist": "$(call json_quote,$(VERSION_DIST))", \
-			"version": "$(call json_quote,$(VERSION_NUMBER))", \
-			"revision": "$(call json_quote,$(REVISION))", \
-			"target": "$(call json_quote,$(TARGETID))", \
-			"board": "$(call json_quote,$(if $(BOARD_NAME),$(BOARD_NAME),$(DEVICE_NAME)))" \
-		} \
-	}'
-
-define Build/append-gl-metadata
-	$(if $(SUPPORTED_DEVICES),-echo $(call metadata_gl_json,$(SUPPORTED_DEVICES)) | fwtool -I - $@)
-	sha256sum "$@" | cut -d" " -f1 > "$@.sha256sum"
-	[ ! -s "$(BUILD_KEY)" -o ! -s "$(BUILD_KEY).ucert" -o ! -s "$@" ] || { \
-		cp "$(BUILD_KEY).ucert" "$@.ucert" ;\
-		usign -S -m "$@" -s "$(BUILD_KEY)" -x "$@.sig" ;\
-		ucert -A -c "$@.ucert" -x "$@.sig" ;\
-		fwtool -S "$@.ucert" "$@" ;\
-	}
-endef
-
 define Build/cetron-header
 	$(eval magic=$(word 1,$(1)))
 	$(eval model=$(word 2,$(1)))
@@ -97,7 +66,6 @@ define Device/asus_tuf-ax4200
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
 TARGET_DEVICES += asus_tuf-ax4200
-
 
 define Device/bananapi_bpi-r3
   DEVICE_VENDOR := Bananapi
@@ -146,7 +114,6 @@ define Device/bananapi_bpi-r3
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
-
 define Device/cetron_ct3003
   DEVICE_VENDOR := Cetron
   DEVICE_MODEL := CT3003
@@ -190,18 +157,21 @@ define Device/glinet_gl-mt3000
   KERNEL_IN_UBI := 1
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
-TARGET_DEVICES += glinet_gl-mt3000
+#TARGET_DEVICES += glinet_gl-mt3000
 
 define Device/glinet_gl-mt6000
   DEVICE_VENDOR := GL.iNet
   DEVICE_MODEL := GL-MT6000
   DEVICE_DTS := mt7986a-glinet-gl-mt6000
   DEVICE_DTS_DIR := ../dts
-  DEVICE_PACKAGES := kmod-usb2 kmod-usb3 kmod-mt7986-firmware mt7986-wo-firmware e2fsprogs f2fsck mkf2fs
+  DEVICE_PACKAGES := e2fsprogs f2fsck mkf2fs kmod-usb3 kmod-mt7986-firmware mt7986-wo-firmware
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
   IMAGES := sysupgrade.bin
-  IMAGE/sysupgrade.bin := sysupgrade-tar | append-gl-metadata
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
-TARGET_DEVICES += glinet_gl-mt6000
+#TARGET_DEVICES += glinet_gl-mt6000
 
 define Device/h3c_magic-nx30-pro
   DEVICE_VENDOR := H3C
@@ -273,6 +243,20 @@ define Device/mediatek_mt7986b-rfb
 endef
 TARGET_DEVICES += mediatek_mt7986b-rfb
 
+define Device/netcore_n60
+  DEVICE_VENDOR := Netcore
+  DEVICE_MODEL := N60
+  DEVICE_DTS := mt7986a-netcore-n60
+  DEVICE_DTS_DIR := ../dts
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_IN_UBI := 1
+  DEVICE_PACKAGES := kmod-mt7986-firmware mt7986-wo-firmware
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+TARGET_DEVICES += netcore_n60
+
 define Device/qihoo_360t7
   DEVICE_VENDOR := Qihoo
   DEVICE_MODEL := 360T7
@@ -318,6 +302,14 @@ define Device/tplink_tl-xdr6088
   $(call Device/tplink_tl-common)
 endef
 TARGET_DEVICES += tplink_tl-xdr6088
+
+define Device/tplink_tl-xtr8488
+  DEVICE_MODEL := TL-XTR8488
+  DEVICE_DTS := mt7986a-tplink-tl-xtr8488
+  DEVICE_PACKAGES += kmod-mt7915-firmware
+  $(call Device/tplink_tl-common)
+endef
+TARGET_DEVICES += tplink_tl-xtr8488
 
 define Device/xiaomi_mi-router-ax3000t
   DEVICE_VENDOR := Xiaomi
