@@ -44,7 +44,7 @@ jobs:
       with:
         # this might remove tools that are actually needed,
         # if set to "true" but frees about 6 GB
-        tool-cache: false
+        tool-cache: true
         
         # all of these default to true, but feel free to set to
         # "false" if necessary for your workflow
@@ -61,6 +61,8 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@main
+      with:
+        fetch-depth: 0
 
     - name: Initialization environment
       env:
@@ -75,11 +77,11 @@ jobs:
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
         
-  #  - name: cache
-  #    uses: klever1988/cachewrtbuild@main
-  #    with:
-  #      ccache: 'true'
-  #      prefix: ${{ github.workspace }}
+    - name: cache
+      uses: klever1988/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        prefix: ${{ github.workspace }}
 
     - name: Update feeds
       run:  ./scripts/feeds update -a
