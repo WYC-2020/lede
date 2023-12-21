@@ -64,9 +64,10 @@ define KernelPackage/bluetooth
 	$(LINUX_DIR)/drivers/bluetooth/btusb.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btbcm.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btqca.ko \
+	$(LINUX_DIR)/drivers/bluetooth/btrtl.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btmtk.ko@ge5.17 \
 	$(LINUX_DIR)/drivers/bluetooth/btintel.ko
-  AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm bnep hidp hci_uart btusb btmtk.ko@ge5.17)
+  AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm bnep hidp hci_uart btusb btrtl btmtk.ko@ge5.17)
 endef
 
 define KernelPackage/bluetooth/description
