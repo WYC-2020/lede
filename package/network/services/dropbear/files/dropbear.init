@@ -300,8 +300,12 @@ service_triggers()
 
 stop_service() {
 	# close all open connections
-	killall dropbear
-	killall  sshd
+ 	killall dropbear
+ 	killall  sshd
+ }
+
+reload_service() {
+	restart
 }
 
 killclients()
