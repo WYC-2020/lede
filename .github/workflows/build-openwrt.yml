@@ -104,7 +104,7 @@ jobs:
     - name: Download package
       id: package
       run: |
-        echo "::set-output name=commitHash::$(git rev-parse --short HEAD)"
+        echo "commitHash=$(git rev-parse --short HEAD)"  >> $GITHUB_OUTPUT
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
@@ -115,7 +115,8 @@ jobs:
       run: |
         echo -e "$(nproc) thread compile"
         make -j$(nproc) V=s || make -j1 V=s || make -j1 V=s
-        echo "::set-output name=status::success"
+        echo "status=success"  >> $GITHUB_OUTPUT
+        commitHash::$(git rev-parse --short HEAD)
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
@@ -139,7 +140,7 @@ jobs:
         echo "WORKSPACE_DIR=$PWD" >> $GITHUB_ENV
         cd  targets/*/*
         echo "UPLOAD_PATH=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
+        echo "status=success"  >> $GITHUB_OUTPUT
 
     - name: Compressed kernel packages
       uses: thedoctor0/zip-release@master
@@ -166,7 +167,7 @@ jobs:
         cd bin/targets/*/*
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
+        echo "status=success"  >> $GITHUB_OUTPUT
 
     - name: Upload firmware directory
       uses: actions/upload-artifact@main
@@ -182,8 +183,7 @@ jobs:
         curl -fsSL git.io/file-transfer | sh
         ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
         echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
-        echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
-
+        echo "url=$(cat cowtransfer.log | grep https | cut -f3 -d" ")"  >> $GITHUB_OUTPUT
     - name: Upload firmware to WeTransfer
       id: wetransfer
       if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
@@ -191,18 +191,16 @@ jobs:
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-        echo "::set-output name=url::$(cat wetransfer.log | grep https | cut -f3 -d" ")"
-
+        echo "url=$(cat wetransfer.log | grep https | cut -f3 -d" ")"  >> $GITHUB_OUTPUT
     - name: Generate release tag
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
-        echo "::set-output name=release_tag::$(date +"OpenWrt_%Y%m%d_%H%M%S_${{ steps.package.outputs.commitHash }}")"
+        echo "release_tag=$(date +"OpenWrt_%Y%m%d_%H%M%S_${{ steps.package.outputs.commitHash }}")"  >> $GITHUB_OUTPUT
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
-        echo "::set-output name=status::success"
-
+        echo "status=success"  >> $GITHUB_OUTPUT
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
