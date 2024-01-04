@@ -1,0 +1,25 @@
+From f461e5054a048d0c48556e4a0cf3bc0f345602ef Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Wed, 3 Jan 2024 22:45:31 -0500
+Subject: [PATCH] 1
+
+---
+ nss_wifili.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/nss_wifili.c b/nss_wifili.c
+index 209f8cd..5abee37 100644
+--- a/nss_wifili.c
++++ b/nss_wifili.c
+@@ -383,7 +383,7 @@ EXPORT_SYMBOL(nss_wifili_get_radio_num);
+  */
+ uint8_t nss_wifili_thread_scheme_alloc(struct nss_ctx_instance *nss_ctx,
+ 					int32_t radio_ifnum,
+-					enum nss_wifili_thread_scheme_priority radio_priority)
++					uint32_t radio_priority)
+ {
+ 	uint8_t i;
+ 	uint8_t scheme_idx;
+-- 
+2.17.1
+
