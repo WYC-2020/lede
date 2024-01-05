@@ -105,7 +105,6 @@ jobs:
       id: package
       run: |
         echo "commitHash=$(git rev-parse --short HEAD)"  >> $GITHUB_OUTPUT
-        make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;

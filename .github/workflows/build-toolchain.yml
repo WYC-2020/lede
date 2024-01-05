@@ -34,21 +34,6 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@main
-      with:
-        # this might remove tools that are actually needed,
-        # if set to "true" but frees about 6 GB
-        tool-cache: true
-        
-        # all of these default to true, but feel free to set to
-        # "false" if necessary for your workflow
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: true
-        swap-storage: true
     - name: Set ssh agent
       uses: webfactory/ssh-agent@v0.5.4
       with:
@@ -72,9 +57,10 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         
     - name: cache
-      uses: klever1988/cachewrtbuild@main
+      uses: WYC-2020/cachewrtbuild@main
       with:
         ccache: 'true'
+        only_toolchain: 'true'
         prefix: ${{ github.workspace }}
 
     - name: Update feeds
@@ -98,7 +84,6 @@ jobs:
     - name: Download package
       id: package
       run: |
-        make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
