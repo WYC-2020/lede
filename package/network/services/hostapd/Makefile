@@ -145,9 +145,7 @@ ifeq ($(LOCAL_TYPE),supplicant)
     DRIVER_MAKEOPTS += CONFIG_AP=y
 endif
 
-
-DRV_DEPENDS:=+PACKAGE_kmod-cfg80211:libnl-tiny +kmod-cfg80211
-
+DRV_DEPENDS:=+PACKAGE_kmod-cfg80211:libnl-tiny
 
 define Package/hostapd/Default
   SECTION:=net
