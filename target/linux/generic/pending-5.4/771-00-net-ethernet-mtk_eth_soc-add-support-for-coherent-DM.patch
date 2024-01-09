@@ -194,7 +194,7 @@ Subject: [PATCH] net-ethernet-mtk_eth_soc-add-support-for-coherent-DM
  				  ring->dma_size * sizeof(*ring->dma),
  				  ring->dma,
  				  ring->phys);
-@@ -2165,7 +2166,7 @@ static void mtk_dma_free(struct mtk_eth
+@@ -2168,7 +2169,7 @@ static void mtk_dma_free(struct mtk_eth
  		if (eth->netdev[i])
  			netdev_reset_queue(eth->netdev[i]);
  	if (eth->scratch_ring) {
@@ -203,7 +203,7 @@ Subject: [PATCH] net-ethernet-mtk_eth_soc-add-support-for-coherent-DM
  				  MTK_DMA_SIZE * sizeof(struct mtk_tx_dma),
  				  eth->scratch_ring,
  				  eth->phy_scratch_ring);
-@@ -2513,6 +2514,9 @@ static void mtk_dim_tx(struct work_struc
+@@ -2516,6 +2517,9 @@ static void mtk_dim_tx(struct work_struc
  
  static int mtk_hw_init(struct mtk_eth *eth)
  {
@@ -213,7 +213,7 @@ Subject: [PATCH] net-ethernet-mtk_eth_soc-add-support-for-coherent-DM
  	int i, val, ret;
  
  	if (test_and_set_bit(MTK_HW_INIT, &eth->state))
-@@ -2525,6 +2529,10 @@ static int mtk_hw_init(struct mtk_eth *e
+@@ -2528,6 +2532,10 @@ static int mtk_hw_init(struct mtk_eth *e
  	if (ret)
  		goto err_disable_pm;
  
@@ -224,7 +224,7 @@ Subject: [PATCH] net-ethernet-mtk_eth_soc-add-support-for-coherent-DM
  	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628)) {
  		ret = device_reset(eth->dev);
  		if (ret) {
-@@ -3059,6 +3067,35 @@ free_netdev:
+@@ -3062,6 +3070,35 @@ free_netdev:
  	return err;
  }
  
@@ -260,7 +260,7 @@ Subject: [PATCH] net-ethernet-mtk_eth_soc-add-support-for-coherent-DM
  static int mtk_probe(struct platform_device *pdev)
  {
  	struct device_node *mac_np;
-@@ -3072,6 +3109,7 @@ static int mtk_probe(struct platform_dev
+@@ -3075,6 +3112,7 @@ static int mtk_probe(struct platform_dev
  	eth->soc = of_device_get_match_data(&pdev->dev);
  
  	eth->dev = &pdev->dev;
@@ -268,7 +268,7 @@ Subject: [PATCH] net-ethernet-mtk_eth_soc-add-support-for-coherent-DM
  	eth->base = devm_platform_ioremap_resource(pdev, 0);
  	if (IS_ERR(eth->base))
  		return PTR_ERR(eth->base);
-@@ -3120,6 +3158,16 @@ static int mtk_probe(struct platform_dev
+@@ -3123,6 +3161,16 @@ static int mtk_probe(struct platform_dev
  		}
  	}
  

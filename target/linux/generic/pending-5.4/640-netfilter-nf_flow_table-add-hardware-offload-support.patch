@@ -23,7 +23,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
-@@ -995,6 +995,13 @@ struct devlink;
+@@ -989,6 +989,13 @@ struct devlink;
  struct tlsdev_ops;
  
  
@@ -37,7 +37,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  /*
   * This structure defines the management hooks for network devices.
   * The following hooks can be defined; unless noted otherwise, they are
-@@ -1227,6 +1234,10 @@ struct tlsdev_ops;
+@@ -1221,6 +1228,10 @@ struct tlsdev_ops;
   * int (*ndo_bridge_dellink)(struct net_device *dev, struct nlmsghdr *nlh,
   *			     u16 flags);
   *
@@ -48,7 +48,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
   * int (*ndo_change_carrier)(struct net_device *dev, bool new_carrier);
   *	Called to change device carrier. Soft-devices (like dummy, team, etc)
   *	which do not represent real hardware may define this to allow their
-@@ -1474,6 +1485,8 @@ struct net_device_ops {
+@@ -1468,6 +1479,8 @@ struct net_device_ops {
  	int			(*ndo_bridge_dellink)(struct net_device *dev,
  						      struct nlmsghdr *nlh,
  						      u16 flags);
@@ -85,7 +85,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  
  struct flow_offload {
  	struct flow_offload_tuple_rhash		tuplehash[FLOW_OFFLOAD_DIR_MAX];
-@@ -123,6 +130,22 @@ unsigned int nf_flow_offload_ip_hook(voi
+@@ -125,6 +132,22 @@ unsigned int nf_flow_offload_ip_hook(voi
  unsigned int nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
  				       const struct nf_hook_state *state);
  
@@ -156,7 +156,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  obj-$(CONFIG_NETFILTER_XTABLES) += x_tables.o xt_tcpudp.o
 --- a/net/netfilter/nf_flow_table_core.c
 +++ b/net/netfilter/nf_flow_table_core.c
-@@ -261,10 +261,16 @@ static inline bool nf_flow_has_expired(c
+@@ -288,10 +288,16 @@ static inline bool nf_flow_has_expired(c
  	return nf_flow_timeout_delta(flow->timeout) <= 0;
  }
  
@@ -173,7 +173,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  
  	rhashtable_remove_fast(&flow_table->rhashtable,
  			       &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].node,
-@@ -284,6 +290,9 @@ static void flow_offload_del(struct nf_f
+@@ -311,6 +317,9 @@ static void flow_offload_del(struct nf_f
  	if (!(flow->flags & FLOW_OFFLOAD_TEARDOWN))
  		flow_offload_fixup_ct_state(e->ct);
  
@@ -183,7 +183,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  	flow_offload_free(flow);
  }
  
-@@ -374,6 +383,9 @@ static void nf_flow_offload_gc_step(stru
+@@ -401,6 +410,9 @@ static void nf_flow_offload_gc_step(stru
  	if (!teardown)
  		nf_ct_offload_timeout(flow);
  
@@ -193,7 +193,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  	if (nf_flow_has_expired(flow) || teardown)
  		flow_offload_del(flow_table, flow);
  }
-@@ -503,10 +515,43 @@ int nf_flow_dnat_port(const struct flow_
+@@ -530,10 +542,43 @@ int nf_flow_dnat_port(const struct flow_
  }
  EXPORT_SYMBOL_GPL(nf_flow_dnat_port);
  
@@ -237,7 +237,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  	INIT_DEFERRABLE_WORK(&flowtable->gc_work, nf_flow_offload_work_gc);
  
  	err = rhashtable_init(&flowtable->rhashtable,
-@@ -547,6 +592,8 @@ static void nf_flow_table_iterate_cleanu
+@@ -574,6 +619,8 @@ static void nf_flow_table_iterate_cleanu
  {
  	nf_flow_table_iterate(flowtable, nf_flow_table_do_cleanup, dev);
  	flush_delayed_work(&flowtable->gc_work);
@@ -246,7 +246,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  }
  
  void nf_flow_table_cleanup(struct net_device *dev)
-@@ -560,6 +607,26 @@ void nf_flow_table_cleanup(struct net_de
+@@ -587,6 +634,26 @@ void nf_flow_table_cleanup(struct net_de
  }
  EXPORT_SYMBOL_GPL(nf_flow_table_cleanup);
  
@@ -273,7 +273,7 @@ Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
  void nf_flow_table_free(struct nf_flowtable *flow_table)
  {
  	mutex_lock(&flowtable_lock);
-@@ -569,9 +636,58 @@ void nf_flow_table_free(struct nf_flowta
+@@ -596,9 +663,58 @@ void nf_flow_table_free(struct nf_flowta
  	nf_flow_table_iterate(flow_table, nf_flow_table_do_cleanup, NULL);
  	nf_flow_table_iterate(flow_table, nf_flow_offload_gc_step, flow_table);
  	rhashtable_destroy(&flow_table->rhashtable);

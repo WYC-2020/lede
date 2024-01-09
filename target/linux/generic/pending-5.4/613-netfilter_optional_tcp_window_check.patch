@@ -33,20 +33,20 @@ Signed-off-by: Christian 'Ansuel' Marangi <ansuelsmth@gmail.com>
  	tn->tcp_be_liberal = nf_ct_tcp_be_liberal;
  	tn->tcp_max_retrans = nf_ct_tcp_max_retrans;
 +	tn->tcp_no_window_check = 1;
- }
  
- const struct nf_conntrack_l4proto nf_conntrack_l4proto_tcp =
+ #if IS_ENABLED(CONFIG_NF_FLOW_TABLE)
+ 	tn->offload_timeout = 30 * HZ;
 --- a/net/netfilter/nf_conntrack_standalone.c
 +++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -619,6 +619,7 @@ enum nf_ct_sysctl_index {
- 	NF_SYSCTL_CT_PROTO_TIMEOUT_TCP_UNACK,
+@@ -623,6 +623,7 @@ enum nf_ct_sysctl_index {
+ #endif
  	NF_SYSCTL_CT_PROTO_TCP_LOOSE,
  	NF_SYSCTL_CT_PROTO_TCP_LIBERAL,
 +	NF_SYSCTL_CT_PROTO_TCP_NO_WINDOW_CHECK,
  	NF_SYSCTL_CT_PROTO_TCP_MAX_RETRANS,
  	NF_SYSCTL_CT_PROTO_TIMEOUT_UDP,
  	NF_SYSCTL_CT_PROTO_TIMEOUT_UDP_STREAM,
-@@ -823,6 +824,14 @@ static struct ctl_table nf_ct_sysctl_tab
+@@ -845,6 +846,14 @@ static struct ctl_table nf_ct_sysctl_tab
  		.extra1 	= SYSCTL_ZERO,
  		.extra2 	= SYSCTL_ONE,
  	},
@@ -61,14 +61,14 @@ Signed-off-by: Christian 'Ansuel' Marangi <ansuelsmth@gmail.com>
  	[NF_SYSCTL_CT_PROTO_TCP_MAX_RETRANS] = {
  		.procname	= "nf_conntrack_tcp_max_retrans",
  		.maxlen		= sizeof(unsigned int),
-@@ -1008,6 +1017,7 @@ static void nf_conntrack_standalone_init
+@@ -1044,6 +1053,7 @@ static void nf_conntrack_standalone_init
  
  	XASSIGN(LOOSE, &tn->tcp_loose);
  	XASSIGN(LIBERAL, &tn->tcp_be_liberal);
 +	XASSIGN(NO_WINDOW_CHECK, &tn->tcp_no_window_check);
  	XASSIGN(MAX_RETRANS, &tn->tcp_max_retrans);
  #undef XASSIGN
- }
+ 
 --- a/include/net/netns/conntrack.h
 +++ b/include/net/netns/conntrack.h
 @@ -26,6 +26,7 @@ struct nf_tcp_net {
@@ -77,5 +77,5 @@ Signed-off-by: Christian 'Ansuel' Marangi <ansuelsmth@gmail.com>
  	int tcp_be_liberal;
 +	int tcp_no_window_check;
  	int tcp_max_retrans;
- };
- 
+ #if IS_ENABLED(CONFIG_NF_FLOW_TABLE)
+ 	unsigned int offload_timeout;

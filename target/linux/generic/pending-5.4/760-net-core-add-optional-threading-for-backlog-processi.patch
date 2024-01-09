@@ -20,7 +20,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  /**
   *	napi_disable - prevent NAPI from scheduling
-@@ -3129,6 +3130,7 @@ struct softnet_data {
+@@ -3128,6 +3129,7 @@ struct softnet_data {
  	unsigned int		processed;
  	unsigned int		time_squeeze;
  	unsigned int		received_rps;
@@ -30,7 +30,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #endif
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -4158,7 +4158,7 @@ static int rps_ipi_queued(struct softnet
+@@ -4160,7 +4160,7 @@ static int rps_ipi_queued(struct softnet
  #ifdef CONFIG_RPS
  	struct softnet_data *mysd = this_cpu_ptr(&softnet_data);
  
@@ -39,7 +39,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		sd->rps_ipi_next = mysd->rps_ipi_list;
  		mysd->rps_ipi_list = sd;
  
-@@ -5296,6 +5296,8 @@ DEFINE_PER_CPU(struct work_struct, flush
+@@ -5298,6 +5298,8 @@ DEFINE_PER_CPU(struct work_struct, flush
  /* Network device is going away, flush any packets still pending */
  static void flush_backlog(struct work_struct *work)
  {
@@ -48,7 +48,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	struct sk_buff *skb, *tmp;
  	struct softnet_data *sd;
  
-@@ -5311,9 +5313,18 @@ static void flush_backlog(struct work_st
+@@ -5313,9 +5315,18 @@ static void flush_backlog(struct work_st
  			input_queue_head_incr(sd);
  		}
  	}
@@ -67,7 +67,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	skb_queue_walk_safe(&sd->process_queue, skb, tmp) {
  		if (skb->dev->reg_state == NETREG_UNREGISTERING) {
  			__skb_unlink(skb, &sd->process_queue);
-@@ -5321,7 +5332,18 @@ static void flush_backlog(struct work_st
+@@ -5323,7 +5334,18 @@ static void flush_backlog(struct work_st
  			input_queue_head_incr(sd);
  		}
  	}
@@ -86,7 +86,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  }
  
  static void flush_all_backlogs(void)
-@@ -5957,6 +5979,7 @@ static int process_backlog(struct napi_s
+@@ -5959,6 +5981,7 @@ static int process_backlog(struct napi_s
  
  		local_irq_disable();
  		rps_lock(sd);
@@ -94,7 +94,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		if (skb_queue_empty(&sd->input_pkt_queue)) {
  			/*
  			 * Inline a custom version of __napi_complete().
-@@ -5966,7 +5989,8 @@ static int process_backlog(struct napi_s
+@@ -5968,7 +5991,8 @@ static int process_backlog(struct napi_s
  			 * We can use a plain write instead of clear_bit(),
  			 * and we dont need an smp_mb() memory barrier.
  			 */
@@ -104,7 +104,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  			again = false;
  		} else {
  			skb_queue_splice_tail_init(&sd->input_pkt_queue,
-@@ -6390,6 +6414,57 @@ static void napi_workfn(struct work_stru
+@@ -6392,6 +6416,57 @@ static void napi_workfn(struct work_stru
  	}
  }
  

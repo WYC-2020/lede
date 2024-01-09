@@ -1,6 +1,6 @@
 --- a/include/net/netfilter/nf_flow_table.h
 +++ b/include/net/netfilter/nf_flow_table.h
-@@ -163,6 +163,8 @@ struct nf_flow_table_hw {
+@@ -165,6 +165,8 @@ struct nf_flow_table_hw {
  int nf_flow_table_hw_register(const struct nf_flow_table_hw *offload);
  void nf_flow_table_hw_unregister(const struct nf_flow_table_hw *offload);
  
@@ -19,7 +19,7 @@
  
  struct flow_offload_entry {
  	struct flow_offload	flow;
-@@ -177,6 +178,22 @@ void flow_offload_free(struct flow_offlo
+@@ -180,6 +181,22 @@ void flow_offload_free(struct flow_offlo
  }
  EXPORT_SYMBOL_GPL(flow_offload_free);
  
