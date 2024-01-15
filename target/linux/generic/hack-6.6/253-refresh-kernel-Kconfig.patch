@@ -37,7 +37,7 @@ Subject: [PATCH] refresh kernel Kconfig
  
 --- a/drivers/usb/host/Kconfig
 +++ b/drivers/usb/host/Kconfig
-@@ -183,7 +183,7 @@ config USB_EHCI_TT_NEWSCHED
+@@ -192,7 +192,7 @@ config USB_EHCI_TT_NEWSCHED
  if USB_EHCI_HCD
  
  config USB_EHCI_PCI
@@ -59,7 +59,7 @@ Subject: [PATCH] refresh kernel Kconfig
  	tristate "USB driver for GSM and CDMA modems"
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -2003,7 +2003,7 @@ config PADATA
+@@ -1970,7 +1970,7 @@ config PADATA
  	bool
  
  config ASN1
@@ -79,7 +79,7 @@ Subject: [PATCH] refresh kernel Kconfig
  
  config RAID6_PQ_BENCHMARK
  	bool "Automatically choose fastest RAID6 PQ functions"
-@@ -312,10 +312,10 @@ config 842_DECOMPRESS
+@@ -314,10 +314,10 @@ config 842_DECOMPRESS
  	tristate
  
  config ZLIB_INFLATE
@@ -92,7 +92,7 @@ Subject: [PATCH] refresh kernel Kconfig
  	select BITREVERSE
  
  config ZLIB_DFLTCC
-@@ -637,7 +637,7 @@ config LIBFDT
+@@ -647,7 +647,7 @@ config LIBFDT
  	bool
  
  config OID_REGISTRY
@@ -101,7 +101,7 @@ Subject: [PATCH] refresh kernel Kconfig
  	help
  	  Enable fast lookup object identifier registry.
  
-@@ -753,7 +753,7 @@ config PLDMFW
+@@ -766,7 +766,7 @@ config PLDMFW
  	default n
  
  config ASN1_ENCODER
