@@ -432,12 +432,12 @@ define KernelPackage/fs-nfs-common
 	CONFIG_NFS_V4_1_IMPLEMENTATION_ID_DOMAIN="kernel.org" \
 	CONFIG_NFS_V4_1_MIGRATION=n \
 	CONFIG_NFS_V4_2=y \
+	CONFIG_NFS_V4_2_SSC_HELPER=y \
 	CONFIG_NFS_V4_2_READ_PLUS=n
   FILES:= \
 	$(LINUX_DIR)/fs/lockd/lockd.ko \
 	$(LINUX_DIR)/net/sunrpc/sunrpc.ko \
-	$(LINUX_DIR)/fs/nfs_common/grace.ko \
-	$(LINUX_DIR)/fs/nfs_common/nfs_ssc.ko@ge5.10
+	$(LINUX_DIR)/fs/nfs_common/grace.ko
   AUTOLOAD:=$(call AutoLoad,30,grace sunrpc lockd)
 endef
 

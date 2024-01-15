@@ -389,28 +389,20 @@ define KernelPackage/drm-amdgpu
   TITLE:=AMDGPU DRM support
   DEPENDS:=@TARGET_x86||TARGET_loongarch64 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-ttm \
 	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit +amdgpu-firmware \
-	+kmod-drm-display-helper +kmod-drm-buddy +kmod-acpi-video
+	+kmod-drm-display-helper +kmod-drm-buddy +kmod-acpi-video 
   KCONFIG:=CONFIG_DRM_AMDGPU \
 	CONFIG_DRM_AMDGPU_SI=y \
 	CONFIG_DRM_AMDGPU_CIK=y \
 	CONFIG_DRM_AMD_DC=y \
 	CONFIG_DEBUG_KERNEL_DC=n
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/amd/amdgpu/amdgpu.ko \
+	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.6 \
 	$(LINUX_DIR)/drivers/gpu/drm/scheduler/gpu-sched.ko
   AUTOLOAD:=$(call AutoProbe,amdgpu)
 endef
 
 define KernelPackage/drm-amdgpu/description
   Direct Rendering Manager (DRM) support for AMDGPU Cards
-endef
-
-define KernelPackage/drm-amdgpu/loongarch64
-  KCONFIG+=CONFIG_DRM_AMDGPU_USERPTR=y \
-	CONFIG_DRM_AMD_DC=y \
-	CONFIG_DRM_AMD_DC_FP=y \
-	CONFIG_DRM_AMD_DC_SI=y
-  FILES+=$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko
-  AUTOLOAD:=$(call AutoProbe,amdxcp amdgpu)
 endef
 
 $(eval $(call KernelPackage,drm-amdgpu))
@@ -1219,7 +1211,7 @@ define KernelPackage/drm-i915
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Intel GPU drm support
   DEPENDS:=@TARGET_x86 +kmod-drm-ttm +kmod-drm-kms-helper +i915-firmware \
-	+LINUX_6_1:kmod-drm-display-helper +LINUX_6_1:kmod-acpi-video
+	+(LINUX_6_1||LINUX_6_6):kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video
   KCONFIG:= \
 	CONFIG_INTEL_GTT \
 	CONFIG_DRM_I915 \

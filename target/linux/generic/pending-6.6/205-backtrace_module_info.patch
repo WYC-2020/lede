@@ -23,17 +23,19 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #endif
  
  	if (fmt[1] == 'R')
-@@ -1004,8 +1006,14 @@ char *symbol_string(char *buf, char *end
+@@ -1004,8 +1006,16 @@ char *symbol_string(char *buf, char *end
  
  	return string_nocheck(buf, end, sym, spec);
  #else
 -	return special_hex_number(buf, end, value, sizeof(void *));
 +	len = snprintf(sym, sizeof(sym), "0x%lx", value);
 +	mod = __module_address(value);
-+	if (mod)
++	if (mod){
++		struct module_memory *core_text;
++		core_text = &mod->mem[MOD_TEXT];
 +		snprintf(sym + len, sizeof(sym) - len, " [%s@%p+0x%x]",
-+			 mod->name, mod->core_layout.base,
-+			 mod->core_layout.size);
++			 mod->name, core_text->base,
++			 core_text->size);}
  #endif
 +	return string(buf, end, sym, spec);
  }
