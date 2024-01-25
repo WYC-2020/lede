@@ -285,7 +285,7 @@ define KernelPackage/drm
   TITLE:=Direct Rendering Manager (DRM) support
   HIDDEN:=1
   DEPENDS:=+kmod-dma-buf +kmod-i2c-core +kmod-backlight \
-	+(LINUX_5_15||LINUX_6_1):kmod-fb
+	+(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-fb
   KCONFIG:=CONFIG_DRM \
 	CONFIG_DRM_EXEC@ge6.6 \
 	CONFIG_DRM_SUBALLOC_HELPER@ge6.4
@@ -519,7 +519,7 @@ define KernelPackage/drm-radeon
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Radeon DRM support
   DEPENDS:=@TARGET_x86||TARGET_phytium @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-kms-helper \
-	+kmod-drm-ttm +kmod-i2c-algo-bit +LINUX_6_1:kmod-drm-display-helper +LINUX_6_1:kmod-acpi-video +radeon-firmware
+	+kmod-drm-ttm +kmod-i2c-algo-bit +(LINUX_6_1||LINUX_6_6):kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video +radeon-firmware
   KCONFIG:=CONFIG_DRM_RADEON
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/radeon/radeon.ko
   AUTOLOAD:=$(call AutoProbe,radeon)
@@ -548,7 +548,8 @@ $(eval $(call KernelPackage,drm-sched))
 define KernelPackage/drm-nouveau
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=nouveau DRM support
-  DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-drm-kms-helper +LINUX_6_1:kmod-acpi-video +LINUX_6_1:kmod-drm-display-helper
+  DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-drm-kms-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video \
+	+(LINUX_6_1||LINUX_6_6):kmod-drm-display-helper +kmod-drm-sched
   KCONFIG:=CONFIG_DRM_NOUVEAU \
 	CONFIG_NOUVEAU_DEBUG=5 \
 	CONFIG_NOUVEAU_DEBUG_DEFAULT=3 \
@@ -625,7 +626,7 @@ $(eval $(call KernelPackage,video-videobuf2))
 
 define KernelPackage/video-cpia2
   TITLE:=CPIA2 video driver
-  DEPENDS:=@USB_SUPPORT +kmod-usb-core
+  DEPENDS:=@USB_SUPPORT @!LINUX_6_6 +kmod-usb-core
   KCONFIG:=CONFIG_VIDEO_CPIA2
   FILES:=$(LINUX_DIR)/drivers/media/$(V4L2_USB_DIR)/cpia2/cpia2.ko
   AUTOLOAD:=$(call AutoProbe,cpia2)
