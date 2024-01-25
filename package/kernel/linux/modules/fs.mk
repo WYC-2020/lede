@@ -90,7 +90,7 @@ define KernelPackage/fs-smbfs-common
 	CONFIG_SMBFS_COMMON@lt6.1 \
 	CONFIG_SMBFS@ge6.1
   DEPENDS:= \
-	@(LINUX_5_15||LINUX_6_1)  \
+	@(LINUX_5_15||LINUX_6_1||LINUX_6_6)  \
 	+(LINUX_5_4||LINUX_5_10):kmod-crypto-arc4 \
 	+(LINUX_5_4||LINUX_5_10):kmod-crypto-md4
   FILES:= \
@@ -113,14 +113,15 @@ define KernelPackage/fs-cifs
   KCONFIG:= \
 	CONFIG_CIFS \
 	CONFIG_CIFS_DFS_UPCALL=n \
-	CONFIG_CIFS_UPCALL=n
+	CONFIG_CIFS_UPCALL=n 
   FILES:= \
 	$(LINUX_DIR)/fs/smb/client/cifs.ko@ge6.1 \
-	$(LINUX_DIR)/fs/cifs/cifs.ko@lt6.1
+	$(LINUX_DIR)/fs/cifs/cifs.ko@lt6.1 
+
   AUTOLOAD:=$(call AutoLoad,30,cifs)
   $(call AddDepends/nls)
   DEPENDS+= \
-    +(LINUX_5_15||LINUX_6_1):kmod-fs-smbfs-common \
+    +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-fs-smbfs-common \
     +kmod-crypto-md5 \
     +kmod-crypto-sha256 \
     +kmod-crypto-sha512 \
@@ -130,9 +131,11 @@ define KernelPackage/fs-cifs
     +kmod-crypto-ccm \
     +kmod-crypto-ecb \
     +kmod-crypto-des \
-    +(LINUX_5_15||LINUX_6_1):kmod-asn1-decoder \
-    +(LINUX_5_15||LINUX_6_1):kmod-oid-registry \
-    +(LINUX_5_15||LINUX_6_1):kmod-dnsresolver
+    +LINUX_6_6:kmod-fs-netfs \
+    +LINUX_6_6:kmod-nls-ucs2-utils \
+    +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-asn1-decoder \
+    +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-oid-registry \
+    +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-dnsresolver
 endef
 
 define KernelPackage/fs-cifs/description
@@ -392,7 +395,7 @@ $(eval $(call KernelPackage,fs-msdos))
 define KernelPackage/fs-netfs
   SUBMENU:=$(FS_MENU)
   TITLE:=Network Filesystems support
-  DEPENDS:=@(LINUX_5_15||LINUX_6_1)
+  DEPENDS:=@(LINUX_5_15||LINUX_6_1||LINUX_6_6)
   KCONFIG:= CONFIG_NETFS_SUPPORT
   FILES:=$(LINUX_DIR)/fs/netfs/netfs.ko
   AUTOLOAD:=$(call AutoLoad,28,netfs)

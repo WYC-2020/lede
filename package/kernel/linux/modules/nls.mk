@@ -339,3 +339,19 @@ define KernelPackage/nls-utf8/description
 endef
 
 $(eval $(call KernelPackage,nls-utf8))
+
+define KernelPackage/nls-ucs2-utils
+  SUBMENU:=Native Language Support
+  TITLE:=UCS2
+  KCONFIG:=CONFIG_NLS_UCS2_UTILS
+  FILES:=$(LINUX_DIR)/fs/nls/nls_ucs2_utils.ko
+  AUTOLOAD:=$(call AutoLoad,25,nls_ucs2_utils)
+  $(call AddDepends/nls)
+endef
+
+define KernelPackage/nls-ucs2-utils/description
+ Kernel module for UCS2 
+endef
+
+$(eval $(call KernelPackage,nls-ucs2-utils))
+
