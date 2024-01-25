@@ -1,4 +1,5 @@
-src-git smartdns git@github.com:WYC-2020/smartdns.git
+#src-git smartdns git@github.com:WYC-2020/smartdns.git
+src-git kenzok8 https://github.com/WYC-2020/openwrt-packages
 src-git packages git@github.com:WYC-2020/packages.git
 src-git dockerman https://github.com/WYC-2020/luci-app-dockerman
 src-git luci git@github.com:WYC-2020/luci.git
@@ -7,5 +8,5 @@ src-git telephony https://git.openwrt.org/feed/telephony.git
 src-git openclash https://github.com/WYC-2020/OpenClash;dev
 src-git passwall git@github.com:WYC-2020/openwrt-passwall.git
 src-git helloworld git@github.com:WYC-2020/helloworld.git
-src-git kenzok8 https://github.com/WYC-2020/openwrt-packages
+#src-git kenzok8 https://github.com/WYC-2020/openwrt-packages
 src-git openwrt_subconverter https://github.com/WYC-2020/openwrt-subconverter
