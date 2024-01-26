@@ -548,7 +548,7 @@ $(eval $(call KernelPackage,drm-sched))
 define KernelPackage/drm-nouveau
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=nouveau DRM support
-  DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-drm-kms-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video \
+  DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-drm-kms-helper +kmod-acpi-video \
 	+(LINUX_6_1||LINUX_6_6):kmod-drm-display-helper +kmod-drm-sched
   KCONFIG:=CONFIG_DRM_NOUVEAU \
 	CONFIG_NOUVEAU_DEBUG=5 \
