@@ -119,3 +119,14 @@ Subject: [PATCH] refresh kernel Kconfig
  	select FW_LOADER
  
  config BT_RTL
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -197,7 +197,7 @@ config DRM_VM
+ 	depends on DRM && MMU
+ 
+ config DRM_SCHED
+-	tristate
++	tristate "DRM sched"
+ 	depends on DRM
+ 
+ source "drivers/gpu/drm/i2c/Kconfig"
