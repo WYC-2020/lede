@@ -389,15 +389,14 @@ define KernelPackage/drm-amdgpu
   TITLE:=AMDGPU DRM support
   DEPENDS:=@TARGET_x86||TARGET_loongarch64||TARGET_phytium @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-ttm \
 	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit +amdgpu-firmware \
-	+kmod-drm-display-helper +kmod-drm-buddy +kmod-acpi-video 
+	+kmod-drm-display-helper +kmod-drm-buddy +kmod-acpi-video +kmod-drm-sched
   KCONFIG:=CONFIG_DRM_AMDGPU \
 	CONFIG_DRM_AMDGPU_SI=y \
 	CONFIG_DRM_AMDGPU_CIK=y \
 	CONFIG_DRM_AMD_DC=y \
 	CONFIG_DEBUG_KERNEL_DC=n
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/amd/amdgpu/amdgpu.ko \
-	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.6 \
-	$(LINUX_DIR)/drivers/gpu/drm/scheduler/gpu-sched.ko
+	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.6
   AUTOLOAD:=$(call AutoProbe,amdgpu)
 endef
 
