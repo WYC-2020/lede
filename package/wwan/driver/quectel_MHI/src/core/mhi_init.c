@@ -2548,7 +2548,11 @@ static int __init mhi_cntrl_init(void)
 		return ret;
 
 	mhi_cntrl_drv.major = ret;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0)
 	mhi_cntrl_drv.class = class_create(THIS_MODULE, MHI_CNTRL_DRIVER_NAME);
+#else
+	mhi_cntrl_drv.class = class_create(MHI_CNTRL_DRIVER_NAME);
+#endif
 	if (IS_ERR(mhi_cntrl_drv.class)) {
 		unregister_chrdev(mhi_cntrl_drv.major, MHI_CNTRL_DRIVER_NAME);
 		return -ENODEV;

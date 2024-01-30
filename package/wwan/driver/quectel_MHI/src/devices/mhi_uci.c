@@ -911,7 +911,11 @@ int mhi_device_uci_init(void)
 		return ret;
 
 	mhi_uci_drv.major = ret;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0)
 	mhi_uci_drv.class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
+#else
+	mhi_uci_drv.class = class_create(MHI_UCI_DRIVER_NAME);
+#endif
 	if (IS_ERR(mhi_uci_drv.class)) {
 		unregister_chrdev(mhi_uci_drv.major, MHI_UCI_DRIVER_NAME);
 		return -ENODEV;
