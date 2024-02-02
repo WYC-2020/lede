@@ -1,0 +1,25 @@
+From 302a48c5336430fd50492041859201af832ab19e Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Fri, 2 Feb 2024 01:56:08 -0500
+Subject: [PATCH] skipping wrong addresses causes service to exit
+
+---
+ src/option.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/option.c b/src/option.c
+index 265f995..b59344d 100644
+--- a/src/option.c
++++ b/src/option.c
+@@ -5397,7 +5397,7 @@ static void read_file(char *file, FILE *f, int hard_opt, int from_script)
+ 	  else
+ 	    sprintf(daemon->namebuff + strlen(daemon->namebuff), _(" at line %d of %s"), lineno, file);
+ 	  
+-	  if (hard_opt != 0)
++	  if (hard_opt != 0||option=='A')
+ 	    my_syslog(LOG_ERR, "%s", daemon->namebuff);
+ 	  else
+ 	    die("%s", daemon->namebuff, EC_BADCONF);
+-- 
+2.17.1
+
