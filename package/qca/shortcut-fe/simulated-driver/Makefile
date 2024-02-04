@@ -30,11 +30,7 @@ define KernelPackage/shortcut-fe-drv
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-<<<<<<< HEAD:package/lean/shortcut-fe/simulated-driver/Makefile
-  DEPENDS:=+kmod-shortcut-fe
-=======
   DEPENDS:=@TARGET_qualcommax +kmod-shortcut-fe
->>>>>>> lede:package/qca/shortcut-fe/simulated-driver/Makefile
   KCONFIG:= \
 	   CONFIG_NET_CLS_ACT=y \
 	   CONFIG_XFRM=y
