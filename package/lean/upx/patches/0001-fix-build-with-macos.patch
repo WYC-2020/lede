@@ -8,17 +8,16 @@ Subject: [PATCH] 2
  1 file changed, 1 deletion(-)
 
 diff --git a/src/util/snprintf.h b/src/util/snprintf.h
-index 5a61554..2cb7280 100644
+index d0b5248..a090a37 100644
 --- a/src/util/snprintf.h
 +++ b/src/util/snprintf.h
-@@ -53,7 +53,6 @@ upx_rsize_t upx_safe_strlen(const char *);
+@@ -59,7 +59,6 @@ upx_rsize_t upx_safe_strlen_noexcept(const char *) noexcept;
  #undef sprintf
  #undef vsnprintf
- #define snprintf upx_safe_snprintf
--#define sprintf ERROR_sprintf_IS_DANGEROUS_USE_snprintf
+ #define snprintf  upx_safe_snprintf
+-#define sprintf   ERROR_sprintf_IS_DANGEROUS_USE_snprintf
  #define vsnprintf upx_safe_vsnprintf
  
- #undef strlen
+ /*************************************************************************
 -- 
-2.30.1 (Apple Git-130)
-
+2.17.1
