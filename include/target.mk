@@ -57,7 +57,6 @@ DEFAULT_PACKAGES.router:=\
 	luci-newapi block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw \
 	kmod-tun iptables-mod-tproxy iptables-mod-extra default-settings luci \
 	luci-app-filetransfer luci-app-vsftpd luci-app-ramfree 
-
 ifneq ($(DUMP),)
   all: dumpinfo
 endif
