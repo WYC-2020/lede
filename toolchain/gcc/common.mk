@@ -193,10 +193,6 @@ endef
 ifneq ($(filter $(GCC_MAJOR_VERSION),12 13),)
 	GCC_VERSION_FILE:=gcc/genversion.cc
 else
-	GCC_VERSION_FILE:=gcc/version.cc
-endif
-
-ifeq ($(GCC_MAJOR_VERSION),8)
 	GCC_VERSION_FILE:=gcc/version.c
 endif
 
