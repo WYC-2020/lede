@@ -1,0 +1,69 @@
+From e22604a4115662a39e413ccb626cf1ddb22d33df Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Thu, 29 Feb 2024 00:36:39 -0500
+Subject: [PATCH] 0
+
+---
+ drivers/media/common/videobuf2/Kconfig | 14 +++++++-------
+ drivers/media/v4l2-core/Kconfig        |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/common/videobuf2/Kconfig b/drivers/media/common/videobuf2/Kconfig
+index d2223a12..c830344e 100644
+--- a/drivers/media/common/videobuf2/Kconfig
++++ b/drivers/media/common/videobuf2/Kconfig
+@@ -2,31 +2,31 @@
+ # Used by drivers that need Videobuf2 modules
+ config VIDEOBUF2_CORE
+ 	select DMA_SHARED_BUFFER
+-	tristate
++	tristate "video buf2 core"
+ 
+ config VIDEOBUF2_V4L2
+-	tristate
++	tristate "video buf2 v4l2"
+ 
+ config VIDEOBUF2_MEMOPS
+-	tristate
++	tristate "video buf2 memops"
+ 
+ config VIDEOBUF2_DMA_CONTIG
+-	tristate
++	tristate "videobuf2 dma config"
+ 	select VIDEOBUF2_CORE
+ 	select VIDEOBUF2_MEMOPS
+ 	select DMA_SHARED_BUFFER
+ 
+ config VIDEOBUF2_VMALLOC
+-	tristate
++	tristate "video buf2 vmalloc"
+ 	select VIDEOBUF2_CORE
+ 	select VIDEOBUF2_MEMOPS
+ 	select DMA_SHARED_BUFFER
+ 
+ config VIDEOBUF2_DMA_SG
+-	tristate
++	tristate "videobuf2 dma sg"
+ 	select VIDEOBUF2_CORE
+ 	select VIDEOBUF2_MEMOPS
+ 
+ config VIDEOBUF2_DVB
+-	tristate
++	tristate "videobuf2 dvb"
+ 	select VIDEOBUF2_CORE
+diff --git a/drivers/media/v4l2-core/Kconfig b/drivers/media/v4l2-core/Kconfig
+index 02dc1787..187d3307 100644
+--- a/drivers/media/v4l2-core/Kconfig
++++ b/drivers/media/v4l2-core/Kconfig
+@@ -54,7 +54,7 @@ config V4L2_H264
+ 
+ # Used by drivers that need v4l2-mem2mem.ko
+ config V4L2_MEM2MEM_DEV
+-	tristate
++	tristate "v4d2 mem2mem dev"
+ 	depends on VIDEOBUF2_CORE
+ 
+ # Used by LED subsystem flash drivers
+-- 
+2.17.1
+

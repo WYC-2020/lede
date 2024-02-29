@@ -578,7 +578,7 @@ define KernelPackage/video-core
 	CONFIG_V4L_PLATFORM_DRIVERS=y
   FILES:= \
 	$(LINUX_DIR)/drivers/media/$(V4L2_DIR)/videodev.ko
-  AUTOLOAD:=$(call AutoLoad,60, videodev v4l2-common)
+  AUTOLOAD:=$(call AutoLoad,60, videodev)
 endef
 
 define KernelPackage/video-core/description
@@ -606,6 +606,7 @@ define KernelPackage/video-videobuf2
   KCONFIG:= \
 	CONFIG_VIDEOBUF2_CORE \
 	CONFIG_VIDEOBUF2_MEMOPS \
+	CONFIG_VIDEOBUF2_V4L2 \
 	CONFIG_VIDEOBUF2_VMALLOC
   FILES:= \
 	$(LINUX_DIR)/drivers/media/common/videobuf2/videobuf2-common.ko \
@@ -1214,7 +1215,6 @@ $(eval $(call KernelPackage,video-gspca-konica))
 define KernelPackage/video-mem2mem
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Memory 2 Memory device support
-  HIDDEN:=1
   DEPENDS:=+kmod-video-videobuf2
   KCONFIG:= \
     CONFIG_V4L_MEM2MEM_DRIVERS=y \
@@ -1233,7 +1233,6 @@ $(eval $(call KernelPackage,video-mem2mem))
 define KernelPackage/video-dma
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Video DMA support
-  HIDDEN:=1
   DEPENDS:=+kmod-video-videobuf2
   KCONFIG:= \
 	CONFIG_VIDEOBUF2_DMA_CONTIG \
