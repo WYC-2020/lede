@@ -90,18 +90,15 @@ define KernelPackage/fs-smbfs-common
 	CONFIG_SMBFS_COMMON@lt6.1 \
 	CONFIG_SMBFS@ge6.1
   DEPENDS:= \
-<<<<<<< HEAD
 	@(LINUX_5_15||LINUX_6_1||LINUX_6_6)  \
-=======
->>>>>>> lede
 	+(LINUX_5_4||LINUX_5_10):kmod-crypto-arc4 \
 	+(LINUX_5_4||LINUX_5_10):kmod-crypto-md4 \
 	+LINUX_6_6:kmod-fs-netfs +LINUX_6_6:kmod-nls-ucs2-utils
   FILES:= \
 	$(LINUX_DIR)/fs/smb/common/cifs_arc4.ko@ge6.1 \
 	$(LINUX_DIR)/fs/smb/common/cifs_md4.ko@ge6.1 \
-     $(LINUX_DIR)/fs/smbfs_common/cifs_arc4.ko@eq5.15 \
-     $(LINUX_DIR)/fs/smbfs_common/cifs_md4.ko@eq5.15
+           $(LINUX_DIR)/fs/smbfs_common/cifs_arc4.ko@eq5.15 \
+           $(LINUX_DIR)/fs/smbfs_common/cifs_md4.ko@eq5.15
 endef
 
 define KernelPackage/fs-smbfs-common/description
@@ -135,11 +132,8 @@ define KernelPackage/fs-cifs
     +kmod-crypto-ccm \
     +kmod-crypto-ecb \
     +kmod-crypto-des \
-<<<<<<< HEAD
     +LINUX_6_6:kmod-fs-netfs \
     +LINUX_6_6:kmod-nls-ucs2-utils \
-=======
->>>>>>> lede
     +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-asn1-decoder \
     +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-oid-registry \
     +(LINUX_5_15||LINUX_6_1||LINUX_6_6):kmod-dnsresolver

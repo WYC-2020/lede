@@ -1302,14 +1302,9 @@ define KernelPackage/rxrpc
 	CONFIG_AF_RXRPC_DEBUG=n
   FILES:= \
 	$(LINUX_DIR)/net/rxrpc/rxrpc.ko
-<<<<<<< HEAD
   AUTOLOAD:=$(call AutoLoad,30,rxrpc)
-  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt
-=======
-  AUTOLOAD:=$(call AutoLoad,30,rxrpc.ko)
   DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt \
     +kmod-udptunnel4 +kmod-udptunnel6
->>>>>>> lede
 endef
 
 define KernelPackage/rxrpc/description
@@ -1480,9 +1475,6 @@ endef
 
 $(eval $(call KernelPackage,inet-diag))
 
-<<<<<<< HEAD
-=======
-
 define KernelPackage/xdp-sockets-diag
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=PF_XDP sockets monitoring interface support for ss utility
@@ -1499,7 +1491,6 @@ endef
 $(eval $(call KernelPackage,xdp-sockets-diag))
 
 
->>>>>>> lede
 define KernelPackage/wireguard
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=WireGuard secure network tunnel

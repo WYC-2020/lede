@@ -390,12 +390,8 @@ define KernelPackage/drm-amdgpu
 	CONFIG_DRM_AMD_DC=y \
 	CONFIG_DEBUG_KERNEL_DC=n
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/amd/amdgpu/amdgpu.ko \
-<<<<<<< HEAD
-	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.6
-=======
 	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.5 \
 	$(LINUX_DIR)/drivers/gpu/drm/scheduler/gpu-sched.ko
->>>>>>> lede
   AUTOLOAD:=$(call AutoProbe,amdgpu)
 endef
 
@@ -517,14 +513,8 @@ $(eval $(call KernelPackage,drm-panfrost))
 define KernelPackage/drm-radeon
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Radeon DRM support
-<<<<<<< HEAD
   DEPENDS:=@TARGET_x86||TARGET_phytium @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-kms-helper \
 	+kmod-drm-ttm +kmod-i2c-algo-bit +(LINUX_6_1||LINUX_6_6):kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video +radeon-firmware
-=======
-  DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-kms-helper \
-	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit +radeon-firmware \
-	+kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video
->>>>>>> lede
   KCONFIG:=CONFIG_DRM_RADEON
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/radeon/radeon.ko
   AUTOLOAD:=$(call AutoProbe,radeon)
