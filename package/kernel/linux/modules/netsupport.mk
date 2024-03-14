@@ -907,6 +907,7 @@ endef
 
 $(eval $(call KernelPackage,sched-ipset))
 
+
 define KernelPackage/sched-mqprio-common
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=mqprio queue common dependencies support
@@ -921,6 +922,7 @@ define KernelPackage/sched-mqprio-common/description
 endef
 
 $(eval $(call KernelPackage,sched-mqprio-common))
+
 
 define KernelPackage/sched-mqprio
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
@@ -984,6 +986,18 @@ define KernelPackage/sched-red/description
 endef
 
 $(eval $(call KernelPackage,sched-red))
+
+
+define KernelPackage/sched-skbprio
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=SKB priority queue scheduler (SKBPRIO)
+  DEPENDS:=+kmod-sched-core
+  KCONFIG:= CONFIG_NET_SCH_SKBPRIO
+  FILES:= $(LINUX_DIR)/net/sched/sch_skbprio.ko
+  AUTOLOAD:=$(call AutoProbe,sch_skbprio)
+endef
+
+$(eval $(call KernelPackage,sched-skbprio))
 
 
 define KernelPackage/bpf-test
@@ -1222,7 +1236,7 @@ define KernelPackage/sctp
   FILES:= $(LINUX_DIR)/net/sctp/sctp.ko
   AUTOLOAD:= $(call AutoLoad,32,sctp)
   DEPENDS:=+kmod-lib-crc32c +kmod-crypto-md5 +kmod-crypto-hmac \
-    +LINUX_5_15:kmod-udptunnel4 +LINUX_5_15:kmod-udptunnel6
+    +kmod-udptunnel4 +kmod-udptunnel6
 endef
 
 define KernelPackage/sctp/description
@@ -1288,8 +1302,14 @@ define KernelPackage/rxrpc
 	CONFIG_AF_RXRPC_DEBUG=n
   FILES:= \
 	$(LINUX_DIR)/net/rxrpc/rxrpc.ko
+<<<<<<< HEAD
   AUTOLOAD:=$(call AutoLoad,30,rxrpc)
   DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt
+=======
+  AUTOLOAD:=$(call AutoLoad,30,rxrpc.ko)
+  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt \
+    +kmod-udptunnel4 +kmod-udptunnel6
+>>>>>>> lede
 endef
 
 define KernelPackage/rxrpc/description
@@ -1460,6 +1480,26 @@ endef
 
 $(eval $(call KernelPackage,inet-diag))
 
+<<<<<<< HEAD
+=======
+
+define KernelPackage/xdp-sockets-diag
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=PF_XDP sockets monitoring interface support for ss utility
+  DEPENDS:=@KERNEL_XDP_SOCKETS
+  KCONFIG:=CONFIG_XDP_SOCKETS_DIAG
+  FILES:=$(LINUX_DIR)/net/xdp/xsk_diag.ko
+  AUTOLOAD:=$(call AutoLoad,31,xsk_diag)
+endef
+
+define KernelPackage/xdp-sockets-diag/description
+ Support for PF_XDP sockets monitoring interface used by the ss tool
+endef
+
+$(eval $(call KernelPackage,xdp-sockets-diag))
+
+
+>>>>>>> lede
 define KernelPackage/wireguard
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=WireGuard secure network tunnel

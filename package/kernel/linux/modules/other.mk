@@ -210,20 +210,30 @@ endef
 $(eval $(call KernelPackage,eeprom-at25))
 
 
-define KernelPackage/gpio-f7188x
+define KernelPackage/google-firmware
   SUBMENU:=$(OTHER_MENU)
-  TITLE:=Fintek F718xx/F818xx GPIO Support
-  DEPENDS:=@GPIO_SUPPORT @TARGET_x86
-  KCONFIG:=CONFIG_GPIO_F7188X
-  FILES:=$(LINUX_DIR)/drivers/gpio/gpio-f7188x.ko
-  AUTOLOAD:=$(call AutoProbe,gpio-f7188x)
+  TITLE:=Google firmware drivers (Coreboot, VPD, Memconsole)
+  KCONFIG:= \
+	CONFIG_GOOGLE_FIRMWARE=y \
+	CONFIG_GOOGLE_COREBOOT_TABLE \
+	CONFIG_GOOGLE_MEMCONSOLE \
+	CONFIG_GOOGLE_MEMCONSOLE_COREBOOT \
+	CONFIG_GOOGLE_VPD
+  FILES:= \
+	  $(LINUX_DIR)/drivers/firmware/google/coreboot_table.ko \
+	  $(LINUX_DIR)/drivers/firmware/google/memconsole.ko \
+	  $(LINUX_DIR)/drivers/firmware/google/memconsole-coreboot.ko \
+	  $(LINUX_DIR)/drivers/firmware/google/vpd-sysfs.ko
+  AUTOLOAD:=$(call AutoProbe,coreboot_table memconsole-coreboot vpd-sysfs)
 endef
 
-define KernelPackage/gpio-f7188x/description
-  Kernel module for the GPIOs found on many Fintek Super-IO chips.
+define KernelPackage/google-firmware/description
+  Kernel modules for Google firmware drivers. Useful for examining firmware and
+  boot details on devices using a Google bootloader based on Coreboot. Provides
+  files like /sys/firmware/log and /sys/firmware/vpd.
 endef
 
-$(eval $(call KernelPackage,gpio-f7188x))
+$(eval $(call KernelPackage,google-firmware))
 
 
 define KernelPackage/lkdtm
@@ -294,6 +304,7 @@ endef
 $(eval $(call KernelPackage,pinctrl-mcp23s08-spi))
 
 
+<<<<<<< HEAD
 define KernelPackage/gpio-nxp-74hc164
   SUBMENU:=$(OTHER_MENU)
   TITLE:=NXP 74HC164 GPIO expander support
@@ -379,6 +390,8 @@ endef
 $(eval $(call KernelPackage,gpio-amd-fch))
 
 
+=======
+>>>>>>> lede
 define KernelPackage/ppdev
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Parallel port support
@@ -679,6 +692,23 @@ endef
 $(eval $(call KernelPackage,rtc-isl1208))
 
 
+define KernelPackage/rtc-mv
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Marvell SoC RTC support
+  DEFAULT:=m if ALL_KMODS && RTC_SUPPORT
+  KCONFIG:=CONFIG_RTC_DRV_MV \
+	CONFIG_RTC_CLASS=y
+  FILES:=$(LINUX_DIR)/drivers/rtc/rtc-mv.ko
+  AUTOLOAD:=$(call AutoProbe,rtc-mv)
+endef
+
+define KernelPackage/rtc-mv/description
+ Kernel module for Marvell SoC RTC.
+endef
+
+$(eval $(call KernelPackage,rtc-mv))
+
+
 define KernelPackage/rtc-pcf8563
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Philips PCF8563/Epson RTC8564 RTC support
@@ -732,6 +762,26 @@ endef
 
 $(eval $(call KernelPackage,rtc-pcf2127))
 
+<<<<<<< HEAD
+=======
+define KernelPackage/rtc-r7301
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Epson RTC7301 support
+  DEFAULT:=m if ALL_KMODS && RTC_SUPPORT
+  DEPENDS:=+kmod-regmap-mmio
+  KCONFIG:=CONFIG_RTC_DRV_R7301 \
+	CONFIG_RTC_CLASS=y
+  FILES:=$(LINUX_DIR)/drivers/rtc/rtc-r7301.ko
+  AUTOLOAD:=$(call AutoProbe,rtc-r7301)
+endef
+
+define KernelPackage/rtc-r7301/description
+ Kernel module for Epson RTC7301 RTC chip
+endef
+
+$(eval $(call KernelPackage,rtc-r7301))
+
+>>>>>>> lede
 define KernelPackage/rtc-rs5c372a
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Ricoh R2025S/D, RS5C372A/B, RV5C386, RV5C387A
@@ -783,6 +833,22 @@ endef
 
 $(eval $(call KernelPackage,rtc-s35390a))
 
+define KernelPackage/rtc-x1205
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Xicor Intersil X1205
+  DEFAULT:=m if ALL_KMODS && RTC_SUPPORT
+  DEPENDS:=+kmod-i2c-core
+  KCONFIG:=CONFIG_RTC_DRV_X1205 \
+	CONFIG_RTC_CLASS=y
+  FILES:=$(LINUX_DIR)/drivers/rtc/rtc-x1205.ko
+  AUTOLOAD:=$(call AutoProbe,rtc-x1205)
+endef
+
+define KernelPackage/rtc-x1205/description
+ Kernel module for Xicor Intersil X1205 I2C RTC chip
+endef
+
+$(eval $(call KernelPackage,rtc-x1205))
 
 define KernelPackage/mtdtests
   SUBMENU:=$(OTHER_MENU)
@@ -840,6 +906,24 @@ define KernelPackage/mtdram/description
 endef
 
 $(eval $(call KernelPackage,mtdram))
+
+
+define KernelPackage/ramoops
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Ramoops (pstore-ram)
+  DEFAULT:=m if ALL_KMODS
+  KCONFIG:=CONFIG_PSTORE_RAM \
+	CONFIG_PSTORE_CONSOLE=y
+  DEPENDS:=+kmod-pstore +kmod-reed-solomon
+  FILES:= $(LINUX_DIR)/fs/pstore/ramoops.ko
+  AUTOLOAD:=$(call AutoLoad,30,ramoops,1)
+endef
+
+define KernelPackage/ramoops/description
+ Kernel module for pstore-ram (ramoops) crash log storage
+endef
+
+$(eval $(call KernelPackage,ramoops))
 
 
 define KernelPackage/reed-solomon
@@ -1005,31 +1089,33 @@ define KernelPackage/zram/description
 endef
 
 define KernelPackage/zram/config
-  choice
-    prompt "ZRAM Default compressor"
-    default ZRAM_DEF_COMP_LZORLE
+  if PACKAGE_kmod-zram
+    choice
+      prompt "ZRAM Default compressor"
+      default ZRAM_DEF_COMP_LZORLE
 
-  config ZRAM_DEF_COMP_LZORLE
+    config ZRAM_DEF_COMP_LZORLE
             bool "lzo-rle"
             select PACKAGE_kmod-lib-lzo
 
-  config ZRAM_DEF_COMP_LZO
+    config ZRAM_DEF_COMP_LZO
             bool "lzo"
             select PACKAGE_kmod-lib-lzo
 
-  config ZRAM_DEF_COMP_LZ4
+    config ZRAM_DEF_COMP_LZ4
             bool "lz4"
             select PACKAGE_kmod-lib-lz4
 
-  config ZRAM_DEF_COMP_LZ4HC
+    config ZRAM_DEF_COMP_LZ4HC
             bool "lz4-hc"
             select PACKAGE_kmod-lib-lz4hc
 
-  config ZRAM_DEF_COMP_ZSTD
+    config ZRAM_DEF_COMP_ZSTD
             bool "zstd"
             select PACKAGE_kmod-lib-zstd
 
-  endchoice
+    endchoice
+  endif
 endef
 
 $(eval $(call KernelPackage,zram))
@@ -1162,6 +1248,7 @@ endef
 
 $(eval $(call KernelPackage,thermal))
 
+<<<<<<< HEAD
 define KernelPackage/gpio-beeper
   SUBMENU:=$(OTHER_MENU)
   TITLE:=GPIO beeper support
@@ -1180,6 +1267,8 @@ endef
 
 $(eval $(call KernelPackage,gpio-beeper))
 
+=======
+>>>>>>> lede
 
 define KernelPackage/echo
   SUBMENU:=$(OTHER_MENU)
