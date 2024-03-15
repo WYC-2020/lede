@@ -2939,6 +2939,7 @@ CONFIG_PACKAGE_kmod-usb-storage-uas=y
 CONFIG_PACKAGE_kmod-backlight=y
 # CONFIG_PACKAGE_kmod-backlight-pwm is not set
 CONFIG_PACKAGE_kmod-drm=y
+CONFIG_PACKAGE_kmod-drm-i915=y
 CONFIG_PACKAGE_kmod-drm-kms-helper=y
 # CONFIG_PACKAGE_kmod-drm-nouveau is not set
 # CONFIG_PACKAGE_kmod-drm-radeon is not set
@@ -2960,6 +2961,7 @@ CONFIG_PACKAGE_kmod-fb-sys-ram=y
 #
 # Virtualization
 #
+CONFIG_PACKAGE_kmod-i915-gvt=y
 # CONFIG_PACKAGE_kmod-iommu_v2 is not set
 CONFIG_PACKAGE_kmod-irqbypass=y
 # CONFIG_PACKAGE_kmod-kvm-amd is not set
