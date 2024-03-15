@@ -383,7 +383,7 @@ define KernelPackage/drm-amdgpu
   TITLE:=AMDGPU DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-ttm \
 	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit +amdgpu-firmware \
-	+kmod-drm-display-helper +kmod-drm-buddy +kmod-acpi-video +kmod-drm-sched
+	+kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6):kmod-drm-buddy +kmod-acpi-video +kmod-drm-sched
   KCONFIG:=CONFIG_DRM_AMDGPU \
 	CONFIG_DRM_AMDGPU_SI=y \
 	CONFIG_DRM_AMDGPU_CIK=y \
@@ -1307,7 +1307,7 @@ $(eval $(call KernelPackage,video-tw686x))
 define KernelPackage/drm-i915
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Intel GPU drm support
-  DEPENDS:=@TARGET_x86 +kmod-drm-buddy +kmod-drm-ttm +kmod-drm-kms-helper +i915-firmware \
+  DEPENDS:=@TARGET_x86 +(LINUX_6_1||LINUX_6_6):kmod-drm-buddy +kmod-drm-ttm +kmod-drm-kms-helper +i915-firmware \
 	+(LINUX_6_1||LINUX_6_6):kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6):kmod-acpi-video
   KCONFIG:= \
 	CONFIG_INTEL_GTT \
