@@ -7,10 +7,10 @@ PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=
 
 PKG_SOURCE_URL:=https://github.com/greearb/rtl8812AU_8821AU_linux.git
-PKG_MIRROR_HASH:=31e658df3e4d4c18c396259c2e0bef2bfc44a4aa870931f031a31e948be98af4
+PKG_MIRROR_HASH:=f4267246a16238e666b67ddd8df8e6c7f07eee0b1e524da50910b05abff54eb5
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2021-11-07
-PKG_SOURCE_VERSION:=39df55967b7de9f6c9600017b724303f95a8b9e2
+PKG_SOURCE_DATE:=2022-10-27
+PKG_SOURCE_VERSION:=9b2b203a217e1320602a0eb07c338a1bfca0f5a6
 
 PKG_MAINTAINER:=Ben Greear <greearb@candelatech.com>
 PKG_BUILD_PARALLEL:=1
@@ -41,11 +41,13 @@ NOSTDINC_FLAGS := \
 	-I$(STAGING_DIR)/usr/include/mac80211/uapi \
 	-include backport/backport.h
 
+NOSTDINC_FLAGS+=-DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DBUILD_OPENWRT
+
 ifneq ($(filter $(GCC_MAJOR_VERSION),12 13),)
-	TARGET_CFLAGS += -Wno-error=address -Wno-error=stringop-overread
+	TARGET_CFLAGS += -Wno-error=address -Wno-error=stringop-overread -Wno-error=discarded-qualifiers  -Wno-error=cast-function-type
+	NOSTDINC_FLAGS += -Wno-error=address -Wno-error=stringop-overread -Wno-error=discarded-qualifiers -Wno-error=cast-function-type
 endif
 
-NOSTDINC_FLAGS+=-DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DBUILD_OPENWRT
 
 define Build/Compile
 	+$(KERNEL_MAKE) $(PKG_JOBS) \
