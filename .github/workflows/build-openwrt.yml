@@ -80,7 +80,7 @@ jobs:
     - name: cache
       uses: klever1988/cachewrtbuild@main
       with:
-        ccache: 'true'
+        ccache: 'false'
         prefix: ${{ github.workspace }}
 
     - name: Update feeds

@@ -59,7 +59,7 @@ jobs:
     - name: cache
       uses: WYC-2020/cachewrtbuild@main
       with:
-        ccache: 'true'
+        ccache: 'false'
         only_toolchain: 'true'
         prefix: ${{ github.workspace }}
 
