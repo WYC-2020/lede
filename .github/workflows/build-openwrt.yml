@@ -78,7 +78,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         
     - name: cache
-      uses: klever1988/cachewrtbuild@main
+      uses: WYC-2020/cachewrtbuild@main
       with:
         ccache: 'false'
         prefix: ${{ github.workspace }}
