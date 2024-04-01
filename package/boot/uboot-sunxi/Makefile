@@ -195,6 +195,7 @@ endef
 define U-Boot/orangepi_zero
   BUILD_SUBTARGET:=cortexa7
   NAME:=Orange Pi Zero (H2+)
+  UBOOT_CONFIG:=orangepi_zero
   BUILD_DEVICES:=xunlong_orangepi-zero
 endef
 
@@ -431,6 +432,12 @@ UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
 UBOOT_MAKE_FLAGS += \
 	BL31=$(STAGING_DIR_IMAGE)/bl31_sunxi-$(ATF).bin SCP=/dev/null
+
+define Build/Configure
+	# enable additional options beyond <device>_defconfig
+	echo -e "CONFIG_SPL_I2C=y\nCONFIG_SPL_SYS_I2C_LEGACY=y" >> $(PKG_BUILD_DIR)/configs/$(UBOOT_CONFIG)_defconfig
+	$(call Build/Configure/U-Boot)
+endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
