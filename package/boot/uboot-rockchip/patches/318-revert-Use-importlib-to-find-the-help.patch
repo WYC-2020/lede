@@ -1,0 +1,40 @@
+From 0035af186120e7b71c9ab894d9e243262b073800 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Sun, 7 Apr 2024 02:29:48 -0400
+Subject: [PATCH] revert Use importlib to find the help
+
+---
+ tools/binman/control.py | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/tools/binman/control.py b/tools/binman/control.py
+index 68597c4..27b68b9 100644
+--- a/tools/binman/control.py
++++ b/tools/binman/control.py
+@@ -7,11 +7,6 @@
+ 
+ from collections import OrderedDict
+ import glob
+-try:
+-    import importlib.resources
+-except ImportError:
+-    # for Python 3.6
+-    import importlib_resources
+ import os
+ import pkg_resources
+ import re
+@@ -673,8 +668,9 @@ def Binman(args):
+     global state
+ 
+     if args.full_help:
+-        with importlib.resources.path('binman', 'README.rst') as readme:
+-            tools.print_full_help(str(readme))
++        tools.print_full_help(
++            os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'README.rst')
++        )
+         return 0
+ 
+     # Put these here so that we can import this module without libfdt
+-- 
+2.17.1
+
