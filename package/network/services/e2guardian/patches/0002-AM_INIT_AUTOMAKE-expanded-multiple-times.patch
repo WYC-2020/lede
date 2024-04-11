@@ -1,0 +1,24 @@
+From dfd8030332024cd2648b1e7af07d2ba8360ff0ea Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Wed, 10 Apr 2024 21:51:18 -0400
+Subject: [PATCH] AM_INIT_AUTOMAKE expanded multiple times
+
+---
+ configure.ac | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 996cf05..38be30f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -6,7 +6,6 @@ AC_DEFINE([FD_SETSIZE_OVERIDE],[""],[Define to allow DANS_MAXFD to exceed FD_SET
+ 
+ AC_PREREQ(2.57)
+ AC_INIT(e2guardian, 5.3.5)
+-AM_INIT_AUTOMAKE
+ AC_CONFIG_HEADERS([dgconfig.h])
+ AC_CONFIG_MACRO_DIR([m4])
+ AM_INIT_AUTOMAKE([subdir-objects])
+-- 
+2.17.1
+
