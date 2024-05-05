@@ -9,7 +9,7 @@ Subject: [PATCH] 1
 
 --- a/net/ethernet/eth.c
 +++ b/net/ethernet/eth.c
-@@ -531,6 +531,63 @@ int eth_platform_get_mac_address(struct
+@@ -521,6 +521,63 @@ int eth_platform_get_mac_address(struct
  }
  EXPORT_SYMBOL(eth_platform_get_mac_address);
  
@@ -73,7 +73,7 @@ Subject: [PATCH] 1
  /**
   * platform_get_ethdev_address - Set netdev's MAC address from a given device
   * @dev:	Pointer to the device
-@@ -564,20 +621,24 @@ int nvmem_get_mac_address(struct device
+@@ -554,19 +611,23 @@ int nvmem_get_mac_address(struct device
  {
  	struct nvmem_cell *cell;
  	const void *mac;
