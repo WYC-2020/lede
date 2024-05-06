@@ -136,14 +136,13 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  /**
   * eth_type_trans - determine the packet's protocol ID.
   * @skb: received socket data
-@@ -421,6 +433,10 @@ struct sk_buff *eth_gro_receive(struct l
- 			NAPI_GRO_CB(p)->same_flow = 0;
- 			continue;
- 		}
-+
-+		if (eth_check_local_mask(eth->h_dest, dev->dev_addr,
-+					 dev->local_addr_mask))
-+			skb->gro_skip = 1;
- 	}
+@@ -184,6 +184,9 @@ __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev)
  
- 	type = eh->h_proto;
+ 	eth_skb_pkt_type(skb, dev);
+ 
++	if (eth_check_local_mask(eth->h_dest, dev->dev_addr,
++				dev->local_addr_mask))
++		skb->gro_skip = 1;
+ 	/*
+ 	 * Some variants of DSA tagging don't have an ethertype field
+ 	 * at all, so we check here whether one of those tagging
