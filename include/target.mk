@@ -54,7 +54,7 @@ DEFAULT_PACKAGES.nas:=\
 # For router targets
 DEFAULT_PACKAGES.router:=\
 	dnsmasq-full firewall iptables ppp ppp-mod-pppoe \
-	luci-newapi block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw \
+	block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw \
 	kmod-tun iptables-mod-tproxy iptables-mod-extra default-settings luci \
 	luci-app-filetransfer luci-app-vsftpd luci-app-ramfree 
 ifneq ($(DUMP),)
