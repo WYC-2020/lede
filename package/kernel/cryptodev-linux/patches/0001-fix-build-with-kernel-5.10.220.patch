@@ -1,0 +1,25 @@
+From 4a229e8aa42caa23f748e19ec8565d4a59f8f956 Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Wed, 26 Jun 2024 01:40:08 -0400
+Subject: [PATCH] fix build with kernel 5.10.220
+
+---
+ ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ioctl.c b/ioctl.c
+index e3eefe1..a183e77 100644
+--- a/ioctl.c
++++ b/ioctl.c
+@@ -933,7 +933,7 @@ cryptodev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg_)
+ 		if (unlikely(ret)) {
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 17, 0))
+ 			sys_close(fd);
+-#elif (LINUX_VERSION_CODE < KERNEL_VERSION(5, 11, 0))
++#elif (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 220))
+ 			ksys_close(fd);
+ #else
+ 			close_fd(fd);
+-- 
+2.17.1
+
