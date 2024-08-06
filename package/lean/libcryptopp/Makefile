@@ -4,9 +4,9 @@ PKG_NAME:=libcryptopp
 PKG_VERSION:=8.6.0
 PKG_RELEASE:=1
 
-PKG_SOURCE:=cryptopp$(subst .,,$(PKG_VERSION)).zip
-PKG_SOURCE_URL:=https://github.com/weidai11/cryptopp/releases/download/CRYPTOPP_$(subst .,_,$(PKG_VERSION))/
-PKG_HASH:=skip
+PKG_SOURCE:=CRYPTOPP_$(subst .,_,$(PKG_VERSION)).tar.gz
+PKG_SOURCE_URL:=https://github.com/weidai11/cryptopp/archive/
+PKG_HASH:=9304625f4767a13e0a5f26d0f019d78cf9375604a33e5391c3bf2e81399dfeb8
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
