@@ -106,6 +106,7 @@ service_data() {
 
 service_running() {
 	local instance="${1:-*}"
+
 	procd_running "$(basename $initscript)" "$instance"
 }
 

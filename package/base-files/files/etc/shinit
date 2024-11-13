@@ -8,6 +8,5 @@ alias ll='ls -alF --color=auto'
 [ -x /usr/bin/arp -o -x /sbin/arp ] || arp() { cat /proc/net/arp; }
 [ -x /usr/bin/ldd ] || ldd() { LD_TRACE_LOADED_OBJECTS=1 $*; }
 
-
 [ -n "$KSH_VERSION" -o \! -s "$HOME/.shinit" ] || . "$HOME/.shinit"
 [ -z "$KSH_VERSION" -o \! -s "$HOME/.mkshrc" ] || . "$HOME/.mkshrc"

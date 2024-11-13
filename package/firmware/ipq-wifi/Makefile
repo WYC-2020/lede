@@ -6,9 +6,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/firmware/qca-wireless.git
-PKG_SOURCE_DATE:=2024-04-16
-PKG_SOURCE_VERSION:=1d51799e6768a304da7840b8346e7487efd77f49
-PKG_MIRROR_HASH:=9cf0917532283c1a1708643022a5ed1ec4af6bb9ebaff57fc2f0f2c229f2469e
+PKG_SOURCE_DATE:=2024-10-08
+PKG_SOURCE_VERSION:=dcbab62272bf5cab2ed857bc655d240970e14f2a
+PKG_MIRROR_HASH:=23fc47a0fd9f39defe272b9f5d5b08622e7762a57bc4830965972ee89d89f481
 
 PKG_FLAGS:=nonshared
 
@@ -94,6 +94,8 @@ define ipq-wifi-install-one
     $(call ipq-wifi-install-one-to,$(1),$(2),QCA9984/hw1.0),\
   $(if $(filter $(suffix $(1)),.QCA99X0 .qca99x0),\
     $(call ipq-wifi-install-one-to,$(1),$(2),QCA99X0/hw2.0),\
+  $(if $(filter $(suffix $(1)),.IPQ5018 .ipq5018),\
+    $(call ipq-wifi-install-ath11-one-to,$(1),$(2),IPQ5018/hw1.0),\
   $(if $(filter $(suffix $(1)),.IPQ6018 .ipq6018),\
     $(call ipq-wifi-install-ath11-one-to,$(1),$(2),IPQ6018/hw1.0),\
   $(if $(filter $(suffix $(1)),.IPQ8074 .ipq8074),\
@@ -101,7 +103,7 @@ define ipq-wifi-install-one
   $(if $(filter $(suffix $(1)),.QCN9074 .qcn9074),\
     $(call ipq-wifi-install-ath11-one-to,$(1),$(2),QCN9074/hw1.0),\
     $(error Unrecognized board-file suffix '$(suffix $(1))' for '$(1)')\
-  ))))))))
+  )))))))))
 
 endef
 # Blank line required at end of above define due to foreach context

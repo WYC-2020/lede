@@ -324,6 +324,31 @@ define Device/glinet_gl-mt6000
 endef
 TARGET_DEVICES += glinet_gl-mt6000
 
+define Device/glinet_gl-x3000-xe3000-common
+  DEVICE_VENDOR := GL.iNet
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_PACKAGES := kmod-mt7981-firmware mt7981-wo-firmware mkf2fs \
+    kmod-fs-f2fs kmod-hwmon-pwmfan kmod-usb3 kmod-usb-serial-option \
+    kmod-usb-storage kmod-usb-net-qmi-wwan uqmi
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+
+define Device/glinet_gl-x3000
+  DEVICE_MODEL := GL-X3000
+  DEVICE_DTS := mt7981a-glinet-gl-x3000
+  SUPPORTED_DEVICES := glinet,gl-x3000
+  $(call Device/glinet_gl-x3000-xe3000-common)
+endef
+TARGET_DEVICES += glinet_gl-x3000
+
+define Device/glinet_gl-xe3000
+  DEVICE_MODEL := GL-XE3000
+  DEVICE_DTS := mt7981a-glinet-gl-xe3000
+  SUPPORTED_DEVICES := glinet,gl-xe3000
+  $(call Device/glinet_gl-x3000-xe3000-common)
+endef
+TARGET_DEVICES += glinet_gl-xe3000
+
 define Device/h3c_magic-nx30-pro
   DEVICE_VENDOR := H3C
   DEVICE_MODEL := Magic NX30 Pro
@@ -534,6 +559,26 @@ define Device/nokia_ea0326gmp
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
 TARGET_DEVICES += nokia_ea0326gmp
+
+
+define Device/openembed_som7981
+  DEVICE_VENDOR := OpenEmbed
+  DEVICE_MODEL := SOM7981
+  DEVICE_DTS := mt7981b-openembed-som7981
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_PACKAGES := kmod-mt7981-firmware mt7981-wo-firmware kmod-usb3 \
+	kmod-crypto-hw-atmel kmod-eeprom-at24 kmod-gpio-beeper kmod-rtc-pcf8563 \
+	kmod-usb-net-cdc-mbim kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  IMAGE_SIZE := 244224k
+  KERNEL_IN_UBI := 1
+  IMAGES += factory.bin
+  IMAGE/factory.bin := append-ubi | check-size $$$$(IMAGE_SIZE)
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+TARGET_DEVICES += openembed_som7981
 
 define Device/qihoo_360t7
   DEVICE_VENDOR := Qihoo
