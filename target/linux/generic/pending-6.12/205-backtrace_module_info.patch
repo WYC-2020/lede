@@ -29,9 +29,9 @@ index c5e2ec9..8f3e327 100644
  	return string_nocheck(buf, end, sym, spec);
  #else
 -	return special_hex_number(buf, end, value, sizeof(void *));
-+	core_text = &module->mem[MOD_TEXT];
 +	len = snprintf(sym, sizeof(sym), "0x%lx", value);
 +	mod = __module_address(value);
++	core_text = &mod->mem[MOD_TEXT];
 +	if (mod)
 +		snprintf(sym + len, sizeof(sym) - len, " [%s@%p+0x%x]",
 +			 mod->name, core_text->base,
