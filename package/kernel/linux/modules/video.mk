@@ -1283,6 +1283,7 @@ $(eval $(call KernelPackage,video-mem2mem))
 define KernelPackage/video-dma-contig
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Video DMA support
+  HIDDEN:=1
   DEPENDS:=+kmod-video-videobuf2
   KCONFIG:=CONFIG_VIDEOBUF2_DMA_CONTIG
   FILES:=$(LINUX_DIR)/drivers/media/common/videobuf2/videobuf2-dma-contig.ko
