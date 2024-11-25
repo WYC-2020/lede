@@ -1,17 +1,17 @@
-From: Felix Fietkau <nbd@nbd.name>
-Subject: kernel: when KALLSYMS is disabled, print module address + size for matching backtrace entries
+From 24574fd7f67c50d22428808c39666d504818fd2c Mon Sep 17 00:00:00 2001
+From: W_Y_CPP <383152993@qq.com>
+Date: Mon, 25 Nov 2024 02:11:41 -0500
+Subject: [PATCH] backtrace module info
 
-[john@phrozen.org: felix will add this to his upstream queue]
-
-lede-commit 53827cdc824556cda910b23ce5030c363b8f1461
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
- lib/vsprintf.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ lib/vsprintf.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index c5e2ec9..8f3e327 100644
 --- a/lib/vsprintf.c
 +++ b/lib/vsprintf.c
-@@ -983,8 +983,10 @@ char *symbol_string(char *buf, char *end
+@@ -983,8 +983,11 @@ char *symbol_string(char *buf, char *end, void *ptr,
  		    struct printf_spec spec, const char *fmt)
  {
  	unsigned long value;
@@ -20,22 +20,27 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +#ifndef CONFIG_KALLSYMS
 +	struct module *mod;
 +	int len;
++	struct module_memory *core_text;
  #endif
  
  	if (fmt[1] == 'R')
-@@ -1005,8 +1007,14 @@ char *symbol_string(char *buf, char *end
+@@ -1005,8 +1008,15 @@ char *symbol_string(char *buf, char *end, void *ptr,
  
  	return string_nocheck(buf, end, sym, spec);
  #else
 -	return special_hex_number(buf, end, value, sizeof(void *));
++	core_text = &module->mem[MOD_TEXT];
 +	len = snprintf(sym, sizeof(sym), "0x%lx", value);
 +	mod = __module_address(value);
 +	if (mod)
 +		snprintf(sym + len, sizeof(sym) - len, " [%s@%p+0x%x]",
-+			 mod->name, mod->core_layout.base,
-+			 mod->core_layout.size);
++			 mod->name, core_text->base,
++			 core_text->size);
  #endif
 +	return string(buf, end, sym, spec);
  }
  
  static const struct printf_spec default_str_spec = {
+-- 
+2.17.1
+
