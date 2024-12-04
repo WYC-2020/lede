@@ -33,7 +33,7 @@ I18N: [English](README_EN.md) | [简体中文](README.md) | [日本語](README_J
    libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
    mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools \
    libpython3-dev qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip \
-   vim wget xmlto xxd zlib1g-dev python3-setuptools
+   vim wget xmlto xxd zlib1g-dev python3-setuptools aria2 
    ```
 
 3. ソースコードをクローンし、`feeds` を更新し、設定する:
