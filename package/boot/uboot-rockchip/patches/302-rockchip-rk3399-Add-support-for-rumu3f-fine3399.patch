@@ -17,7 +17,7 @@
 +};
 --- /dev/null
 +++ b/arch/arm/dts/rk3399-fine-3399.dts
-@@ -0,0 +1,799 @@
+@@ -0,0 +1,798 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +
 +/dts-v1/;
@@ -25,7 +25,6 @@
 +#include <dt-bindings/input/input.h>
 +#include <dt-bindings/pwm/pwm.h>
 +#include "rk3399.dtsi"
-+#include "rk3399-op1-opp.dtsi"
 +
 +/ {
 +	model = "RUMU3F Fine3399";
@@ -98,7 +97,7 @@
 +		vin-supply = <&dc_12v>;
 +	};
 +
-+	vcc_phy: vcc-phy-regulator {
++	vcc_phy: vcc-phy {
 +		compatible = "regulator-fixed";
 +		enable-active-high;
 +		gpio = <&gpio0 RK_PB4 GPIO_ACTIVE_HIGH>;

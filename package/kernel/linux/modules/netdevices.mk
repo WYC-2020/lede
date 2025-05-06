@@ -588,7 +588,7 @@ $(eval $(call KernelPackage,dsa-realtek))
 
 define KernelPackage/dsa-rtl8366rb
   SUBMENU:=$(NETWORK_DEVICES_MENU)
-  TITLE:=Realtek RTL8365MB switch DSA support
+  TITLE:=Realtek RTL8366RB switch DSA support
   DEPENDS:=+kmod-dsa-realtek @!TARGET_x86 @!TARGET_bcm47xx @!TARGET_uml
   KCONFIG:= \
 	CONFIG_NET_DSA_REALTEK_RTL8366RB \
@@ -1325,6 +1325,22 @@ define KernelPackage/hfcmulti/description
 endef
 
 $(eval $(call KernelPackage,hfcmulti))
+
+
+define KernelPackage/hinic
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Huawei Intelligent PCIE Network Interface Card support
+  DEPENDS:=@PCI_SUPPORT @TARGET_x86||TARGET_armvirt_64
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/huawei/hinic/hinic.ko
+  KCONFIG:=CONFIG_HINIC
+  AUTOLOAD:=$(call AutoProbe,hinic)
+endef
+
+define KernelPackage/hinic/description
+  Kernel module for HiNIC PCIE Ethernet cards
+endef
+
+$(eval $(call KernelPackage,hinic))
 
 
 define KernelPackage/macvlan
