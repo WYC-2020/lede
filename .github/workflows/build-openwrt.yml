@@ -64,15 +64,30 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Free Disk Space (Ubuntu)
+      uses: WYC-2020/free-disk-space@main
+      with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: true
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+          
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-       # ./free_disk_space.sh
+        docker rmi `docker images -q`
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt -y purge azure-cli* docker* ghc* zulu* llvm* firefox google* dotnet* powershell* openjdk* mysql* php* mongodb* dotnet* snap*
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/WYC-2020/cachewrtbuild/main/depends-ubuntu-2204)
-        sudo -E apt-get -qq install libfuse-dev
+        sudo -E systemctl daemon-reload
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
