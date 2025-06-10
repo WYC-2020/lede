@@ -20,7 +20,10 @@ choice
 		bool "gcc 12.x"
 
 	config GCC_USE_VERSION_13
-		bool "gcc 13.x"
+		bool "gcc 13.x"	
+		
+	config GCC_USE_VERSION_14
+		bool "gcc 14.x"
 endchoice
 
 config GCC_USE_GRAPHITE

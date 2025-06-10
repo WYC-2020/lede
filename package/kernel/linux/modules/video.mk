@@ -502,12 +502,14 @@ $(eval $(call KernelPackage,drm-amdgpu))
 
 define KernelPackage/drm-i915
   SUBMENU:=$(VIDEO_MENU)
-  TITLE:=Intel GPU drm support
-  DEPENDS:=@TARGET_x86 +(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-buddy +kmod-drm-ttm +kmod-drm-kms-helper +i915-firmware \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-acpi-video
-  KCONFIG:= \
-	CONFIG_INTEL_GTT \
-	CONFIG_DRM_I915 \
+  TITLE:=Intel i915 DRM support
+  DEPENDS:=@(TARGET_x86_64||TARGET_x86_generic||TARGET_x86_legacy) \
+	@DISPLAY_SUPPORT +i915-firmware +kmod-backlight +kmod-drm-ttm \
+	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-display-helper \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-acpi-video \
+	+kmod-drm-buddy +kmod-drm-exec +kmod-drm-suballoc-helper
+  KCONFIG:=CONFIG_DRM_I915 \
 	CONFIG_DRM_I915_CAPTURE_ERROR=y \
 	CONFIG_DRM_I915_COMPRESS_ERROR=y \
 	CONFIG_DRM_I915_DEBUG=n \

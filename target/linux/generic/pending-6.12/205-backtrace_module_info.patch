@@ -34,8 +34,9 @@ index c5e2ec9..8f3e327 100644
 +	core_text = &mod->mem[MOD_TEXT];
 +	if (mod)
 +		snprintf(sym + len, sizeof(sym) - len, " [%s@%p+0x%x]",
-+			 mod->name, core_text->base,
-+			 core_text->size);
++			 mod->name, mod->mem[MOD_TEXT].base,
++			 mod->mem[MOD_TEXT].size);
+>>>>>>> lede
  #endif
 +	return string(buf, end, sym, spec);
  }
