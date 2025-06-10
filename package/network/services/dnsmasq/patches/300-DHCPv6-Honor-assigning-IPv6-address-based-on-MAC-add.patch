@@ -7,11 +7,9 @@ Subject: [PATCH] 0
  src/rfc3315.c | 60 +++++++++++++++++++++++++++++++++++++++++----------
  1 file changed, 49 insertions(+), 11 deletions(-)
 
-diff --git a/src/rfc3315.c b/src/rfc3315.c
-index 8754481..025413c 100644
 --- a/src/rfc3315.c
 +++ b/src/rfc3315.c
-@@ -48,7 +48,7 @@ static int build_ia(struct state *state, int *t1cntr);
+@@ -48,7 +48,7 @@ static int build_ia(struct state *state,
  static void end_ia(int t1cntr, unsigned int min_time, int do_fuzz);
  static void mark_context_used(struct state *state, struct in6_addr *addr);
  static void mark_config_used(struct dhcp_context *context, struct in6_addr *addr);
@@ -20,7 +18,7 @@ index 8754481..025413c 100644
  static int config_valid(struct dhcp_config *config, struct dhcp_context *context, struct in6_addr *addr, struct state *state, time_t now);
  static struct addrlist *config_implies(struct dhcp_config *config, struct dhcp_context *context, struct in6_addr *addr);
  static void add_address(struct state *state, struct dhcp_context *context, unsigned int lease_time, void *ia_option, 
-@@ -689,9 +689,14 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -708,9 +708,14 @@ static int dhcp6_no_relay(struct state *
  		      }
  		    else if (!(c = address6_available(state->context, &req_addr, solicit_tags, plain_range)))
  		      continue; /* not an address we're allowed */
@@ -37,7 +35,7 @@ index 8754481..025413c 100644
  		    /* add address to output packet */
  		    add_address(state, c, lease_time, ia_option, &min_time, &req_addr, now);
  		    mark_context_used(state, &req_addr);
-@@ -702,7 +707,10 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -721,7 +726,10 @@ static int dhcp6_no_relay(struct state *
  	    
  	    /* Suggest configured address(es) */
  	    for (c = state->context; c; c = c->current) 
@@ -49,7 +47,7 @@ index 8754481..025413c 100644
  		  match_netid(c->filter, solicit_tags, plain_range) &&
  		  config_valid(config, c, &addr, state, now))
  		{
-@@ -726,6 +734,12 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -745,6 +753,12 @@ static int dhcp6_no_relay(struct state *
  		req_addr = ltmp->addr6;
  		if ((c = address6_available(state->context, &req_addr, solicit_tags, plain_range)))
  		  {
@@ -62,7 +60,7 @@ index 8754481..025413c 100644
  		    add_address(state, c, c->lease_time, NULL, &min_time, &req_addr, now);
  		    mark_context_used(state, &req_addr);
  		    get_context_tag(state, c);
-@@ -860,7 +874,7 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -879,7 +893,7 @@ static int dhcp6_no_relay(struct state *
  			put_opt6_string(_("address unavailable"));
  			end_opt6(o1);
  		      }
@@ -71,7 +69,7 @@ index 8754481..025413c 100644
  		      {
  			/* Address leased to another DUID/IAID */
  			o1 = new_opt6(OPTION6_STATUS_CODE);
-@@ -989,7 +1003,16 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -1008,7 +1022,16 @@ static int dhcp6_no_relay(struct state *
  		    (this_context = address6_valid(state->context, &req_addr, tagif, 1)))
  		  {
  		    unsigned int lease_time;
@@ -89,7 +87,7 @@ index 8754481..025413c 100644
  		    get_context_tag(state, this_context);
  		    
  		    if (config_implies(config, this_context, &req_addr) && have_config(config, CONFIG_TIME))
-@@ -1015,7 +1038,7 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -1034,7 +1057,7 @@ static int dhcp6_no_relay(struct state *
  		    
  		    if (preferred_time == 0)
  		      message = _("deprecated");
@@ -98,7 +96,7 @@ index 8754481..025413c 100644
  		    address_assigned = 1;
  		  }
  		else
-@@ -1071,11 +1094,22 @@ static int dhcp6_no_relay(struct state *state, int msg_type, unsigned char *inbu
+@@ -1090,11 +1113,22 @@ static int dhcp6_no_relay(struct state *
  		 ia_option = opt6_find(opt6_next(ia_option, ia_end), ia_end, OPTION6_IAADDR, 24))
  	      {
  		struct in6_addr req_addr;
@@ -121,9 +119,9 @@ index 8754481..025413c 100644
 +
 +		if (!c || !config_addr_ok)
  		  {
- 		    o1 = new_opt6(OPTION6_STATUS_CODE);
- 		    put_opt6_short(DHCP6NOTONLINK);
-@@ -1699,10 +1733,14 @@ static void mark_config_used(struct dhcp_context *context, struct in6_addr *addr
+ 		    bad_addr = 1;
+ 		    log6_quiet(state, "DHCPREPLY", &req_addr, _("confirm failed"));
+@@ -1723,10 +1757,14 @@ static void mark_config_used(struct dhcp
  }
  
  /* make sure address not leased to another CLID/IAID */
@@ -139,7 +137,7 @@ index 8754481..025413c 100644
    if (!(lease = lease6_find_by_addr(addr, 128, 0)))
      return 1;
  
-@@ -1779,7 +1817,7 @@ static int config_valid(struct dhcp_config *config, struct dhcp_context *context
+@@ -1803,7 +1841,7 @@ static int config_valid(struct dhcp_conf
  	  {
  	    setaddr6part(addr, addrpart+i);
  	    
@@ -148,6 +146,3 @@ index 8754481..025413c 100644
  	      return 1;
  	  }
        }
--- 
-2.17.1
-

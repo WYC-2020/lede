@@ -7,11 +7,9 @@ Subject: [PATCH] skipping wrong addresses causes service to exit
  src/option.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/option.c b/src/option.c
-index 265f995..b59344d 100644
 --- a/src/option.c
 +++ b/src/option.c
-@@ -5397,7 +5397,7 @@ static void read_file(char *file, FILE *f, int hard_opt, int from_script)
+@@ -5543,7 +5543,7 @@ static void read_file(char *file, FILE *
  	  else
  	    sprintf(daemon->namebuff + strlen(daemon->namebuff), _(" at line %d of %s"), lineno, file);
  	  
@@ -20,6 +18,3 @@ index 265f995..b59344d 100644
  	    my_syslog(LOG_ERR, "%s", daemon->namebuff);
  	  else
  	    die("%s", daemon->namebuff, EC_BADCONF);
--- 
-2.17.1
-
