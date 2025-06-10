@@ -16,9 +16,9 @@
  #define LOPT_NORR          378
  #define LOPT_NO_IDENT      379
 +#define LOPT_MINTTL        400
- 
- #ifdef HAVE_GETOPT_LONG
- static const struct option opts[] =  
+ #define LOPT_CACHE_RR      380
+ #define LOPT_FILTER_RR     381
+ #define LOPT_NO_DHCP6      382
 @@ -307,6 +308,7 @@ static const struct myoption opts[] =
      { "dhcp-name-match", 1, 0, LOPT_NAME_MATCH },
      { "dhcp-broadcast", 2, 0, LOPT_BROADCAST },
@@ -59,7 +59,7 @@
  	    {
  	      int secflag = 0;
 +	      unsigned long mttl = 0;
- 	      if (!(res = extract_name(header, qlen, &p1, name, 0, 10)))
+	      if (!(res = extract_name(header, qlen, &p1, name, EXTR_NAME_COMPARE, 10)))
  		return 2; /* bad packet */
  	      
 @@ -691,6 +692,14 @@ int extract_addresses(struct dns_header *header, size_t qlen, char *name, time_t
