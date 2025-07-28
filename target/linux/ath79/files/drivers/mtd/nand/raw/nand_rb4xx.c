@@ -222,7 +222,7 @@ static int rb4xx_nand_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int rb4xx_nand_remove(struct platform_device *pdev)
+static void rb4xx_nand_remove(struct platform_device *pdev)
 {
 	struct rb4xx_nand *nand = platform_get_drvdata(pdev);
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,8,0)
@@ -234,16 +234,9 @@ static int rb4xx_nand_remove(struct platform_device *pdev)
 	return 0;
 }
 
-static const struct platform_device_id rb4xx_nand_id_table[] = {
-	{ "mikrotik,rb4xx-nand", },
-	{ },
-};
-MODULE_DEVICE_TABLE(platform, rb4xx_nand_id_table);
-
 static struct platform_driver rb4xx_nand_driver = {
 	.probe = rb4xx_nand_probe,
-	.remove = rb4xx_nand_remove,
-	.id_table = rb4xx_nand_id_table,
+	.remove_new = rb4xx_nand_remove,
 	.driver = {
 		.name = "rb4xx-nand",
 	},

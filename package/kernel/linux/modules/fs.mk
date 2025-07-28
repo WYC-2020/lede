@@ -93,7 +93,8 @@ define KernelPackage/fs-smbfs-common
 	@(LINUX_5_15||LINUX_6_1||LINUX_6_6)  \
 	+(LINUX_5_4||LINUX_5_10):kmod-crypto-arc4 \
 	+(LINUX_5_4||LINUX_5_10):kmod-crypto-md4 \
-	+LINUX_6_6||LINUX_6_12:kmod-fs-netfs +LINUX_6_6||LINUX_6_12:kmod-nls-ucs2-utils
+	+(LINUX_6_6||LINUX_6_12):kmod-fs-netfs \
+	+(LINUX_6_6||LINUX_6_12):kmod-nls-ucs2-utils
   FILES:= \
 	$(LINUX_DIR)/fs/smb/common/cifs_arc4.ko@ge6.1 \
 	$(LINUX_DIR)/fs/smb/common/cifs_md4.ko@ge6.1 \
@@ -134,9 +135,9 @@ define KernelPackage/fs-cifs
     +kmod-crypto-des \
     +LINUX_6_6:kmod-fs-netfs \
     +LINUX_6_6:kmod-nls-ucs2-utils \
-    +(LINUX_5_15||LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-asn1-decoder \
-    +(LINUX_5_15||LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-oid-registry \
-    +(LINUX_5_15||LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-dnsresolver
+    +!(LINUX_5_4||LINUX_5_10):kmod-asn1-decoder \
+    +!(LINUX_5_4||LINUX_5_10):kmod-oid-registry \
+    +!(LINUX_5_4||LINUX_5_10):kmod-dnsresolver
 endef
 
 define KernelPackage/fs-cifs/description
@@ -352,7 +353,7 @@ define KernelPackage/fs-jfs
   KCONFIG:=CONFIG_JFS_FS
   FILES:=$(LINUX_DIR)/fs/jfs/jfs.ko
   AUTOLOAD:=$(call AutoLoad,30,jfs,1)
-  DEPENDS:=+LINUX_6_6||LINUX_6_12:kmod-nls-ucs2-utils
+  DEPENDS:=+(LINUX_6_6||LINUX_6_12):kmod-nls-ucs2-utils
   $(call AddDepends/nls)
 endef
 
@@ -397,7 +398,7 @@ $(eval $(call KernelPackage,fs-msdos))
 define KernelPackage/fs-netfs
   SUBMENU:=$(FS_MENU)
   TITLE:=Network Filesystems support
-  DEPENDS:=@(LINUX_5_15||LINUX_6_1||LINUX_6_6||LINUX_6_12)
+  DEPENDS:=@!(LINUX_5_4||LINUX_5_10)
   KCONFIG:= CONFIG_NETFS_SUPPORT
   FILES:=$(LINUX_DIR)/fs/netfs/netfs.ko
   AUTOLOAD:=$(call AutoLoad,28,netfs)
@@ -684,7 +685,8 @@ define KernelPackage/pstore
 	CONFIG_PSTORE_DEFLATE_COMPRESS_DEFAULT=y
   FILES:= $(LINUX_DIR)/fs/pstore/pstore.ko
   AUTOLOAD:=$(call AutoLoad,30,pstore,1)
-  DEPENDS:=+LINUX_6_6||LINUX_6_12:kmod-lib-zlib-deflate +LINUX_6_6||LINUX_6_12:kmod-lib-zlib-inflate
+  DEPENDS:=+(LINUX_6_6||LINUX_6_12):kmod-lib-zlib-deflate \
+	   +(LINUX_6_6||LINUX_6_12):kmod-lib-zlib-inflate
 endef
 
 define KernelPackage/pstore/description
