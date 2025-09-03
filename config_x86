@@ -444,7 +444,8 @@ CONFIG_KERNEL_EXT4_FS_SECURITY=y
 # CONFIG_DEBUG is not set
 # CONFIG_USE_GC_SECTIONS is not set
 # CONFIG_USE_LTO is not set
-# CONFIG_MOLD is not set
+CONFIG_MOLD=y
+# CONFIG_USE_MOLD is not set
 CONFIG_IPV6=y
 
 #
@@ -2624,6 +2625,7 @@ CONFIG_PACKAGE_kmod-nfnetlink=y
 # CONFIG_PACKAGE_kmod-nft-socket is not set
 # CONFIG_PACKAGE_kmod-nft-tproxy is not set
 # CONFIG_PACKAGE_kmod-nft-xfrm is not set
+# CONFIG_PACKAGE_kmod-oaf is not set
 # end of Netfilter Extensions
 
 #
@@ -5198,32 +5200,32 @@ CONFIG_PACKAGE_luci-base=y
 #
 # Translations
 #
-# CONFIG_LUCI_LANG_uk is not set
-# CONFIG_LUCI_LANG_hu is not set
-# CONFIG_LUCI_LANG_pt is not set
-# CONFIG_LUCI_LANG_ro is not set
-# CONFIG_LUCI_LANG_en is not set
-# CONFIG_LUCI_LANG_pl is not set
-# CONFIG_LUCI_LANG_sk is not set
-# CONFIG_LUCI_LANG_ru is not set
-# CONFIG_LUCI_LANG_vi is not set
+# CONFIG_LUCI_LANG_ca is not set
+# CONFIG_LUCI_LANG_cs is not set
 # CONFIG_LUCI_LANG_de is not set
+# CONFIG_LUCI_LANG_el is not set
+CONFIG_LUCI_LANG_en=y
+# CONFIG_LUCI_LANG_es is not set
+# CONFIG_LUCI_LANG_fr is not set
+# CONFIG_LUCI_LANG_he is not set
+# CONFIG_LUCI_LANG_hu is not set
+# CONFIG_LUCI_LANG_it is not set
+# CONFIG_LUCI_LANG_ja is not set
 # CONFIG_LUCI_LANG_ko is not set
 # CONFIG_LUCI_LANG_ms is not set
-CONFIG_LUCI_LANG_zh-cn=y
 # CONFIG_LUCI_LANG_no is not set
-# CONFIG_LUCI_LANG_he is not set
-# CONFIG_LUCI_LANG_zh-tw is not set
-# CONFIG_LUCI_LANG_tr is not set
-# CONFIG_LUCI_LANG_sv is not set
-# CONFIG_LUCI_LANG_ja is not set
-# CONFIG_LUCI_LANG_el is not set
-# CONFIG_LUCI_LANG_ca is not set
-# CONFIG_LUCI_LANG_es is not set
+# CONFIG_LUCI_LANG_pl is not set
+# CONFIG_LUCI_LANG_pt is not set
 # CONFIG_LUCI_LANG_pt-br is not set
-# CONFIG_LUCI_LANG_cs is not set
-# CONFIG_LUCI_LANG_fr is not set
-# CONFIG_LUCI_LANG_it is not set
+# CONFIG_LUCI_LANG_ro is not set
+# CONFIG_LUCI_LANG_ru is not set
+# CONFIG_LUCI_LANG_sk is not set
+# CONFIG_LUCI_LANG_sv is not set
+# CONFIG_LUCI_LANG_tr is not set
+# CONFIG_LUCI_LANG_uk is not set
+# CONFIG_LUCI_LANG_vi is not set
+CONFIG_LUCI_LANG_zh-cn=y
+# CONFIG_LUCI_LANG_zh-tw is not set
 # end of Translations
 
 CONFIG_PACKAGE_luci-compat=y
@@ -5339,6 +5341,7 @@ CONFIG_PACKAGE_luci-app-openclash=y
 CONFIG_PACKAGE_iptables-mod-tproxy=y
 CONFIG_PACKAGE_iptables-mod-extra=y
 CONFIG_PACKAGE_ipset=y
+# CONFIG_PACKAGE_luci-app-openlist is not set
 # CONFIG_PACKAGE_luci-app-openvpn is not set
 # CONFIG_PACKAGE_luci-app-openvpn-server is not set
 # CONFIG_PACKAGE_luci-app-p910nd is not set
@@ -5388,6 +5391,7 @@ CONFIG_PACKAGE_luci-app-qbittorrent_dynamic=y
 # CONFIG_PACKAGE_luci-app-qbittorrent-simple is not set
 # CONFIG_PACKAGE_luci-app-qbittorrent-simple_static is not set
 CONFIG_PACKAGE_luci-app-qbittorrent-simple_dynamic=y
+# CONFIG_PACKAGE_luci-app-qiyougamebooster is not set
 # CONFIG_PACKAGE_luci-app-qos is not set
 # CONFIG_PACKAGE_luci-app-quickstart is not set
 # CONFIG_PACKAGE_luci-app-radicale is not set
@@ -5573,7 +5577,7 @@ CONFIG_PACKAGE_luci-i18n-autoreboot-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-base-cs is not set
 # CONFIG_PACKAGE_luci-i18n-base-de is not set
 # CONFIG_PACKAGE_luci-i18n-base-el is not set
-# CONFIG_PACKAGE_luci-i18n-base-en is not set
+CONFIG_PACKAGE_luci-i18n-base-en=y
 # CONFIG_PACKAGE_luci-i18n-base-es is not set
 # CONFIG_PACKAGE_luci-i18n-base-fr is not set
 # CONFIG_PACKAGE_luci-i18n-base-he is not set
@@ -5600,7 +5604,7 @@ CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-ddns-cs is not set
 # CONFIG_PACKAGE_luci-i18n-ddns-de is not set
 # CONFIG_PACKAGE_luci-i18n-ddns-el is not set
-# CONFIG_PACKAGE_luci-i18n-ddns-en is not set
+CONFIG_PACKAGE_luci-i18n-ddns-en=y
 # CONFIG_PACKAGE_luci-i18n-ddns-es is not set
 # CONFIG_PACKAGE_luci-i18n-ddns-fr is not set
 # CONFIG_PACKAGE_luci-i18n-ddns-he is not set
@@ -5632,7 +5636,7 @@ CONFIG_PACKAGE_luci-i18n-filetransfer-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-firewall-cs is not set
 # CONFIG_PACKAGE_luci-i18n-firewall-de is not set
 # CONFIG_PACKAGE_luci-i18n-firewall-el is not set
-# CONFIG_PACKAGE_luci-i18n-firewall-en is not set
+CONFIG_PACKAGE_luci-i18n-firewall-en=y
 # CONFIG_PACKAGE_luci-i18n-firewall-es is not set
 # CONFIG_PACKAGE_luci-i18n-firewall-fr is not set
 # CONFIG_PACKAGE_luci-i18n-firewall-he is not set
@@ -5664,7 +5668,7 @@ CONFIG_PACKAGE_luci-i18n-kodexplorer-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-mwan3-da is not set
 # CONFIG_PACKAGE_luci-i18n-mwan3-de is not set
 # CONFIG_PACKAGE_luci-i18n-mwan3-el is not set
-# CONFIG_PACKAGE_luci-i18n-mwan3-en is not set
+CONFIG_PACKAGE_luci-i18n-mwan3-en=y
 # CONFIG_PACKAGE_luci-i18n-mwan3-es is not set
 # CONFIG_PACKAGE_luci-i18n-mwan3-fi is not set
 # CONFIG_PACKAGE_luci-i18n-mwan3-fr is not set
@@ -5702,7 +5706,7 @@ CONFIG_PACKAGE_luci-i18n-ramfree-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-samba4-cs is not set
 # CONFIG_PACKAGE_luci-i18n-samba4-de is not set
 # CONFIG_PACKAGE_luci-i18n-samba4-el is not set
-# CONFIG_PACKAGE_luci-i18n-samba4-en is not set
+CONFIG_PACKAGE_luci-i18n-samba4-en=y
 # CONFIG_PACKAGE_luci-i18n-samba4-es is not set
 # CONFIG_PACKAGE_luci-i18n-samba4-fr is not set
 # CONFIG_PACKAGE_luci-i18n-samba4-he is not set
@@ -5737,7 +5741,7 @@ CONFIG_PACKAGE_luci-i18n-unblockmusic-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-upnp-cs is not set
 # CONFIG_PACKAGE_luci-i18n-upnp-de is not set
 # CONFIG_PACKAGE_luci-i18n-upnp-el is not set
-# CONFIG_PACKAGE_luci-i18n-upnp-en is not set
+CONFIG_PACKAGE_luci-i18n-upnp-en=y
 # CONFIG_PACKAGE_luci-i18n-upnp-es is not set
 # CONFIG_PACKAGE_luci-i18n-upnp-fr is not set
 # CONFIG_PACKAGE_luci-i18n-upnp-he is not set
@@ -5764,7 +5768,7 @@ CONFIG_PACKAGE_luci-i18n-vsftpd-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-watchcat-cs is not set
 # CONFIG_PACKAGE_luci-i18n-watchcat-de is not set
 # CONFIG_PACKAGE_luci-i18n-watchcat-el is not set
-# CONFIG_PACKAGE_luci-i18n-watchcat-en is not set
+CONFIG_PACKAGE_luci-i18n-watchcat-en=y
 # CONFIG_PACKAGE_luci-i18n-watchcat-es is not set
 # CONFIG_PACKAGE_luci-i18n-watchcat-fr is not set
 # CONFIG_PACKAGE_luci-i18n-watchcat-he is not set
@@ -5790,7 +5794,7 @@ CONFIG_PACKAGE_luci-i18n-webadmin-zh-cn=y
 # CONFIG_PACKAGE_luci-i18n-wol-cs is not set
 # CONFIG_PACKAGE_luci-i18n-wol-de is not set
 # CONFIG_PACKAGE_luci-i18n-wol-el is not set
-# CONFIG_PACKAGE_luci-i18n-wol-en is not set
+CONFIG_PACKAGE_luci-i18n-wol-en=y
 # CONFIG_PACKAGE_luci-i18n-wol-es is not set
 # CONFIG_PACKAGE_luci-i18n-wol-fr is not set
 # CONFIG_PACKAGE_luci-i18n-wol-he is not set
@@ -5915,6 +5919,7 @@ CONFIG_PACKAGE_UnblockNeteaseMusic-Go=y
 #
 # Campus Network
 #
+# CONFIG_PACKAGE_bitsrunlogin-go is not set
 # CONFIG_PACKAGE_minieap is not set
 # CONFIG_PACKAGE_njit8021xclient is not set
 # CONFIG_PACKAGE_scutclient is not set
@@ -6613,6 +6618,7 @@ CONFIG_PACKAGE_openssh-sftp-server=y
 # CONFIG_PACKAGE_comgt is not set
 # CONFIG_PACKAGE_comgt-directip is not set
 # CONFIG_PACKAGE_comgt-ncm is not set
+# CONFIG_PACKAGE_modemband is not set
 # CONFIG_PACKAGE_umbim is not set
 # CONFIG_PACKAGE_uqmi is not set
 # end of WWAN
@@ -6620,10 +6626,18 @@ CONFIG_PACKAGE_openssh-sftp-server=y
 #
 # Web Servers/Proxies
 #
+# CONFIG_PACKAGE_3proxy is not set
+# CONFIG_PACKAGE_3proxy-mod-ftppr is not set
+# CONFIG_PACKAGE_3proxy-mod-mycrypt is not set
+# CONFIG_PACKAGE_3proxy-mod-pop3p is not set
+# CONFIG_PACKAGE_3proxy-mod-proxy is not set
+# CONFIG_PACKAGE_3proxy-mod-smtpp is not set
+# CONFIG_PACKAGE_3proxy-mod-socks is not set
+# CONFIG_PACKAGE_3proxy-mod-tcppm is not set
+# CONFIG_PACKAGE_3proxy-mod-tlspr is not set
+# CONFIG_PACKAGE_3proxy-mod-udppm is not set
 # CONFIG_PACKAGE_apache is not set
 # CONFIG_PACKAGE_brook is not set
-# CONFIG_BROOK_COMPRESS_GOPROXY is not set
-# CONFIG_BROOK_COMPRESS_UPX is not set
 # CONFIG_PACKAGE_cgi-io is not set
 # CONFIG_PACKAGE_clamav is not set
 # CONFIG_PACKAGE_cloudflared is not set
@@ -6726,23 +6740,16 @@ CONFIG_PACKAGE_shadowsocksr-libev-ssr-local=y
 CONFIG_PACKAGE_shadowsocksr-libev-ssr-redir=y
 CONFIG_PACKAGE_shadowsocksr-libev-ssr-server=y
 CONFIG_PACKAGE_sing-box=y
-
-#
-# Customizing build tags
-#
-# CONFIG_SING_BOX_WITH_ACME is not set
-CONFIG_SING_BOX_WITH_CLASH_API=y
-CONFIG_SING_BOX_WITH_DHCP=y
-CONFIG_SING_BOX_WITH_ECH=y
-# CONFIG_SING_BOX_WITH_GRPC is not set
-# CONFIG_SING_BOX_WITH_GVISOR is not set
-CONFIG_SING_BOX_WITH_QUIC=y
-# CONFIG_SING_BOX_WITH_REALITY_SERVER is not set
-CONFIG_SING_BOX_WITH_UTLS=y
-# CONFIG_SING_BOX_WITH_V2RAY_API is not set
-CONFIG_SING_BOX_WITH_WIREGUARD=y
-# end of Customizing build tags
-
+CONFIG_SING_BOX_BUILD_ACME=y
+CONFIG_SING_BOX_BUILD_CLASH_API=y
+# CONFIG_SING_BOX_BUILD_DHCP is not set
+# CONFIG_SING_BOX_BUILD_GRPC is not set
+CONFIG_SING_BOX_BUILD_GVISOR=y
+CONFIG_SING_BOX_BUILD_QUIC=y
+CONFIG_SING_BOX_BUILD_TAILSCALE=y
+CONFIG_SING_BOX_BUILD_UTLS=y
+# CONFIG_SING_BOX_BUILD_V2RAY_API is not set
+CONFIG_SING_BOX_BUILD_WIREGUARD=y
 # CONFIG_PACKAGE_sockd is not set
 # CONFIG_PACKAGE_socksify is not set
 # CONFIG_PACKAGE_spawn-fcgi is not set
@@ -6855,10 +6862,12 @@ CONFIG_PACKAGE_6in4=y
 # CONFIG_PACKAGE_ahcpd is not set
 # CONFIG_PACKAGE_alfred is not set
 CONFIG_PACKAGE_alist=y
+# CONFIG_PACKAGE_antiblock is not set
 # CONFIG_PACKAGE_apcupsd is not set
 # CONFIG_PACKAGE_apcupsd-cgi is not set
 # CONFIG_PACKAGE_apinger is not set
 # CONFIG_PACKAGE_apinger-rrd is not set
+# CONFIG_PACKAGE_appfilter is not set
 # CONFIG_PACKAGE_atlas-probe is not set
 # CONFIG_PACKAGE_atlas-sw-probe is not set
 # CONFIG_PACKAGE_atlas-sw-probe-rpc is not set
@@ -7022,8 +7031,8 @@ CONFIG_PACKAGE_odhcpd_ipv6only_ext_cer_id=0
 # CONFIG_PACKAGE_oor is not set
 # CONFIG_PACKAGE_open-iscsi is not set
 # CONFIG_PACKAGE_openlist is not set
-# CONFIG_PACKAGE_oscam is not set
 # CONFIG_PACKAGE_oping is not set
+# CONFIG_PACKAGE_oscam is not set
 # CONFIG_PACKAGE_ostiary is not set
 # CONFIG_PACKAGE_pagekitec is not set
 # CONFIG_PACKAGE_pcapplusplus is not set
@@ -7048,6 +7057,7 @@ CONFIG_PACKAGE_ppp-mod-pppoe=y
 # CONFIG_PACKAGE_proto-bonding is not set
 # CONFIG_PACKAGE_proxychains-ng is not set
 # CONFIG_PACKAGE_ptunnel-ng is not set
+# CONFIG_PACKAGE_qiyougamebooster is not set
 # CONFIG_PACKAGE_quectel-cm is not set
 # CONFIG_PACKAGE_radsecproxy is not set
 # CONFIG_PACKAGE_ratched is not set
@@ -7059,6 +7069,7 @@ CONFIG_PACKAGE_ppp-mod-pppoe=y
 # CONFIG_PACKAGE_rpcbind is not set
 # CONFIG_PACKAGE_rssileds is not set
 # CONFIG_PACKAGE_rsyslog is not set
+# CONFIG_PACKAGE_rustdesk-server is not set
 # CONFIG_PACKAGE_safe-search is not set
 # CONFIG_PACKAGE_sagernet-core is not set
 # CONFIG_PACKAGE_samba36-server is not set
@@ -7078,15 +7089,8 @@ CONFIG_SAMBA4_SERVER_VFS=y
 # CONFIG_PACKAGE_sctp-tools is not set
 # CONFIG_PACKAGE_ser2net is not set
 # CONFIG_PACKAGE_simple-adblock is not set
-CONFIG_PACKAGE_simple-obfs=y
+CONFIG_PACKAGE_simple-obfs-client=y
 # CONFIG_PACKAGE_simple-obfs-server is not set
-
-#
-# Simple-obfs Compile Configuration
-#
-# CONFIG_SIMPLE_OBFS_STATIC_LINK is not set
-# end of Simple-obfs Compile Configuration
-
 # CONFIG_PACKAGE_slirp4netns is not set
 CONFIG_PACKAGE_smartdns=y
 # CONFIG_PACKAGE_smbinfo is not set
@@ -7196,6 +7200,7 @@ CONFIG_PACKAGE_wol=y
 # CONFIG_PACKAGE_shairport-sync-openssl is not set
 # CONFIG_PACKAGE_shine is not set
 # CONFIG_PACKAGE_sox is not set
+# CONFIG_PACKAGE_spotifyd is not set
 # CONFIG_PACKAGE_squeezelite-full is not set
 # CONFIG_PACKAGE_squeezelite-mini is not set
 # CONFIG_PACKAGE_svox is not set
@@ -8039,3 +8044,5 @@ CONFIG_PACKAGE_watchcat=y
 # CONFIG_PACKAGE_fontconfig is not set
 # end of Font-Utils
 # end of Xorg
+
+CONFIG_OVERRIDE_PKGS="batman-adv"
