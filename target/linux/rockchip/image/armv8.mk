@@ -18,7 +18,7 @@ define Device/ariaboard_photonicat
   SOC := rk3568
   UBOOT_DEVICE_NAME := photonicat-rk3568
   IMAGE/sysupgrade.img.gz := boot-common | boot-script vop | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := photonicat-firmware kmod-drm-rockchip kmod-ath10k kmod-ath10k-sdio pcat-manager wpad
+  DEVICE_PACKAGES := kmod-drm-rockchip kmod-ath10k kmod-ath10k-sdio pcat-firmware pcat-manager wpad
 endef
 TARGET_DEVICES += ariaboard_photonicat
 
@@ -27,8 +27,9 @@ define Device/ariaboard_photonicat2
   DEVICE_MODEL := Photonicat 2
   SOC := rk3576
   DEVICE_DTS := rockchip/rk3576-photonicat2
-  UBOOT_DEVICE_NAME := evb-rk3576
+  UBOOT_DEVICE_NAME := generic-rk3576
   IMAGE/sysupgrade.img.gz := boot-common | boot-script rk3576 | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-aic8800u wpad-openssl
 endef
 TARGET_DEVICES += ariaboard_photonicat2
 
@@ -58,7 +59,7 @@ define Device/armsom_sige5
   DEVICE_MODEL := Sige5
   SOC := rk3576
   DEVICE_DTS := rockchip/rk3576-armsom-sige5
-  UBOOT_DEVICE_NAME := evb-rk3576
+  UBOOT_DEVICE_NAME := sige5-rk3576
   IMAGE/sysupgrade.img.gz := boot-common | boot-script rk3576 | pine64-img | gzip | append-metadata
 endef
 TARGET_DEVICES += armsom_sige5
@@ -160,7 +161,7 @@ define Device/friendlyarm_nanopi-m5
   DEVICE_MODEL := NanoPi M5
   SOC := rk3576
   DEVICE_DTS := rockchip/rk3576-nanopi-m5
-  UBOOT_DEVICE_NAME := evb-rk3576
+  UBOOT_DEVICE_NAME := generic-rk3576
   DEVICE_PACKAGES := kmod-gpio-button-hotplug
   IMAGE/sysupgrade.img.gz := boot-common | boot-script rk3576 | pine64-img | gzip | append-metadata
 endef
@@ -290,7 +291,7 @@ define Device/friendlyarm_nanopi-r76s
   DEVICE_MODEL := NanoPi R76S
   SOC := rk3576
   DEVICE_DTS := rockchip/rk3576-nanopi-r76s
-  UBOOT_DEVICE_NAME := evb-rk3576
+  UBOOT_DEVICE_NAME := generic-rk3576
   DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125
   IMAGE/sysupgrade.img.gz := boot-common | boot-script rk3576 | pine64-img | gzip | append-metadata
 endef
@@ -622,16 +623,6 @@ define Device/xunlong_orangepi-5
 endef
 TARGET_DEVICES += xunlong_orangepi-5
 
-define Device/xunlong_orangepi-5-plus
-  DEVICE_VENDOR := Xunlong
-  DEVICE_MODEL := Orange Pi 5 Plus
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := orangepi-5-plus-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
-endef
-TARGET_DEVICES += xunlong_orangepi-5-plus
-
 define Device/xunlong_orangepi-5-max
   DEVICE_VENDOR := Xunlong
   DEVICE_MODEL := Orange Pi 5 Max
@@ -641,6 +632,16 @@ define Device/xunlong_orangepi-5-max
   DEVICE_PACKAGES := kmod-r8125-rss
 endef
 TARGET_DEVICES += xunlong_orangepi-5-max
+
+define Device/xunlong_orangepi-5-plus
+  DEVICE_VENDOR := Xunlong
+  DEVICE_MODEL := Orange Pi 5 Plus
+  SOC := rk3588
+  UBOOT_DEVICE_NAME := orangepi-5-plus-rk3588
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-r8125-rss
+endef
+TARGET_DEVICES += xunlong_orangepi-5-plus
 
 define Device/xunlong_orangepi-5-ultra
   DEVICE_VENDOR := Xunlong
