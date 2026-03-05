@@ -54,10 +54,11 @@ jobs:
         large-packages: true
         docker-images: true
         swap-storage: true
-    #- name: Set ssh agent
-    #  uses: webfactory/ssh-agent@v0.5.4
-    #  with:
-    #    ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Set ssh agent
+      uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        log-public-key: false
 
     - name: Checkout
       uses: actions/checkout@main
