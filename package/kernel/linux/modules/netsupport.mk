@@ -1613,30 +1613,67 @@ endef
 
 $(eval $(call KernelPackage,qrtr-mhi))
 
-define KernelPackage/inet-mptcp-diag
+define KernelPackage/team
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
-  TITLE:=INET diag support for MultiPath TCP
-  DEPENDS +=@!LINUX_5_4  $(if $(CONFIG_INET_MPTCP_DIAG),+kmod-inet-diag)
-  KCONFIG:= CONFIG_MPTCP=y
-  FILES:= $(LINUX_DIR)/net/mptcp/mptcp_diag.ko
-  AUTOLOAD:=$(call AutoProbe,mptcp_diag)
+  TITLE:=Ethernet team driver
+  KCONFIG:=CONFIG_NET_TEAM
+  FILES:=$(LINUX_DIR)/drivers/net/team/team.ko
+  AUTOLOAD:=$(call AutoProbe,team)
 endef
 
-define KernelPackage/inet-mptcp-diag/description
-Support for INET (MultiPath TCP) socket monitoring interface used by
-native Linux tools such as ss.
+$(eval $(call KernelPackage,team))
+
+define KernelPackage/team-mode-broadcast
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Broadcast mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_BROADCAST
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_broadcast.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_broadcast)
 endef
 
-define KernelPackage/inet-mptcp-diag/config
-  if PACKAGE_kmod-inet-mptcp-diag
-  config INET_MPTCP_DIAG
-            bool "MPTCP: IPv4 support for Multipath TCP"
-            select PACKAGE_kmod-inet-diag
-	    default y
-  config MPTCP_IPV6
-            bool "MPTCP: IPv6 support for Multipath TCP"
-            depends on IPV6=y
-  endif
+$(eval $(call KernelPackage,team-mode-broadcast))
+
+define KernelPackage/team-mode-roundrobin
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Round-robin mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_ROUNDROBIN
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_roundrobin.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_roundrobin)
 endef
 
-$(eval $(call KernelPackage,inet-mptcp-diag))
+$(eval $(call KernelPackage,team-mode-roundrobin))
+
+define KernelPackage/team-mode-random
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Random mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_RANDOM
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_random.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_random)
+endef
+
+$(eval $(call KernelPackage,team-mode-random))
+
+define KernelPackage/team-mode-activebackup
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Active-backup mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_ACTIVEBACKUP
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_activebackup.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_activebackup)
+endef
+
+$(eval $(call KernelPackage,team-mode-activebackup))
+
+define KernelPackage/team-mode-loadbalance
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Load-balance mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_LOADBALANCE
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_loadbalance.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_loadbalance)
+endef
+
+$(eval $(call KernelPackage,team-mode-loadbalance))
