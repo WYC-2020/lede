@@ -86,6 +86,38 @@ ucidef_set_interface_wan() {
 	ucidef_set_interface "wan" ifname "$1" protocol "${2:-dhcp}"
 }
 
+ucidef_auto_set_interface() {
+	# 1. 使用 ip link show 替代 ip address 更安全，并用 cut 去除虚拟接口后缀（例如 eth0@if2 变成 eth0）
+	local interfaces=$(ip link show | awk -F ': ' '/^[0-9]+: eth[0-9]+/ {print $2}' | cut -d@ -f1)
+	
+	# 2. 利用 set 命令将多行字符串直接转换为 Shell 的位置参数 ($1, $2, $3...)
+	# 这一步自动处理了空格/换行分割，且不会产生子进程
+	set -- $interfaces
+	local num=$#
+	
+	# 3. 如果没有检测到任何 eth 接口，直接退出，避免生成错误配置
+	[ "$num" -eq 0 ] && return 0
+	
+	local lannet=""
+	local wannet=""
+	
+	if [ "$num" -eq 1 ]; then
+		# 只有一个接口，全部分配给 LAN
+		lannet="$1"
+	else
+		# 多个接口：最后一个分配给 WAN，前面所有的分配给 LAN
+		while [ "$#" -gt 1 ]; do
+			# ${lannet:+$lannet } 的意思是：如果 lannet 不为空，则加上自身和一个空格，避免产生前导空格
+			lannet="${lannet:+$lannet }$1"
+			shift # 踢掉第一个参数，后面的参数往前挪
+		done
+		wannet="$1" # 循环结束时，剩下最后一个参数给 WAN
+	fi
+	
+	ucidef_set_interface_lan "$lannet"
+	[ -n "$wannet" ] && ucidef_set_interface_wan "$wannet"
+}
+
 ucidef_set_interfaces_lan_wan() {
 	local lan_if="$1"
 	local wan_if="$2"

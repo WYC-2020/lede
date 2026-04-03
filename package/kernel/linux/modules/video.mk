@@ -320,7 +320,7 @@ $(eval $(call KernelPackage,drm))
 define KernelPackage/drm-buddy
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=A page based buddy allocator
-  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm @LINUX_6_1||LINUX_6_6||LINUX_6_12
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm @LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18
   KCONFIG:=CONFIG_DRM_BUDDY
   FILES:= $(LINUX_DIR)/drivers/gpu/drm/drm_buddy.ko
   AUTOLOAD:=$(call AutoProbe,drm_buddy)
@@ -335,9 +335,10 @@ $(eval $(call KernelPackage,drm-buddy))
 define KernelPackage/drm-display-helper
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=DRM helpers for display adapters drivers
-  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm-kms-helper @LINUX_6_1||LINUX_6_6||LINUX_6_12
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm-kms-helper @LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18
   KCONFIG:=CONFIG_DRM_DISPLAY_HELPER
-  FILES:=$(LINUX_DIR)/drivers/gpu/drm/display/drm_display_helper.ko
+  FILES:=$(LINUX_DIR)/drivers/gpu/drm/display/drm_display_helper.ko \
+    $(LINUX_DIR)/drivers/media/cec/core/cec.ko@ge6.18
   AUTOLOAD:=$(call AutoProbe,drm_display_helper)
 endef
 
@@ -351,7 +352,7 @@ define KernelPackage/drm-exec
   SUBMENU:=$(VIDEO_MENU)
   HIDDEN:=1
   TITLE:=Execution context for command submissions
-  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm @LINUX_6_6||LINUX_6_12
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm @LINUX_6_6||LINUX_6_12||LINUX_6_18
   KCONFIG:=CONFIG_DRM_EXEC
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/drm_exec.ko
   AUTOLOAD:=$(call AutoProbe,drm_exec)
@@ -447,7 +448,7 @@ define KernelPackage/drm-suballoc-helper
   SUBMENU:=$(VIDEO_MENU)
   HIDDEN:=1
   TITLE:=DRM suballocation helper
-  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm @LINUX_6_6||LINUX_6_12
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm @LINUX_6_6||LINUX_6_12||LINUX_6_18
   KCONFIG:=CONFIG_DRM_SUBALLOC_HELPER
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/drm_suballoc_helper.ko
   AUTOLOAD:=$(call AutoProbe,drm_suballoc_helper)
@@ -481,8 +482,8 @@ define KernelPackage/drm-amdgpu
   TITLE:=AMDGPU DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +amdgpu-firmware +kmod-acpi-video \
 	+kmod-backlight +kmod-drm-buddy +kmod-drm-display-helper \
-	+(LINUX_6_6||LINUX_6_12):kmod-drm-exec +kmod-drm-kms-helper \
-	+kmod-drm-sched +(LINUX_6_6||LINUX_6_12):kmod-drm-suballoc-helper \
+	+(LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-exec +kmod-drm-kms-helper \
+	+kmod-drm-sched +(LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-suballoc-helper \
 	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit
   KCONFIG:=CONFIG_DRM_AMDGPU \
 	CONFIG_DRM_AMDGPU_SI=y \
@@ -490,7 +491,8 @@ define KernelPackage/drm-amdgpu
 	CONFIG_DRM_AMD_DC=y \
 	CONFIG_DEBUG_KERNEL_DC=n
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/amd/amdgpu/amdgpu.ko \
-	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.5
+	$(LINUX_DIR)/drivers/gpu/drm/amd/amdxcp/amdxcp.ko@ge6.5 \
+	$(LINUX_DIR)/drivers/gpu/drm/drm_panel_backlight_quirks.ko@ge6.18
   AUTOLOAD:=$(call AutoProbe,amdgpu)
 endef
 
@@ -521,10 +523,10 @@ define KernelPackage/drm-i915
   DEPENDS:=@(TARGET_x86_64||TARGET_x86_generic||TARGET_x86_legacy) \
 	@DISPLAY_SUPPORT +i915-firmware +kmod-backlight +kmod-drm-ttm \
 	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-display-helper \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-acpi-video \
-	+kmod-drm-buddy +(LINUX_6_6||LINUX_6_12):kmod-drm-exec \
-	+(LINUX_6_6||LINUX_6_12):kmod-drm-suballoc-helper
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-display-helper \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-acpi-video \
+	+kmod-drm-buddy +(LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-exec \
+	+(LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-suballoc-helper
   KCONFIG:=CONFIG_DRM_I915 \
 	CONFIG_DRM_I915_CAPTURE_ERROR=y \
 	CONFIG_DRM_I915_COMPRESS_ERROR=y \
@@ -704,8 +706,8 @@ define KernelPackage/drm-radeon
   TITLE:=Radeon DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-kms-helper \
 	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit +radeon-firmware \
-	+kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-acpi-video \
-	+(LINUX_6_6||LINUX_6_12):kmod-drm-suballoc-helper
+	+kmod-drm-display-helper +(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-acpi-video \
+	+(LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-suballoc-helper
   KCONFIG:=CONFIG_DRM_RADEON
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/radeon/radeon.ko
   AUTOLOAD:=$(call AutoProbe,radeon)
@@ -749,11 +751,11 @@ define KernelPackage/drm-nouveau
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=nouveau DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-drm-kms-helper \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-acpi-video \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-display-helper \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-exec \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-gpuvm \
-	+(LINUX_6_1||LINUX_6_6||LINUX_6_12):kmod-drm-sched
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-acpi-video \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-display-helper \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-exec \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-gpuvm \
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-drm-sched
   KCONFIG:=CONFIG_DRM_NOUVEAU \
 	CONFIG_NOUVEAU_DEBUG=5 \
 	CONFIG_NOUVEAU_DEBUG_DEFAULT=3 \
@@ -797,7 +799,7 @@ define KernelPackage/video-core
   SUBMENU:=$(VIDEO_MENU)
   TITLE=Video4Linux support
   DEPENDS:=+PACKAGE_kmod-i2c-core:kmod-i2c-core \
-	+kmod-media-core
+	+(LINUX_6_1||LINUX_6_6||LINUX_6_12||LINUX_6_18):kmod-media-core
   KCONFIG:= \
 	CONFIG_VIDEO_DEV \
 	CONFIG_V4L_PLATFORM_DRIVERS=y
