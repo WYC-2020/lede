@@ -22,10 +22,6 @@ start()
 	uci set network.@globals[0].packet_steering=1
 	uci commit network
 
-	mkdir -p /tmp/sysinfo
-
-	echo $h > /tmp/sysinfo/model
-	
 	all_pcis=`lspci | grep -i 'eth' | grep -i 'x550' | cut -d ' ' -f 1`
 	all_ifs=`cat /proc/net/dev | grep -i 'eth' | cut -d :  -f 1 | sed 's/^[ \t]*//g'`
 
