@@ -288,7 +288,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  void nf_conntrack_ecache_work(struct net *net, enum nf_ct_ecache_state state)
 --- a/net/netfilter/nf_conntrack_netlink.c
 +++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -712,12 +712,19 @@ static size_t ctnetlink_nlmsg_size(const
+@@ -709,12 +709,19 @@ static size_t ctnetlink_nlmsg_size(const struct nf_conn *ct)
  }
  
  static int
@@ -308,7 +308,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  	struct nf_conn *ct = item->ct;
  	struct sk_buff *skb;
  	unsigned int type;
-@@ -3112,6 +3119,7 @@ nla_put_failure:
+@@ -3105,6 +3112,7 @@ nla_put_failure:
  }
  
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
@@ -316,15 +316,16 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  static int
  ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
  {
-@@ -3161,6 +3169,7 @@ errout:
+@@ -3154,7 +3162,7 @@ errout:
  	return 0;
  }
  #endif
+-
 +#endif
- static int ctnetlink_exp_done(struct netlink_callback *cb)
+ static unsigned long ctnetlink_exp_id(const struct nf_conntrack_expect *exp)
  {
- 	if (cb->args[1])
-@@ -3765,11 +3774,17 @@ static int ctnetlink_stat_exp_cpu(struct
+ 	unsigned long id = (unsigned long)exp;
+@@ -3782,12 +3790,17 @@ static int ctnetlink_stat_exp_cpu(struct sk_buff *skb,
  }
  
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
@@ -338,11 +339,12 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  	.exp_event = ctnetlink_expect_event,
  };
  #endif
+-
 +#endif
- 
  static const struct nfnl_callback ctnl_cb[IPCTNL_MSG_MAX] = {
  	[IPCTNL_MSG_CT_NEW]	= {
-@@ -3868,8 +3883,12 @@ static int __net_init ctnetlink_net_init
+ 		.call		= ctnetlink_new_conntrack,
+@@ -3885,8 +3898,12 @@ static int __net_init ctnetlink_net_init(struct net *net)
  static void ctnetlink_net_pre_exit(struct net *net)
  {
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
