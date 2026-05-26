@@ -32,7 +32,6 @@
 #include <linux/netfilter/xt_dscp.h>
 #include <linux/if_bridge.h>
 #include <linux/version.h>
-
 #include "sfe.h"
 #include "sfe_cm.h"
 #include "sfe_backport.h"
