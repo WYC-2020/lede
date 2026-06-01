@@ -12,9 +12,9 @@ PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/odhcpd.git
-PKG_SOURCE_DATE:=2021-06-19
-PKG_SOURCE_VERSION:=564d25e53fad925fa3ed56e3004c107d40925fa4
-PKG_MIRROR_HASH:=a0644d31f99f20e5c2cee74153b81a0c2eae9ebeb644662cc76b0984b44dd490
+PKG_SOURCE_DATE:=2026-05-05
+PKG_SOURCE_VERSION:=e432dd62c28818bca28f2e64480270f7ffe56717
+PKG_MIRROR_HASH:=eeb15fda9b7d732bb06f3e806d33403ce0a19db57198309f4650c6f3be2dda59
 
 PKG_MAINTAINER:=Hans Dedecker <dedeckeh@gmail.com>
 PKG_LICENSE:=GPL-2.0
@@ -29,7 +29,7 @@ define Package/odhcpd/default
   SECTION:=net
   CATEGORY:=Network
   TITLE:=OpenWrt DHCPv6(-PD)/RA Server & Relay
-  DEPENDS:=+libubox +libuci +libubus +libnl-tiny
+  DEPENDS:=+libubox +libuci +libubus +libnl-tiny +libjson-c
 endef
 
 define Package/odhcpd/default/description
