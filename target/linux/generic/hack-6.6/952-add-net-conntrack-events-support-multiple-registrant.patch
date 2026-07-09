@@ -115,8 +115,8 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  	depends on NETFILTER_ADVANCED
 --- a/net/netfilter/nf_conntrack_core.c
 +++ b/net/netfilter/nf_conntrack_core.c
-@@ -2900,6 +2900,10 @@ int nf_conntrack_init_net(struct net *ne
- 	nf_conntrack_helper_pernet_init(net);
+@@ -2818,6 +2818,10 @@ int nf_conntrack_init_net(struct net *ne
+ 	nf_conntrack_ecache_pernet_init(net);
  	nf_conntrack_proto_pernet_init(net);
  
 +#ifdef CONFIG_NF_CONNTRACK_CHAIN_EVENTS
@@ -338,7 +338,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  static unsigned long ctnetlink_exp_id(const struct nf_conntrack_expect *exp)
  {
  	unsigned long id = (unsigned long)exp;
-@@ -3782,12 +3790,17 @@ static int ctnetlink_stat_exp_cpu(struct sk_buff *skb,
+@@ -3732,12 +3739,17 @@ static int ctnetlink_stat_exp_cpu(struct sk_buff *skb,
  }
  
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
@@ -357,7 +357,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  static const struct nfnl_callback ctnl_cb[IPCTNL_MSG_MAX] = {
  	[IPCTNL_MSG_CT_NEW]	= {
  		.call		= ctnetlink_new_conntrack,
-@@ -3885,8 +3898,12 @@ static int __net_init ctnetlink_net_init(struct net *net)
+@@ -3835,8 +3848,12 @@ static int __net_init ctnetlink_net_init(struct net *net)
  static void ctnetlink_net_pre_exit(struct net *net)
  {
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
