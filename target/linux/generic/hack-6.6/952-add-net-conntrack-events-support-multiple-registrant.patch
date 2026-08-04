@@ -245,7 +245,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  EXPORT_SYMBOL_GPL(nf_ct_deliver_cached_events);
  
  void nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
-@@ -264,20 +339,43 @@ out_unlock:
+@@ -260,20 +335,43 @@ out_unlock:
  	rcu_read_unlock();
  }
  
@@ -291,7 +291,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  void nf_conntrack_unregister_notifier(struct net *net)
  {
  	mutex_lock(&nf_ct_ecache_mutex);
-@@ -285,6 +383,7 @@ void nf_conntrack_unregister_notifier(st
+@@ -281,6 +379,7 @@ void nf_conntrack_unregister_notifier(st
  	mutex_unlock(&nf_ct_ecache_mutex);
  	/* synchronize_rcu() is called after netns pre_exit */
  }
@@ -338,7 +338,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  static unsigned long ctnetlink_exp_id(const struct nf_conntrack_expect *exp)
  {
  	unsigned long id = (unsigned long)exp;
-@@ -3732,12 +3739,17 @@ static int ctnetlink_stat_exp_cpu(struct sk_buff *skb,
+@@ -3732,12 +3749,17 @@ static int ctnetlink_stat_exp_cpu(struct sk_buff *skb,
  }
  
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
@@ -357,7 +357,7 @@ Subject: [PATCH] add net-conntrack-events-support-multiple-registrant for 5.15
  static const struct nfnl_callback ctnl_cb[IPCTNL_MSG_MAX] = {
  	[IPCTNL_MSG_CT_NEW]	= {
  		.call		= ctnetlink_new_conntrack,
-@@ -3835,8 +3848,12 @@ static int __net_init ctnetlink_net_init(struct net *net)
+@@ -3845,8 +3858,12 @@ static int __net_init ctnetlink_net_init(struct net *net)
  static void ctnetlink_net_pre_exit(struct net *net)
  {
  #ifdef CONFIG_NF_CONNTRACK_EVENTS
